@@ -176,15 +176,26 @@
 </template>
 <script setup>
 import { ref } from 'vue';
+import ChitChatServices from '../services/ChitChatServices';
+import { setToken } from '../authentication/auth';
+import { useRouter } from 'vue-router';
 
     const step = ref(1)
     const login_email = ref('')
     const login_password = ref('')
     const isLoading = ref(false)
+    const router = useRouter()
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         isLoading.value = true
-        console.log(login_email.value, login_password.value)
+        const result = await ChitChatServices.login({email: login_email.value, password: login_password.value})
+        isLoading.value = false;
+        if (result.data.success) {
+            let self = this
+            setToken(result.data.token, result.data.expiration)
+            router.push({ path: '/home', replace: true })
+        }
+        console.log(result.data)
     }
 </script>
 
