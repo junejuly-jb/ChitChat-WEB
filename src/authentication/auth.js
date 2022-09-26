@@ -10,15 +10,28 @@ const getToken = () => {
         return null
     
     if (Date.now() >= expiration * 1000) {
-        this.destroyToken()
+        destroyToken()
         return null
     }
     else return token
 }
 
-const destroyToken = () => {
+export const destroyToken = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('expiration')
+}
+
+export const setUser = (user) => {
+    localStorage.setItem('user', JSON.stringify(user))
+}
+
+export const removeUser = () => {
+    localStorage.removeItem('user')
+}
+
+export const getUser = async () => {
+    const user = await localStorage.getItem('user')
+    return JSON.parse(user)
 }
 
 export const isAuthenticated = () => {

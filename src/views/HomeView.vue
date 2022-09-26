@@ -1,33 +1,26 @@
 <template>
+  <div class="header">
+    <h4>Welcome, {{ userStore.user.name }}</h4>
+  </div>
   <div class="wrapper">
     <div class="content d-flex">
       <div id="pref">
-        <v-container class="text-center">
-          <div>
-            <v-icon @click="changeAppState('users')" :color="appState == 'users' ? 'blue' : 'grey'" size="20">fa fa-users</v-icon>
-          </div>
-          <div class="py-5"></div>
-          <div>
-            <v-icon @click="changeAppState('chats')" :color="appState == 'chats' ? 'blue' : 'grey'" size="20">fa fa-comments</v-icon>
-          </div>
-          <div class="py-5"></div>
-          <div>
-            <v-icon color="grey" size="20">fa fa-sign-out</v-icon>
-          </div>
-        </v-container>
+        <SideBar/>
       </div>
       <div class="w-20" id="list">
           <div class="active_user_head">
-            <h2>{{ appState == 'chats' ? 'Chats' : 'Active users' }}</h2>
+            <h2>{{ appState.activeTab == 'chats' ? 'Chats' : 'Active users' }}</h2>
           </div>
           <div class="chat_list">
-            <div v-if="appState == 'chats'">
-              <div v-for="item in 10">
-                <ChatListVue/>
+            <div v-if="appState.activeTab == 'chats'">
+              <div v-for="chat in chats.rooms">
+                <ChatListVue :chat="chat"/>
               </div>
             </div>
             <div v-else>
-                USERs
+              <div v-for="user in userStore.users">
+                <UserList :user="user"/>
+              </div>
             </div>
           </div>
       </div>
@@ -42,22 +35,67 @@
 
 
 <script setup>
-import { ref } from 'vue';
-import ChatListVue from '../components/ChatList.vue';
+  import { onMounted } from 'vue';
+  import ChatListVue from '../components/ChatList.vue';
+  import SideBar from '../components/SideBar.vue';
+  import ChitChatServices from '../services/ChitChatServices';
+  import { useAppStore } from '../stores/app';
+  import { useChatStore } from '../stores/chat';
+  import { useUserStore } from '../stores/user';
+  import UserList from '../components/UserList.vue';
+  import pusher from '../pusher';
+  import { getUser } from '../authentication/auth';
 
-const appState = ref('chats')
+  const chats = useChatStore()
+  const appState = useAppStore()
+  const userStore = useUserStore()
 
-const changeAppState = (state) => {
-  appState.value = state
-}
+  var channel = pusher.subscribe('chitchat');
+  channel.bind('online', function(data) {
+    userStore.updateUserStatus(data.data)
+  });
+
+  const getChatRooms = async () => {
+    try {
+      const result = await ChitChatServices.getChatRooms()
+      chats.addChats(result.data.data)
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
+
+  const getUsers = async () => {
+    try {
+      const result = await ChitChatServices.getUsers()
+      userStore.getUsers(result.data)
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
+
+  const getUserInfo = async () => {
+    const user = await getUser()
+    userStore.getUserInfo(user)
+  }
+
+  onMounted(() => {
+    getUserInfo()
+    getChatRooms()
+    getUsers()
+  })
 </script>
 
 <style scoped>
+  .header{
+    padding: 20px 130px;
+    text-align: right;
+    background-color: rgb(236, 236, 236);
+  }
   .wrapper{
     display: flex;
     height: 100vh;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     background-color: rgb(236, 236, 236);
   }
   .content{

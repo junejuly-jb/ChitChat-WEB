@@ -1,36 +1,29 @@
 <template>
-    <div class="main_chat">
-        <div class="chat_wrapper">
+    <div class="main_user">
+        <div class="user_wrapper">
             <div class="avatar">
-                <v-avatar color="grey" size="large">{{ chat.user.initials }}</v-avatar>
+                <v-avatar color="grey" size="large">{{ user.initials }}</v-avatar>
             </div>
             <div style="width: 15px;"></div>
             <div class="content">
-                <h5>{{ chat.user.name }}</h5>
-                <div><small>{{ trim(chat.message) }}</small></div>
+                <h5>{{ user.name }}</h5>
+                <div><small>{{ user.isOnline ? 'active now' : 'inactive' }}</small></div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
-    import { ref } from 'vue';
-    defineProps(['chat'])
-
-    const trim = (string) => {
-        let newString = string.substring(0, 25)
-        newString = string.length <= 25 ? newString : newString+'...'
-        return newString
-    }
+    defineProps(['user'])
 </script>
 <style scoped>
-    .main_chat{
+    .main_user{
         /* background-color: dodgerblue; */
         border-radius: 20px;
         transition: 400ms;
         padding: 0px 15px;
         margin: 0px 5px;
     }
-    .chat_wrapper{
+    .user_wrapper{
         display: flex;
         align-items: center;
         padding: 10px 5px;

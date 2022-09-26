@@ -13,5 +13,18 @@ const apiClient = axios.create({
 export default {
     login(payload){
         return apiClient.post('/login', payload)
+    },
+    logout(){
+        return apiClient.post('/logout', {}, { headers: { 'Authorization': 'Bearers ' + getToken() }})
+    },
+    getChatRooms(){
+        return apiClient.get('/chatrooms', {
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        })
+    },
+    getUsers(){
+        return apiClient.get('/users', {
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        })
     }
 }

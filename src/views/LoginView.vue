@@ -32,6 +32,14 @@
                                                 type="password"
                                                 v-model="login_password"
                                             />
+                                            <v-alert
+                                            density="compact"
+                                            type="error"
+                                            :model-value="hasError"
+                                            >
+                                                {{ errorMessage }}
+                                            </v-alert>
+
                                             <div>
                                                 <div class="py-5">
                                                     <span class="red">Forgot password</span>
@@ -177,7 +185,7 @@
 <script setup>
 import { ref } from 'vue';
 import ChitChatServices from '../services/ChitChatServices';
-import { setToken } from '../authentication/auth';
+import { setToken, setUser } from '../authentication/auth';
 import { useRouter } from 'vue-router';
 
     const step = ref(1)
@@ -185,17 +193,21 @@ import { useRouter } from 'vue-router';
     const login_password = ref('')
     const isLoading = ref(false)
     const router = useRouter()
+    const errorMessage = ref('')
+    const hasError = ref(false)
 
     const handleLogin = async () => {
         isLoading.value = true
-        const result = await ChitChatServices.login({email: login_email.value, password: login_password.value})
-        isLoading.value = false;
-        if (result.data.success) {
-            let self = this
+        try {
+            const result = await ChitChatServices.login({email: login_email.value, password: login_password.value})
             setToken(result.data.token, result.data.expiration)
+            setUser({ _id: result.data.user._id, name: result.data.user.name })
             router.push({ path: '/home', replace: true })
+        } catch (error) {
+            hasError.value = true
+            errorMessage.value = error.message
         }
-        console.log(result.data)
+        isLoading.value = false;
     }
 </script>
 
