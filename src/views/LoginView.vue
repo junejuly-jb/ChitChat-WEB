@@ -32,14 +32,6 @@
                                                 type="password"
                                                 v-model="login_password"
                                             />
-                                            <v-alert
-                                            dismissable="true"
-                                            type="error"
-                                            :model-value="hasError"
-                                            >
-                                                {{ errorMessage }}
-                                            </v-alert>
-
                                             <div>
                                                 <div class="py-5">
                                                     <span class="red">Forgot password</span>
@@ -57,19 +49,6 @@
                                                     ></v-progress-circular>
                                                 </div>
                                             </v-btn>
-                                
-                                            <h5 class="text-center  grey--text mt-4 mb-3">Or Log in using</h5>
-                                            <div class="d-flex  justify-space-between align-center mx-10 mb-16">
-                                                <v-btn depressed outlined>
-                                                    <v-icon color="red">fa fa-google</v-icon>
-                                                </v-btn>
-                                                <v-btn depressed outlined>
-                                                    <v-icon color="blue">fa fa-facebook-f</v-icon>
-                                                </v-btn>
-                                                <v-btn depressed outlined>
-                                                    <v-icon color="light-blue lighten-3">fa fa-twitter</v-icon>
-                                                </v-btn>
-                                            </div>
                                         </v-col>
                                     </v-row>  
                                 </v-card-text>
@@ -168,21 +147,6 @@
                                 />
                                 <div class="py-5"></div>
                                 <v-btn @click="handleSignUp" color="blue" dark block tile>Sign up</v-btn>
-                            
-                                <h5
-                                class="text-center  grey--text mt-4 mb-3"
-                                >Or Sign up using</h5>
-                                <div class="d-flex  justify-space-between align-center mx-10 mb-11">
-                                <v-btn depressed outlined>
-                                <v-icon color="red">fa fa-google</v-icon>
-                                </v-btn>
-                                <v-btn depressed outlined>
-                                <v-icon color="blue">fa fa-facebook</v-icon>
-                                </v-btn>
-                                <v-btn depressed outlined>
-                                <v-icon color="light-blue lighten-3">fa fa-twitter</v-icon>
-                                </v-btn>
-                                </div>
                                 </v-col>
                                 </v-row>  
                             </v-card-text>
@@ -194,6 +158,15 @@
             </v-col>
         </v-row>
     </v-container>
+    <v-alert
+    closable
+    :type="alertType"
+    :model-value="hasError"
+    transition="scale-transition"
+    @input="onCloseAlert"
+    >
+        {{ errorMessage }}
+    </v-alert>
 </template>
 <script setup>
 import { ref } from 'vue';
@@ -211,8 +184,14 @@ import { useRouter } from 'vue-router';
     const reg_conpassword = ref('')
     const isLoading = ref(false)
     const router = useRouter()
-    const errorMessage = ref('Test err message')
-    const hasError = ref(true)
+    const errorMessage = ref('')
+    const hasError = ref(false)
+    const alertType= ref('error')
+
+    const onCloseAlert = () => {
+        hasError.value = false
+        errorMessage.value = ''
+    }
 
     const handleLogin = async () => {
         isLoading.value = true
@@ -223,7 +202,8 @@ import { useRouter } from 'vue-router';
             router.push({ path: '/home', replace: true })
         } catch (error) {
             hasError.value = true
-            errorMessage.value = error.message
+            alertType.value = 'error'
+            errorMessage.value = error.response.data.message
         }
         isLoading.value = false;
     }
@@ -237,9 +217,19 @@ import { useRouter } from 'vue-router';
                 password: reg_password.value,
                 confirmPassword: reg_conpassword.value
             })
-            console.log(result)
+            alertType.value = 'success'
+            hasError.value = true
+            errorMessage.value = result.data.message
+            setTimeout( () => {
+                onCloseAlert()
+            }, 1500)
         } catch (error) {
-            console.log(error.message)
+            hasError.value = true
+            alertType.value = 'error'
+            errorMessage.value = error.response.data.message
+            setTimeout( () => {
+                onCloseAlert()
+            }, 1500)
         }
         isLoading.value = false;
     }
