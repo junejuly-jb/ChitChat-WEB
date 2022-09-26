@@ -26,5 +26,10 @@ export default {
         return apiClient.get('/users', {
             headers: { 'Authorization': 'Bearer ' + getToken() }
         })
+    },
+    getMessages(payload){
+        return apiClient.get('/message/' + payload, {
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        })
     }
 }

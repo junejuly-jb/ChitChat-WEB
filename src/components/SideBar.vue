@@ -13,10 +13,10 @@ import { useUserStore } from '../stores/user';
     const errDialog = ref(false)
     const router = useRouter();
 
-    var channel = pusher.subscribe('chitchat');
-    channel.bind('offline', function(data) {
-        userStore.updateUserStatus(data.data)
-    });
+    // var channel = pusher.subscribe('chitchat');
+    // channel.bind('offline', function(data) {
+    //     userStore.updateUserStatus(data.data)
+    // });
 
     const onSignOut = async () => {
         try {

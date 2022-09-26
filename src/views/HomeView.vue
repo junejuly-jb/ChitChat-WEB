@@ -24,7 +24,9 @@
             </div>
           </div>
       </div>
-      <div class="w-70" id="chat">3</div>
+      <div class="w-70" id="chat">
+        <Messages v-if="Object.keys(chats.selectedChat).length != '0'"/>
+      </div>
     </div>
   </div>
   <!-- <div class="main_wrapper d-flex">
@@ -45,15 +47,16 @@
   import UserList from '../components/UserList.vue';
   import pusher from '../pusher';
   import { getUser } from '../authentication/auth';
+import Messages from '../components/Messages.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
   const userStore = useUserStore()
 
-  var channel = pusher.subscribe('chitchat');
-  channel.bind('online', function(data) {
-    userStore.updateUserStatus(data.data)
-  });
+  // var channel = pusher.subscribe('chitchat');
+  // channel.bind('online', function(data) {
+  //   userStore.updateUserStatus(data.data)
+  // });
 
   const getChatRooms = async () => {
     try {
@@ -82,6 +85,7 @@
     getUserInfo()
     getChatRooms()
     getUsers()
+    console.log(Object.keys(chats.selectedChat).length)
   })
 </script>
 
