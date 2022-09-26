@@ -33,7 +33,7 @@
                                                 v-model="login_password"
                                             />
                                             <v-alert
-                                            density="compact"
+                                            dismissable="true"
                                             type="error"
                                             :model-value="hasError"
                                             >
@@ -125,6 +125,7 @@
                                     color="blue"
                                     autocomplete="false"
                                     class="mt-4"
+                                    v-model="reg_fname"
                                 />
                                     </v-col>
                                     <v-col cols="12" sm="6">
@@ -135,6 +136,7 @@
                                     color="blue"
                                     autocomplete="false"
                                     class="mt-4"
+                                    v-model="reg_lname"
                                 />
                                     </v-col>
                                     </v-row>
@@ -144,6 +146,7 @@
                                     dense
                                     color="blue"
                                     autocomplete="false"
+                                    v-model="reg_email"
                                 />
                                 <v-text-field
                                     label="Password"
@@ -152,9 +155,19 @@
                                     color="blue"
                                     autocomplete="false"
                                     type="password"
+                                    v-model="reg_password"
+                                />
+                                <v-text-field
+                                    label="Confirm Password"
+                                    outlined
+                                    dense
+                                    color="blue"
+                                    autocomplete="false"
+                                    type="password"
+                                    v-model="reg_conpassword"
                                 />
                                 <div class="py-5"></div>
-                                <v-btn color="blue" dark block tile>Sign up</v-btn>
+                                <v-btn @click="handleSignUp" color="blue" dark block tile>Sign up</v-btn>
                             
                                 <h5
                                 class="text-center  grey--text mt-4 mb-3"
@@ -191,10 +204,15 @@ import { useRouter } from 'vue-router';
     const step = ref(1)
     const login_email = ref('')
     const login_password = ref('')
+    const reg_fname = ref('')
+    const reg_lname = ref('')
+    const reg_email = ref('')
+    const reg_password = ref('')
+    const reg_conpassword = ref('')
     const isLoading = ref(false)
     const router = useRouter()
-    const errorMessage = ref('')
-    const hasError = ref(false)
+    const errorMessage = ref('Test err message')
+    const hasError = ref(true)
 
     const handleLogin = async () => {
         isLoading.value = true
@@ -206,6 +224,22 @@ import { useRouter } from 'vue-router';
         } catch (error) {
             hasError.value = true
             errorMessage.value = error.message
+        }
+        isLoading.value = false;
+    }
+
+    const handleSignUp = async () => {
+        isLoading.value = true
+        try {
+            const result = await ChitChatServices.register({
+                name: reg_fname.value + ' ' + reg_lname.value,
+                email: reg_email.value,
+                password: reg_password.value,
+                confirmPassword: reg_conpassword.value
+            })
+            console.log(result)
+        } catch (error) {
+            console.log(error.message)
         }
         isLoading.value = false;
     }
@@ -221,6 +255,14 @@ import { useRouter } from 'vue-router';
 
     .text_blue{
         color: dodgerblue;
+    }
+
+    .v-alert {
+        position: fixed;
+        left: 50%;
+        bottom: 50px;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
     }
 </style>
   

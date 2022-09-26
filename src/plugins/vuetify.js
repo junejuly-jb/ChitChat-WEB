@@ -10,6 +10,7 @@ import { mdi } from 'vuetify/iconsets/mdi'
 export default createVuetify({
   icons: {
     defaultSet: 'fa',
+    iconFont: 'md',
     aliases,
     sets: {
       fa, mdi
