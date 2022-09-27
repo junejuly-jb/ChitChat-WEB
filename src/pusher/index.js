@@ -7,12 +7,21 @@ const getToken = function () {
     return token
 }
 
-const pusher = new Pusher('d592de80e72c6fe09431', {
-    cluster: 'ap1',
-    authEndpoint: 'http://localhost:5050/api/v1/pusher/user-auth'
-    // channelAuthorization: {
-    //     authEndpoint: 'http:localhost:5050/api/v1/pusher/user-auth'
-    // }
-});
+const pusherInstance = (token) => {
+    const pusher = new Pusher('d592de80e72c6fe09431', {
+        cluster: 'ap1',
+        authEndpoint: 'http://localhost:5050/api/v1/pusher/user-auth',
+        auth: {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        }
+        // channelAuthorization: {
+        //     authEndpoint: 'http:localhost:5050/api/v1/pusher/user-auth'
+        // }
+    });
 
-export default pusher
+    return pusher
+}
+
+export default pusherInstance

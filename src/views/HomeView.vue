@@ -38,7 +38,7 @@
 
 
 <script setup>
-  import { onBeforeUnmount, onMounted } from 'vue';
+  import { onBeforeUnmount, onMounted, ref } from 'vue';
   import ChatListVue from '../components/ChatList.vue';
   import SideBar from '../components/SideBar.vue';
   import ChitChatServices from '../services/ChitChatServices';
@@ -46,13 +46,14 @@
   import { useChatStore } from '../stores/chat';
   import { useUserStore } from '../stores/user';
   import UserList from '../components/UserList.vue';
-  import pusher from '../pusher';
-  import { getUser } from '../authentication/auth';
+  import pusherInstance from '../pusher';
+  import { getUser, getToken } from '../authentication/auth';
   import Messages from '../components/Messages.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
   const userStore = useUserStore()
+  const hello = ref('test only')
 
   // var channel = pusher.subscribe('chitchat');
   // channel.bind('pusher:subscription_count', function(data) {
@@ -62,20 +63,23 @@
   //   console.log(channel.subscription_count)
   // });
 
-  // var channel = pusher.subscribe('chitchat');
   
-  // var presenceChannel = pusher.subscribe('presence-online')
-  // presenceChannel.bind("pusher:member_added", (members) => {
-  //   console.log('added' + JSON.stringify(members, null, 2))
-  // });
+  // var channel = pusher.subscribe('chitchat');
+  const pusher = pusherInstance(getToken())
+  console.log(pusher)
 
-  // presenceChannel.bind("pusher:subscription_succeeded", (members) => {
-  //   console.log('sub success' + JSON.stringify(members, null, 2))
-  // });
+  var presenceChannel = pusher.subscribe('presence-online')
+  presenceChannel.bind("pusher:member_added", (members) => {
+    console.log('added' + JSON.stringify(members, null, 2))
+  });
 
-  // presenceChannel.bind("pusher:member_removed", (members) => {
-  //   console.log('removed' + JSON.stringify(members, null, 2))
-  // });
+  presenceChannel.bind("pusher:subscription_succeeded", (members) => {
+    console.log('sub success' + JSON.stringify(members, null, 2))
+  });
+
+  presenceChannel.bind("pusher:member_removed", (members) => {
+    console.log('removed' + JSON.stringify(members, null, 2))
+  });
 
   const getChatRooms = async () => {
     try {

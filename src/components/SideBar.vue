@@ -1,12 +1,12 @@
 <script setup>
 import { ref } from 'vue';
 import { useAppStore } from '../stores/app';
-import { destroyToken, removeUser } from '../authentication/auth'
+import { destroyToken, removeUser, getToken } from '../authentication/auth'
 import { useRouter } from 'vue-router';
 import ChitChatServices from '../services/ChitChatServices';
-import pusher from '../pusher';
 import { useUserStore } from '../stores/user';
-
+import pusherInstance from '../pusher';
+// import Pusher from 'pusher-js'
     const appState = useAppStore()
     const userStore = useUserStore()
     const dialog = ref(false)
@@ -18,16 +18,30 @@ import { useUserStore } from '../stores/user';
     //     userStore.updateUserStatus(data.data)
     // });
 
+    const pusher = pusherInstance(getToken())
+    const presenceChannel = pusher.subscribe('presence-online')
+  
+    //TODO: TRY THE EMIT FUNCTION
     const onSignOut = async () => {
-        try {
-            await ChitChatServices.logout()
-            destroyToken()
-            removeUser()
-            router.push({ path: '/', replace: true })
-            pusher.unsubscribe('presence-online')
-        } catch (error) {
-            errDialog.value = true
-        }
+      pusher.unsubscribe('presence-online')
+      presenceChannel.unbind()
+      console.log(pusher)
+      destroyToken()
+      removeUser()
+      router.push({ path: '/', replace: true })
+        // try {
+          
+
+        //     // await ChitChatServices.logout()
+        //     // destroyToken()
+        //     // removeUser()
+        //     // router.push({ path: '/', replace: true })
+        //     // pusher.unsubscribe('presence-online')
+        //     // pusher.unbind('presence-online')
+        //     // pusher.disconnect()
+        // } catch (error) {
+        //     errDialog.value = true
+        // }
         
     }
 
