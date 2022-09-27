@@ -34,5 +34,9 @@ export default {
         return apiClient.get('/message/' + payload, {
             headers: { 'Authorization': 'Bearer ' + getToken() }
         })
+    },
+
+    test(payload){
+        return apiClient.post('/test', payload)
     }
 }

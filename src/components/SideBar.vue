@@ -34,15 +34,15 @@ import { useUserStore } from '../stores/user';
 <template>
     <v-container class="text-center">
         <div>
-            <v-icon @click="appState.changeAppState('users')" :color="appState.activeTab == 'users' ? 'blue' : 'grey'" size="20">fa fa-users</v-icon>
+            <v-icon @click="appState.changeAppState('users')" :color="appState.activeTab == 'users' ? 'blue' : 'grey'" size="20" icon="mdi-account-multiple"></v-icon>
         </div>
         <div class="py-5"></div>
         <div>
-            <v-icon @click="appState.changeAppState('chats')" :color="appState.activeTab == 'chats' ? 'blue' : 'grey'" size="20">fa fa-comments</v-icon>
+            <v-icon @click="appState.changeAppState('chats')" :color="appState.activeTab == 'chats' ? 'blue' : 'grey'" size="20" icon="mdi-chat"></v-icon>
         </div>
         <div class="py-5"></div>
         <div>
-            <v-icon @click="dialog = true" color="grey" size="20">fa fa-sign-out</v-icon>
+            <v-icon @click="dialog = true" color="grey" size="20" icon="mdi-logout"></v-icon>
         </div>
     </v-container>
     <v-dialog

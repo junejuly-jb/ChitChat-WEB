@@ -6,6 +6,7 @@
     <div class="content d-flex">
       <div id="pref">
         <SideBar/>
+        <button @click="leaving">test</button>
       </div>
       <div class="w-20" id="list">
           <div class="active_user_head">
@@ -37,7 +38,7 @@
 
 
 <script setup>
-  import { onMounted } from 'vue';
+  import { onBeforeUnmount, onMounted } from 'vue';
   import ChatListVue from '../components/ChatList.vue';
   import SideBar from '../components/SideBar.vue';
   import ChitChatServices from '../services/ChitChatServices';
@@ -47,16 +48,35 @@
   import UserList from '../components/UserList.vue';
   import pusher from '../pusher';
   import { getUser } from '../authentication/auth';
-import Messages from '../components/Messages.vue';
+  import Messages from '../components/Messages.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
   const userStore = useUserStore()
 
   // var channel = pusher.subscribe('chitchat');
-  // channel.bind('online', function(data) {
-  //   userStore.updateUserStatus(data.data)
+  // channel.bind('pusher:subscription_count', function(data) {
+  //   // userStore.updateUserStatus(data.data)
+  //   console.log(data.subscription_count)
+  //   console.log(data)
+  //   console.log(channel.subscription_count)
   // });
+
+  // var channel = pusher.subscribe('chitchat');
+  var presenceChannel = pusher.subscribe('presence-online')
+  presenceChannel.bind('presence-online')
+
+  presenceChannel.bind("pusher:member_added", (members) => {
+    console.log('added' + JSON.stringify(members, null, 2))
+  });
+
+  presenceChannel.bind("pusher:subscription_succeeded", (members) => {
+    console.log('sub success' + JSON.stringify(members, null, 2))
+  });
+
+  presenceChannel.bind("pusher:member_removed", (members) => {
+    console.log('removed' + JSON.stringify(members, null, 2))
+  });
 
   const getChatRooms = async () => {
     try {
@@ -81,11 +101,18 @@ import Messages from '../components/Messages.vue';
     userStore.getUserInfo(user)
   }
 
+  const leaving = () => {
+    console.log('test')
+    ChitChatServices.test()
+  }
+
+ 
+  
+
   onMounted(() => {
     getUserInfo()
     getChatRooms()
     getUsers()
-    console.log(Object.keys(chats.selectedChat).length)
   })
 </script>
 
