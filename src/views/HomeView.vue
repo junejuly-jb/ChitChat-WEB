@@ -63,20 +63,19 @@
   // });
 
   // var channel = pusher.subscribe('chitchat');
-  var presenceChannel = pusher.subscribe('presence-online')
-  presenceChannel.bind('presence-online')
+  
+  // var presenceChannel = pusher.subscribe('presence-online')
+  // presenceChannel.bind("pusher:member_added", (members) => {
+  //   console.log('added' + JSON.stringify(members, null, 2))
+  // });
 
-  presenceChannel.bind("pusher:member_added", (members) => {
-    console.log('added' + JSON.stringify(members, null, 2))
-  });
+  // presenceChannel.bind("pusher:subscription_succeeded", (members) => {
+  //   console.log('sub success' + JSON.stringify(members, null, 2))
+  // });
 
-  presenceChannel.bind("pusher:subscription_succeeded", (members) => {
-    console.log('sub success' + JSON.stringify(members, null, 2))
-  });
-
-  presenceChannel.bind("pusher:member_removed", (members) => {
-    console.log('removed' + JSON.stringify(members, null, 2))
-  });
+  // presenceChannel.bind("pusher:member_removed", (members) => {
+  //   console.log('removed' + JSON.stringify(members, null, 2))
+  // });
 
   const getChatRooms = async () => {
     try {

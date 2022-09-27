@@ -24,6 +24,7 @@ import { useUserStore } from '../stores/user';
             destroyToken()
             removeUser()
             router.push({ path: '/', replace: true })
+            pusher.unsubscribe('presence-online')
         } catch (error) {
             errDialog.value = true
         }

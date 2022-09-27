@@ -173,6 +173,7 @@ import { ref } from 'vue';
 import ChitChatServices from '../services/ChitChatServices';
 import { setToken, setUser } from '../authentication/auth';
 import { useRouter } from 'vue-router';
+import pusher from '../pusher';
 
     const step = ref(1)
     const login_email = ref('')
@@ -199,8 +200,13 @@ import { useRouter } from 'vue-router';
             const result = await ChitChatServices.login({email: login_email.value, password: login_password.value})
             setToken(result.data.token, result.data.expiration)
             setUser({ _id: result.data.user._id, name: result.data.user.name })
+            pusher.authEndpoint = 'http://localhost:5050/api/v1/pusher/user-auth'
+            pusher.auth.headers.Authorization = 'Bearer ' + localStorage.getItem('token')
+            var presenceChannel = pusher.subscribe('presence-online')
+            presenceChannel.bind('presence-online')
             router.push({ path: '/home', replace: true })
         } catch (error) {
+            console.log(error)
             hasError.value = true
             alertType.value = 'error'
             errorMessage.value = error.response.data.message

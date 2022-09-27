@@ -3,7 +3,7 @@ export const setToken = (token, expiration) => {
     localStorage.setItem('expiration', expiration)
 }
 
-const getToken = () => {
+export const getToken = () => {
     const token = localStorage.getItem('token')
     const expiration = localStorage.getItem('expiration')
     if (!token || !expiration)
