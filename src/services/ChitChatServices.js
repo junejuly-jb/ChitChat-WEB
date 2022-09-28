@@ -17,8 +17,8 @@ export default {
     register(payload){
         return apiClient.post('/register', payload)
     },
-    logout(){
-        return apiClient.post('/logout', {}, { headers: { 'Authorization': 'Bearers ' + getToken() }})
+    logout(payload){
+        return apiClient.post('/logout/'+payload, {}, { headers: { 'Authorization': 'Bearers ' + getToken() }})
     },
     getChatRooms(){
         return apiClient.get('/chatrooms', {
@@ -35,8 +35,4 @@ export default {
             headers: { 'Authorization': 'Bearer ' + getToken() }
         })
     },
-
-    test(payload){
-        return apiClient.post('/test', payload)
-    }
 }

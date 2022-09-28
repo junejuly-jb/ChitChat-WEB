@@ -5,8 +5,7 @@
   <div class="wrapper">
     <div class="content d-flex">
       <div id="pref">
-        <SideBar/>
-        <button @click="leaving">test</button>
+        <SideBar @onSignout="signout"/>
       </div>
       <div class="w-20" id="list">
           <div class="active_user_head">
@@ -38,7 +37,7 @@
 
 
 <script setup>
-  import { onBeforeUnmount, onMounted, ref } from 'vue';
+  import { onMounted } from 'vue';
   import ChatListVue from '../components/ChatList.vue';
   import SideBar from '../components/SideBar.vue';
   import ChitChatServices from '../services/ChitChatServices';
@@ -47,13 +46,14 @@
   import { useUserStore } from '../stores/user';
   import UserList from '../components/UserList.vue';
   import pusherInstance from '../pusher';
-  import { getUser, getToken } from '../authentication/auth';
+  import { getUser, getToken, removeUser, destroyToken } from '../authentication/auth';
   import Messages from '../components/Messages.vue';
+  import { useRouter } from 'vue-router';
 
   const chats = useChatStore()
   const appState = useAppStore()
   const userStore = useUserStore()
-  const hello = ref('test only')
+  const router = useRouter()
 
   // var channel = pusher.subscribe('chitchat');
   // channel.bind('pusher:subscription_count', function(data) {
@@ -63,22 +63,27 @@
   //   console.log(channel.subscription_count)
   // });
 
-  
-  // var channel = pusher.subscribe('chitchat');
   const pusher = pusherInstance(getToken())
-  console.log(pusher)
-
+  
   var presenceChannel = pusher.subscribe('presence-online')
-  presenceChannel.bind("pusher:member_added", (members) => {
-    console.log('added' + JSON.stringify(members, null, 2))
+  presenceChannel.bind('presence-online')
+
+  presenceChannel.bind("pusher:member_added", (member) => {
+    console.log('added' + JSON.stringify(member, null, 2))
+    userStore.updateUserStatus({ _id: member.id, isOnline: true })
   });
 
   presenceChannel.bind("pusher:subscription_succeeded", (members) => {
     console.log('sub success' + JSON.stringify(members, null, 2))
+    members.each((member) => {
+      userStore.updateUserStatus({ _id: member.id, isOnline: true })
+    });
   });
 
-  presenceChannel.bind("pusher:member_removed", (members) => {
-    console.log('removed' + JSON.stringify(members, null, 2))
+  presenceChannel.bind("pusher:member_removed", async (member) => {
+    const user = await ChitChatServices.logout(member.id)
+    console.log(user.data)
+    userStore.updateUserStatus({ _id: member.id, isOnline: false, updatedAt: user.data.updatedAt })
   });
 
   const getChatRooms = async () => {
@@ -88,6 +93,13 @@
     } catch (error) {
       console.log(error.response)
     }
+  }
+
+  const signout = async () => {
+    pusher.unsubscribe('presence-online')
+    removeUser()
+    destroyToken()
+    router.push({ path: '/', replace: true })
   }
 
   const getUsers = async () => {
@@ -103,13 +115,6 @@
     const user = await getUser()
     userStore.getUserInfo(user)
   }
-
-  const leaving = () => {
-    console.log('test')
-    ChitChatServices.test()
-  }
-
- 
   
 
   onMounted(() => {

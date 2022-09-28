@@ -1,50 +1,10 @@
 <script setup>
 import { ref } from 'vue';
 import { useAppStore } from '../stores/app';
-import { destroyToken, removeUser, getToken } from '../authentication/auth'
-import { useRouter } from 'vue-router';
-import ChitChatServices from '../services/ChitChatServices';
-import { useUserStore } from '../stores/user';
-import pusherInstance from '../pusher';
-// import Pusher from 'pusher-js'
-    const appState = useAppStore()
-    const userStore = useUserStore()
-    const dialog = ref(false)
-    const errDialog = ref(false)
-    const router = useRouter();
-
-    // var channel = pusher.subscribe('chitchat');
-    // channel.bind('offline', function(data) {
-    //     userStore.updateUserStatus(data.data)
-    // });
-
-    const pusher = pusherInstance(getToken())
-    const presenceChannel = pusher.subscribe('presence-online')
-  
-    //TODO: TRY THE EMIT FUNCTION
-    const onSignOut = async () => {
-      pusher.unsubscribe('presence-online')
-      presenceChannel.unbind()
-      console.log(pusher)
-      destroyToken()
-      removeUser()
-      router.push({ path: '/', replace: true })
-        // try {
-          
-
-        //     // await ChitChatServices.logout()
-        //     // destroyToken()
-        //     // removeUser()
-        //     // router.push({ path: '/', replace: true })
-        //     // pusher.unsubscribe('presence-online')
-        //     // pusher.unbind('presence-online')
-        //     // pusher.disconnect()
-        // } catch (error) {
-        //     errDialog.value = true
-        // }
-        
-    }
-
+  const emit = defineEmits(['onSignout'])
+  const appState = useAppStore()
+  const dialog = ref(false)
+  const errDialog = ref(false)
 </script>
 <template>
     <v-container class="text-center">
@@ -69,7 +29,7 @@ import pusherInstance from '../pusher';
         <v-card-text>Do you want to log out?</v-card-text>
         <v-card-actions>
           <v-btn color="primary" @click="dialog = false">Close</v-btn>
-          <v-btn color="error" @click="onSignOut">Logout</v-btn>
+          <v-btn color="error" @click="() => emit('onSignout')">Logout</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

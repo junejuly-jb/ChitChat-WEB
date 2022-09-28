@@ -200,9 +200,6 @@ import pusherInstance from '../pusher';
             const result = await ChitChatServices.login({email: login_email.value, password: login_password.value})
             setToken(result.data.token, result.data.expiration)
             setUser({ _id: result.data.user._id, name: result.data.user.name })
-            const pusher = pusherInstance(getToken())
-            var presenceChannel = pusher.subscribe('presence-online')
-            presenceChannel.bind('presence-online')
             router.push({ path: '/home', replace: true })
         } catch (error) {
             console.log(error)

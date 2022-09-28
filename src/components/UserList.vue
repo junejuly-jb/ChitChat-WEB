@@ -2,18 +2,29 @@
     <div class="main_user">
         <div class="user_wrapper">
             <div class="avatar">
-                <v-avatar color="grey" size="large">{{ user.initials }}</v-avatar>
+                <v-avatar color="grey" size="large">{{ user.user.initials }}</v-avatar>
             </div>
             <div style="width: 15px;"></div>
             <div class="content">
-                <h5>{{ user.name }}</h5>
-                <div><small>{{ user.isOnline ? 'active now' : 'inactive' }}</small></div>
+                <h5>{{ user.user.name }}</h5>
+                <div><i><small>{{ user.user.isOnline ? 'active now' : timeAgo }}</small></i></div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
-    defineProps(['user'])
+    import { ref } from 'vue'
+    import { format } from 'timeago.js'
+    const user = defineProps(['user'])
+
+    const time = user.user.updatedAt
+    const timeAgo = ref(format(time, 'en_US'))
+    console.log('rerun')
+    setInterval( () => {
+        timeAgo.value = format(time, 'en_US')
+        console.log(timeAgo.value)
+    },5000)
+                                 
 </script>
 <style scoped>
     .main_user{

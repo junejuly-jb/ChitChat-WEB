@@ -19,9 +19,12 @@ export const useUserStore = defineStore({
       this.users.map( el => {
         if(el._id == payload._id){
           el.isOnline = payload.isOnline
+          if('updatedAt' in el){
+            el.updatedAt = payload.updatedAt
+          }
         }
       })
-    }
+    },
   },
 
   // getters: {
