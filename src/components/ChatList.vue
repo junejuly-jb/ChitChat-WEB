@@ -1,11 +1,10 @@
 <template>
     <div @click="selectChatRoom(chat)" class="main_chat" :class="chatStore.selectedChat._id == chat._id ? 'active' : ''">
         <div class="chat_wrapper">
-            <!-- <div class="avatar"> -->
-                <v-badge color="green-darken-1" dot offset-y="35" :offset-x="5">
-                    <v-avatar color="grey-lighten-1" size="large">{{ chat.user.initials }}</v-avatar>
-                </v-badge>
-            <!-- </div> -->
+            <v-badge color="green-darken-1" dot offset-y="35" :offset-x="5" v-if="getStatus(chat.user._id)"> 
+                <v-avatar color="grey" size="large">{{ chat.user.initials }}</v-avatar>
+            </v-badge>
+            <v-avatar color="grey" size="large" v-else>{{ chat.user.initials }}</v-avatar>
             <div style="width: 15px;"></div>
             <div class="content">
                 <h5>{{ chat.user.name }}</h5>
@@ -16,10 +15,12 @@
 </template>
 <script setup>
     import ChitChatServices from '../services/ChitChatServices';
-import { useChatStore } from '../stores/chat';
+    import { useChatStore } from '../stores/chat';
+    import { useUserStore } from '../stores/user';
     defineProps(['chat'])
 
     const chatStore = useChatStore()
+    const userStore = useUserStore()
 
     const trim = (string) => {
         let newString = string.substring(0, 25)
@@ -29,9 +30,15 @@ import { useChatStore } from '../stores/chat';
 
     const selectChatRoom = async (chat) => {
         chatStore.setSelectedChat(chat)
-        const result = await ChitChatServices.getMessages(chat._id)
-        console.log(result);
+        // const result = await ChitChatServices.getMessages(chat._id)
+        // console.log(result);
     }
+
+    const getStatus = (user_id) => {
+        const user = userStore.getUserOnlineStatus(user_id)
+        return user.isOnline
+    }
+    
 </script>
 <style scoped>
     .main_chat{

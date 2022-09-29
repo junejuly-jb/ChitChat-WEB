@@ -7,24 +7,13 @@
             <div style="width: 15px;"></div>
             <div class="content">
                 <h5>{{ user.user.name }}</h5>
-                <div><i><small>{{ user.user.isOnline ? 'active now' : timeAgo }}</small></i></div>
+                <div><i><small>{{ user.user.isOnline ? 'active now' : 'inactive' }}</small></i></div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
-    import { ref } from 'vue'
-    import { format } from 'timeago.js'
-    const user = defineProps(['user'])
-
-    const time = user.user.updatedAt
-    const timeAgo = ref(format(time, 'en_US'))
-    console.log('rerun')
-    setInterval( () => {
-        timeAgo.value = format(time, 'en_US')
-        console.log(timeAgo.value)
-    },5000)
-                                 
+    const user = defineProps(['user'])                             
 </script>
 <style scoped>
     .main_user{

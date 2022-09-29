@@ -9,27 +9,32 @@ export const useUserStore = defineStore({
   }),
 
   actions: {
-    getUsers(payload){
-      this.users = payload
+    setUsers(payload){
+      // this.users = payload
+      payload.map( el => {
+        el.isOnline = false
+        this.users.push(el)
+      })
     },
-    getUserInfo(payload){
+    setUserInfo(payload){
       this.user = payload
     },
     updateUserStatus(payload){
       this.users.map( el => {
         if(el._id == payload._id){
           el.isOnline = payload.isOnline
-          if('updatedAt' in el){
-            el.updatedAt = payload.updatedAt
-          }
         }
       })
     },
+    removeState(){
+      this.users = []
+      this.user = {}
+    }
   },
 
-  // getters: {
-  //   getUserByName: (state) => {
-  //     return (payload) => state.users.filter( (el) => el.name.toLowerCase().includes(payload))
-  //   }
-  // }
+  getters:{
+    getUserOnlineStatus: (state) => {
+      return (payload) => state.users.find( el => el._id == payload)
+    }
+  }
 })

@@ -24,8 +24,10 @@
             </div>
           </div>
       </div>
-      <div class="w-70" id="chat">
-        <Messages v-if="Object.keys(chats.selectedChat).length != '0'"/>
+      <div id="chat" v-if="Object.keys(chats.selectedChat).length != '0'">
+        <MessageHeader/>
+        <Messages />
+        <Input/>
       </div>
     </div>
   </div>
@@ -47,8 +49,10 @@
   import UserList from '../components/UserList.vue';
   import pusherInstance from '../pusher';
   import { getUser, getToken, removeUser, destroyToken } from '../authentication/auth';
+  import MessageHeader from '../components/MessageHeader.vue';
   import Messages from '../components/Messages.vue';
   import { useRouter } from 'vue-router';
+  import Input from '../components/Input.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
@@ -81,9 +85,7 @@
   });
 
   presenceChannel.bind("pusher:member_removed", async (member) => {
-    const user = await ChitChatServices.logout(member.id)
-    console.log(user.data)
-    userStore.updateUserStatus({ _id: member.id, isOnline: false, updatedAt: user.data.updatedAt })
+    userStore.updateUserStatus({ _id: member.id, isOnline: false })
   });
 
   const getChatRooms = async () => {
@@ -99,13 +101,15 @@
     pusher.unsubscribe('presence-online')
     removeUser()
     destroyToken()
+    chats.onLogout()
+    userStore.removeState()
     router.push({ path: '/', replace: true })
   }
 
   const getUsers = async () => {
     try {
       const result = await ChitChatServices.getUsers()
-      userStore.getUsers(result.data)
+      userStore.setUsers(result.data)
     } catch (error) {
       console.log(error.response)
     }
@@ -113,14 +117,14 @@
 
   const getUserInfo = async () => {
     const user = await getUser()
-    userStore.getUserInfo(user)
+    userStore.setUserInfo(user)
   }
   
 
-  onMounted(() => {
+  onMounted( async () => {
     getUserInfo()
-    getChatRooms()
-    getUsers()
+    await getUsers()
+    await getChatRooms()
   })
 </script>
 

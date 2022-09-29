@@ -13,6 +13,10 @@ export const useChatStore = defineStore({
     },
     setSelectedChat(payload){
         this.selectedChat = payload
+    },
+    onLogout(){
+      this.rooms = []
+      this.selectedChat = {}
     }
   }
 })
