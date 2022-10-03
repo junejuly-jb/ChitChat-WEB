@@ -1,7 +1,12 @@
+<script setup>
+    import { useChatStore } from '../stores/chat';
+
+    const chatStore = useChatStore()
+</script>
 <template>
     <div class="input-wrapper">
         <v-container>
-            <input type="text"><v-btn color="blue">SEND</v-btn>
+            <input type="text"><v-btn color="blue" @click="chatStore.setChatState">SEND</v-btn>
         </v-container>
     </div>
 </template>

@@ -30,8 +30,8 @@
 
     const selectChatRoom = async (chat) => {
         chatStore.setSelectedChat(chat)
-        // const result = await ChitChatServices.getMessages(chat._id)
-        // console.log(result);
+        const result = await ChitChatServices.getMessages(chat._id)
+        chatStore.setMessages(result.data.data)
     }
 
     const getStatus = (user_id) => {

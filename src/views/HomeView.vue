@@ -26,7 +26,7 @@
       </div>
       <div id="chat" v-if="Object.keys(chats.selectedChat).length != '0'">
         <MessageHeader/>
-        <Messages />
+        <Messages :chatState="chats.chatState" v-if="chats.selectedChat.hasOwnProperty('messages')"/>
         <Input/>
       </div>
     </div>

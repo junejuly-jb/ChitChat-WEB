@@ -1,6 +1,6 @@
 import Pusher from 'pusher-js'
 
-Pusher.logToConsole = true;
+// Pusher.logToConsole = true;
 
 const getToken = function () {
     const token = localStorage.getItem('token')

@@ -4,7 +4,8 @@ export const useChatStore = defineStore({
   id: 'chat',
   state: () => ({
     rooms: [],
-    selectedChat: {}
+    selectedChat: {},
+    chatState: false
   }),
 
   actions: {
@@ -17,6 +18,12 @@ export const useChatStore = defineStore({
     onLogout(){
       this.rooms = []
       this.selectedChat = {}
+    },
+    setChatState(){
+      this.chatState = !this.chatState
+    },
+    setMessages(payload){
+      this.selectedChat.messages = payload
     }
   }
 })
