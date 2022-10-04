@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
-    activeTab: 'chats'
+    activeTab: 'chats',
+    scroll: null,
   }),
 
   actions:{

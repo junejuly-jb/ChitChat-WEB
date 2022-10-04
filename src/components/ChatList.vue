@@ -29,9 +29,13 @@
     }
 
     const selectChatRoom = async (chat) => {
-        chatStore.setSelectedChat(chat)
+        chatStore.setChatState(true)
+        chatStore.setSelectedChat(chat)        
         const result = await ChitChatServices.getMessages(chat._id)
         chatStore.setMessages(result.data.data)
+        setTimeout(() => {
+            chatStore.setChatState(false)
+        }, 1000)
     }
 
     const getStatus = (user_id) => {
@@ -46,7 +50,7 @@
         border-radius: 20px;
         transition: 400ms;
         padding: 0px 15px;
-        margin: 0px 5px;
+        margin: 5px 5px;
     }
     .chat_wrapper{
         display: flex;

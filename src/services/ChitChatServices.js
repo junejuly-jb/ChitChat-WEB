@@ -7,7 +7,7 @@ const getToken = function () {
 
 const apiClient = axios.create({
     // baseURL: 'https://hashkey-api.vercel.app/api/v2',
-    baseURL: 'http://localhost:5050/api/v1'
+    baseURL: 'http://192.168.18.25:5050/api/v1'
 })
 
 export default {
@@ -32,6 +32,11 @@ export default {
     },
     getMessages(payload){
         return apiClient.get('/message/' + payload, {
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        })
+    },
+    sendMessage(payload){
+        return apiClient.post('/send/' + payload.receiver, payload, {
             headers: { 'Authorization': 'Bearer ' + getToken() }
         })
     },

@@ -26,7 +26,7 @@
       </div>
       <div id="chat" v-if="Object.keys(chats.selectedChat).length != '0'">
         <MessageHeader/>
-        <Messages :chatState="chats.chatState" v-if="chats.selectedChat.hasOwnProperty('messages')"/>
+        <Messages/>
         <Input/>
       </div>
     </div>
@@ -39,7 +39,7 @@
 
 
 <script setup>
-  import { onMounted } from 'vue';
+  import { onMounted, ref } from 'vue';
   import ChatListVue from '../components/ChatList.vue';
   import SideBar from '../components/SideBar.vue';
   import ChitChatServices from '../services/ChitChatServices';
@@ -59,6 +59,7 @@
   const userStore = useUserStore()
   const router = useRouter()
 
+
   // var channel = pusher.subscribe('chitchat');
   // channel.bind('pusher:subscription_count', function(data) {
   //   // userStore.updateUserStatus(data.data)
@@ -73,12 +74,11 @@
   presenceChannel.bind('presence-online')
 
   presenceChannel.bind("pusher:member_added", (member) => {
-    console.log('added' + JSON.stringify(member, null, 2))
+    // console.log('added' + JSON.stringify(member, null, 2))
     userStore.updateUserStatus({ _id: member.id, isOnline: true })
   });
 
   presenceChannel.bind("pusher:subscription_succeeded", (members) => {
-    console.log('sub success' + JSON.stringify(members, null, 2))
     members.each((member) => {
       userStore.updateUserStatus({ _id: member.id, isOnline: true })
     });
@@ -110,6 +110,13 @@
     try {
       const result = await ChitChatServices.getUsers()
       userStore.setUsers(result.data)
+      const chat_event = `chat-${userStore.user._id}`
+      console.log(chat_event)
+      var chatChannel = pusher.subscribe('chitchat')
+      chatChannel.bind(chat_event, function(data){
+        console.log(data)
+        chats.sendMessage(data.data)
+      })
     } catch (error) {
       console.log(error.response)
     }

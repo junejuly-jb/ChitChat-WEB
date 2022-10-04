@@ -19,11 +19,18 @@ export const useChatStore = defineStore({
       this.rooms = []
       this.selectedChat = {}
     },
-    setChatState(){
-      this.chatState = !this.chatState
+    setChatState(payload){
+      this.chatState = payload
     },
     setMessages(payload){
       this.selectedChat.messages = payload
+    },
+    clearInput(){
+      this.selectedChat.input = ''
+    },
+    sendMessage(payload){
+      const idx = this.rooms.findIndex( el => el._id = payload.chatroomID)
+      this.rooms[idx].messages.push(payload)
     }
   }
 })
