@@ -5,7 +5,8 @@ export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
     users: [],
-    user: {} 
+    user: {},
+    selectedUser: {}
   }),
 
   actions: {
@@ -29,6 +30,9 @@ export const useUserStore = defineStore({
     removeState(){
       this.users = []
       this.user = {}
+    },
+    setSelectedUser(payload){
+      this.selectedUser = payload
     }
   },
 
