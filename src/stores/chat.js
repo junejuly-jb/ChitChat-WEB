@@ -1,19 +1,24 @@
 import { defineStore } from 'pinia'
+import { markRaw, reactive } from 'vue';
 
 export const useChatStore = defineStore({
   id: 'chat',
   state: () => ({
     rooms: [],
+    scroll: '',
     selectedChat: {},
     chatState: false
   }),
 
   actions: {
     addChats(payload){
-        this.rooms = payload
+      console.log(payload.rooms);
+        this.rooms = payload.rooms
+        this.selectedChat = payload.rooms[0]
+        this.selectedChat.messages = payload.messages
     },
     setSelectedChat(payload){
-        this.selectedChat = payload
+      this.selectedChat = payload
     },
     onLogout(){
       this.rooms = []
@@ -29,8 +34,11 @@ export const useChatStore = defineStore({
       this.selectedChat.input = ''
     },
     sendMessage(payload){
-      const idx = this.rooms.findIndex( el => el._id = payload.chatroomID)
+      const idx = this.rooms.findIndex( el => el._id == payload.chatroomID)
       this.rooms[idx].messages.push(payload)
+    },
+    setScroll(payload){
+      this.scroll = payload
     }
   }
 })

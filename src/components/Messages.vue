@@ -1,25 +1,23 @@
 <script setup>
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, watch, watchEffect } from 'vue';
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
     const chatStore = useChatStore();
     const userStore = useUserStore();
-
     const scroll = ref(null)
 
-    onMounted(() => {
-        console.log(scroll.value)
-        // scroll.value.current.scrollIntoView({behavior:'smooth'})
-    })
-
+    // onMounted(() => {
+    //     chatStore.setScroll(scroll.value)
+    //     scroll.value.scrollIntoView({ block: 'nearest', behavior: 'smooth'})
+    // })
 </script>
 // TODO: add scroller
 <template>
     <div class="messages-wrapper">
         <!-- <v-container> -->
-            <transition name="fade" mode="out-in">
+            <!-- <transition name="fade" mode="out-in">
                 <div id="stat_wrapper" v-show="chatStore.chatState"><small><i>Updating conversation...</i></small></div>
-            </transition>
+            </transition> -->
             <div class="msgs">
                 <div v-for="message in chatStore.selectedChat.messages" key="message._id">
                     <div class="msg" :class="message.sender == userStore.user._id ? 'sent' : 'received'">
@@ -38,6 +36,8 @@
         position: relative;
         overflow-x: hidden;
         padding: 0px 20px;
+        display: flex;
+        flex-direction: column-reverse;
     }
     #stat_wrapper{
         position: sticky;
@@ -68,8 +68,9 @@
     }
 
     .msgs{
+        overflow: auto;
         display: flex;
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 
     .sent {

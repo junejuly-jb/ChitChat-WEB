@@ -31,9 +31,6 @@
       </div>
     </div>
   </div>
-  <!-- <div class="main_wrapper d-flex">
-    
-  </div> -->
 </template>
 
 
@@ -59,15 +56,7 @@
   const userStore = useUserStore()
   const router = useRouter()
 
-
-  // var channel = pusher.subscribe('chitchat');
-  // channel.bind('pusher:subscription_count', function(data) {
-  //   // userStore.updateUserStatus(data.data)
-  //   console.log(data.subscription_count)
-  //   console.log(data)
-  //   console.log(channel.subscription_count)
-  // });
-
+ 
   const pusher = pusherInstance(getToken())
   
   var presenceChannel = pusher.subscribe('presence-online')
@@ -90,8 +79,11 @@
 
   const getChatRooms = async () => {
     try {
-      const result = await ChitChatServices.getChatRooms()
-      chats.addChats(result.data.data)
+      console.log('first')
+      const rooms = await ChitChatServices.getChatRooms()
+      const messages = await ChitChatServices.getMessages(rooms.data.data[0]._id)
+      console.log(messages);
+      chats.addChats({ rooms: rooms.data.data, messages: messages.data.data })
     } catch (error) {
       console.log(error.response)
     }
@@ -126,7 +118,6 @@
     const user = await getUser()
     userStore.setUserInfo(user)
   }
-  
 
   onMounted( async () => {
     getUserInfo()

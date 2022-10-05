@@ -18,6 +18,7 @@
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
     defineProps(['chat'])
+    const emit = defineEmits(['handleScrollEvent'])
 
     const chatStore = useChatStore()
     const userStore = useUserStore()
@@ -30,12 +31,11 @@
 
     const selectChatRoom = async (chat) => {
         chatStore.setChatState(true)
-        chatStore.setSelectedChat(chat)        
         const result = await ChitChatServices.getMessages(chat._id)
+        chatStore.setSelectedChat(chat)        
         chatStore.setMessages(result.data.data)
-        setTimeout(() => {
-            chatStore.setChatState(false)
-        }, 1000)
+        // setTimeout(() => chatStore.setChatState(false), 1000)
+        // setTimeout(() => chatStore.scroll.scrollIntoView({ block: 'nearest', behavior: 'smooth'}), 300)
     }
 
     const getStatus = (user_id) => {

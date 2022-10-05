@@ -15,6 +15,9 @@
         chatStore.clearInput()
         if(result.data.success){
             chatStore.sendMessage(result.data.data)
+            setTimeout(() => {
+                chatStore.scroll.scrollIntoView({ block: 'nearest', behavior: 'smooth'})
+            }, 500)
         }
         console.log(result)
     }
