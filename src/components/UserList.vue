@@ -1,5 +1,5 @@
 <template>
-    <div class="main_user">
+    <div class="main_user" @click="handleClickUser(user.user)">
         <div class="user_wrapper">
             <div class="avatar">
                 <v-avatar color="grey" size="large">{{ user.user.initials }}</v-avatar>
@@ -13,9 +13,22 @@
     </div>
 </template>
 <script setup>
-    const user = defineProps(['user'])                             
+    import { useAppStore } from '../stores/app';
+    import { useUserStore } from '../stores/user';
+
+    const user = defineProps(['user'])   
+    const appStore = useAppStore()       
+    const userStore = useUserStore()
+    
+    const handleClickUser = (user) => {
+        appStore.newMessageDialogHandler(true)
+        userStore.setSelectedUser(user)
+    }
 </script>
 <style scoped>
+    .context{
+        
+    }
     .main_user{
         /* background-color: dodgerblue; */
         border-radius: 20px;

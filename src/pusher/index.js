@@ -10,7 +10,7 @@ const getToken = function () {
 const pusherInstance = (token) => {
     const pusher = new Pusher('d592de80e72c6fe09431', {
         cluster: 'ap1',
-        authEndpoint: 'http://192.168.18.25:5050/api/v1/pusher/user-auth',
+        authEndpoint: 'http://localhost:5050/api/v1/pusher/user-auth',
         auth: {
             headers: {
                 'Authorization': 'Bearer ' + token

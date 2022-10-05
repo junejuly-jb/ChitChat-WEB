@@ -5,11 +5,15 @@ export const useAppStore = defineStore({
   state: () => ({
     activeTab: 'chats',
     scroll: null,
+    newMessageDialog: false
   }),
 
   actions:{
     changeAppState(payload){
         this.activeTab = payload
+    },
+    newMessageDialogHandler(payload){
+      this.newMessageDialog = payload
     }
   }
 })

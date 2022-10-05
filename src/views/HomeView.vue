@@ -13,8 +13,14 @@
           </div>
           <div class="chat_list">
             <div v-if="appState.activeTab == 'chats'">
-              <div v-for="chat in chats.rooms">
+              <div v-for="chat in chats.rooms" v-if="chats.rooms.length != 0">
                 <ChatListVue :chat="chat"/>
+              </div>
+              <div v-else class="text-center">
+                <div>
+                  <v-icon icon="mdi-inbox-outline" size="50" class="text-center"></v-icon>
+                </div>
+                <h3>No Conversations</h3>
               </div>
             </div>
             <div v-else>
@@ -29,6 +35,21 @@
         <Messages/>
         <Input/>
       </div>
+      <v-dialog
+        v-model="appState.newMessageDialog"
+        width="500"
+      >
+        <v-card>
+          <v-card-title>New message</v-card-title>
+          <v-container>
+            <span>Send to: <b>{{ userStore.selectedUser.name}}</b></span>
+          </v-container>
+          <v-card-actions>
+            <v-btn color="secondary" @click="appState.newMessageDialogHandler(false)">Close</v-btn>
+            <v-btn color="success" @click="handleSend">Send</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </div>
 </template>
@@ -165,7 +186,6 @@
   .chat_list{
     height: 80%;
     overflow: auto;
-
   }
 
 
@@ -181,5 +201,9 @@
   
   ::-webkit-scrollbar-thumb{
     background: rgba(126, 126, 126, 0.5);
+  }
+
+  .no__content{
+    background-color: red;
   }
 </style>
