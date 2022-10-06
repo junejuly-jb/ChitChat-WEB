@@ -14,21 +14,27 @@
 </template>
 <script setup>
     import { useAppStore } from '../stores/app';
-    import { useUserStore } from '../stores/user';
+    import { useChatStore } from '../stores/chat';
 
     const user = defineProps(['user'])   
-    const appStore = useAppStore()       
-    const userStore = useUserStore()
+    const appStore = useAppStore()
+    const chatStore = useChatStore();
     
     const handleClickUser = (user) => {
-        appStore.newMessageDialogHandler(true)
-        userStore.setSelectedUser(user)
+        console.log(user)
+        const user_exists = chatStore.rooms.find( el => el.user._id == user._id)
+        console.log(user_exists)
+        if(!user_exists){
+            chatStore.composeMessage({ _id: user._id, name: user.name })
+        }
+        else{
+            chatStore.setActiveChat(user_exists)
+            appStore.changeAppState('chats')
+        }
+    
     }
 </script>
 <style scoped>
-    .context{
-        
-    }
     .main_user{
         /* background-color: dodgerblue; */
         border-radius: 20px;
@@ -40,12 +46,13 @@
         display: flex;
         align-items: center;
         padding: 10px 5px;
+        cursor: pointer;
     }
     h4{
         padding: 0 !important;
     }
 
-    .main_chat:hover{
+    .main_user:hover{
         transition: 400ms;
         background-color: rgb(231, 231, 231);
     }

@@ -1,15 +1,9 @@
 <script setup>
-    import { onMounted, ref, watch, watchEffect } from 'vue';
+    import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
     const chatStore = useChatStore();
     const userStore = useUserStore();
-    const scroll = ref(null)
-
-    // onMounted(() => {
-    //     chatStore.setScroll(scroll.value)
-    //     scroll.value.scrollIntoView({ block: 'nearest', behavior: 'smooth'})
-    // })
 </script>
 // TODO: add scroller
 <template>
@@ -18,13 +12,13 @@
             <!-- <transition name="fade" mode="out-in">
                 <div id="stat_wrapper" v-show="chatStore.chatState"><small><i>Updating conversation...</i></small></div>
             </transition> -->
+            <!-- <div ref="scroll" class="scroller"></div> -->
             <div class="msgs">
                 <div v-for="message in chatStore.selectedChat.messages" key="message._id">
                     <div class="msg" :class="message.sender == userStore.user._id ? 'sent' : 'received'">
                         <p>{{ message.message }}</p>
                     </div>
                 </div>
-                <div ref="scroll" class="scroller"></div>
             </div>
         <!-- </v-container> -->
     </div>
@@ -32,8 +26,6 @@
 <style scoped>
     .messages-wrapper{
         height: 75%;
-        overflow: scroll;
-        position: relative;
         overflow-x: hidden;
         padding: 0px 20px;
         display: flex;
@@ -71,6 +63,20 @@
         overflow: auto;
         display: flex;
         flex-direction: column-reverse;
+        padding: 0px 10px;
+    }
+    ::-webkit-scrollbar{
+        width: 5px;  
+        height: 12px;
+        opacity:0;
+    }
+
+    ::-webkit-scrollbar-track{
+        background: rgba(0, 0, 0, 0.1);
+    }
+    
+    ::-webkit-scrollbar-thumb{
+        background: rgba(126, 126, 126, 0.5);
     }
 
     .sent {

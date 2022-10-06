@@ -5,8 +5,6 @@
 
     const chatStore = useChatStore()
     const userStore = useUserStore()
-
-    const message = ref('asd')
     
     const getStatus = (user_id) => {
         let user = userStore.getUserOnlineStatus(user_id)
@@ -19,7 +17,8 @@
 <template>
     <div class="message_header_wrapper">
         <v-container>
-            <div class="username">{{chatStore.selectedChat.user.name}}</div>
+            <div v-if="chatStore.selectedChat._id == '1'">New message</div>
+            <span v-if="chatStore.selectedChat._id == '1'">To:</span>&nbsp;&nbsp;<span class="username">{{chatStore.selectedChat.user.name}}</span>
             <div class="stats" v-if="getStatus(chatStore.selectedChat.user._id) == 'active now'">{{ getStatus(chatStore.selectedChat.user._id) }}</div>
         </v-container>
     </div>

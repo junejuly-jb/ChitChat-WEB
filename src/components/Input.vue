@@ -1,37 +1,60 @@
 <script setup>
-    import { onMounted, ref } from 'vue';
     import ChitChatServices from '../services/ChitChatServices';
+    import { useAppStore } from '../stores/app';
     import { useChatStore } from '../stores/chat';
+    import { useUserStore } from '../stores/user';
 
     const chatStore = useChatStore()
+    const userStore = useUserStore()
+    const appStore = useAppStore()
 
-    const btnSend = async (e) => {
-        e.preventDefault();
-        const result = await ChitChatServices.sendMessage({ 
-            receiver: chatStore.selectedChat.user._id,
-            chatRoomID: chatStore.selectedChat._id,
-            message: chatStore.selectedChat.input
-        })
+    const btnSend = async () => {
+        let result;
+        if(chatStore.selectedChat._id == '1'){
+            result = await ChitChatServices.sendMessage({ 
+                receiver: chatStore.selectedChat.user._id,
+                chatRoomID: '',
+                message: chatStore.selectedChat.input,
+                participants: [
+                    { _id: userStore.user._id, name: userStore.user.name, initials: getInitials(userStore.user.name) },
+                    { _id: chatStore.selectedChat.user._id, name: chatStore.selectedChat.user.name, initials: getInitials(chatStore.selectedChat.user.name) },
+                ]
+            })
+        }
+        else{
+            result = await ChitChatServices.sendMessage({ 
+                receiver: chatStore.selectedChat.user._id,
+                chatRoomID: chatStore.selectedChat._id,
+                message: chatStore.selectedChat.input
+            })
+        }
+        
         chatStore.clearInput()
         if(result.data.success){
+            if(chatStore.selectedChat._id == '1'){
+                chatStore.setNewRoom(result.data.chatroom)
+                chatStore.setActiveChat(result.data.chatroom)
+                appStore.changeAppState('chats')              
+            }
             chatStore.sendMessage(result.data.data)
-            setTimeout(() => {
-                chatStore.scroll.scrollIntoView({ block: 'nearest', behavior: 'smooth'})
-            }, 500)
         }
         console.log(result)
     }
-    const myInput = ref(null)
 
-    // onMounted(() => {
-    //     console.log(myInput.value.focus())
-        
-    // })
+    const getInitials = (string) => {
+        var names = string.split(' '),
+            initials = names[0].substring(0, 1).toUpperCase();
+
+        if (names.length > 1) {
+            initials += names[names.length - 1].substring(0, 1).toUpperCase();
+        }
+        return initials;
+    }
 </script>
 <template>
     <div class="input-wrapper">
         <v-container>
-            <input ref="myInput" type="text" v-model="chatStore.selectedChat.input" @keyup.enter="btnSend" tabindex="1"/>
+            <input type="text" v-model="chatStore.selectedChat.input" @keyup.enter="btnSend" tabindex="1"/>
             <v-btn color="blue" type="submit" @click="btnSend"><v-icon icon="mdi-send"></v-icon></v-btn>
         </v-container>
     </div>

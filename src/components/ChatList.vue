@@ -8,7 +8,7 @@
             <div style="width: 15px;"></div>
             <div class="content">
                 <h5>{{ chat.user.name }}</h5>
-                <div><small>{{ trim(chat.message) }}</small></div>
+                <div><small>{{ trim(chat.lastMessage) }}</small></div>
             </div>
         </div>
     </div>
@@ -32,10 +32,7 @@
     const selectChatRoom = async (chat) => {
         chatStore.setChatState(true)
         const result = await ChitChatServices.getMessages(chat._id)
-        chatStore.setSelectedChat(chat)        
-        chatStore.setMessages(result.data.data)
-        // setTimeout(() => chatStore.setChatState(false), 1000)
-        // setTimeout(() => chatStore.scroll.scrollIntoView({ block: 'nearest', behavior: 'smooth'}), 300)
+        chatStore.setSelectedChat({ chat, messages: result.data.data})
     }
 
     const getStatus = (user_id) => {

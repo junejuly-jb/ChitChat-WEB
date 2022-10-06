@@ -13,8 +13,12 @@
           </div>
           <div class="chat_list">
             <div v-if="appState.activeTab == 'chats'">
-              <div v-for="chat in chats.rooms" v-if="chats.rooms.length != 0">
-                <ChatListVue :chat="chat"/>
+              <div v-if="chats.rooms.length != 0">
+                <TransitionGroup tag="ul" name="fade" class="container">
+                  <div v-for="chat in chats.rooms" class="item" :key="chat._id">
+                    <ChatListVue :chat="chat"/>
+                  </div>
+                </TransitionGroup>
               </div>
               <div v-else class="text-center">
                 <div>
@@ -30,10 +34,11 @@
             </div>
           </div>
       </div>
-      <div id="chat" v-if="Object.keys(chats.selectedChat).length != '0'">
+      <div id="chat" :key="chats.selectedChat._id" v-if="Object.keys(chats.selectedChat).length != '0'">
         <MessageHeader/>
         <Messages/>
         <Input/>
+        <!-- <div>hello {{ Object.keys(chats.selectedChat).length }}</div> -->
       </div>
       <v-dialog
         v-model="appState.newMessageDialog"
@@ -100,10 +105,8 @@
 
   const getChatRooms = async () => {
     try {
-      console.log('first')
       const rooms = await ChitChatServices.getChatRooms()
       const messages = await ChitChatServices.getMessages(rooms.data.data[0]._id)
-      console.log(messages);
       chats.addChats({ rooms: rooms.data.data, messages: messages.data.data })
     } catch (error) {
       console.log(error.response)
@@ -124,10 +127,8 @@
       const result = await ChitChatServices.getUsers()
       userStore.setUsers(result.data)
       const chat_event = `chat-${userStore.user._id}`
-      console.log(chat_event)
       var chatChannel = pusher.subscribe('chitchat')
       chatChannel.bind(chat_event, function(data){
-        console.log(data)
         chats.sendMessage(data.data)
       })
     } catch (error) {
@@ -148,6 +149,10 @@
 </script>
 
 <style scoped>
+  .container {
+    position: relative;
+    padding: 0;
+  }
   .header{
     padding: 20px 130px;
     text-align: right;
@@ -190,8 +195,8 @@
 
 
   ::-webkit-scrollbar{
-    width: 5px;  /* for vertical scrollbars */
-    height: 12px; /* for horizontal scrollbars */
+    width: 5px;  
+    height: 12px;
     opacity:0;
   }
 
@@ -203,7 +208,23 @@
     background: rgba(126, 126, 126, 0.5);
   }
 
-  .no__content{
-    background-color: red;
+  /* 1. declare transition */
+  .fade-move,
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  }
+
+  /* 2. declare enter from and leave to state */
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+    transform: scaleY(0.01) translate(30px, 0);
+  }
+
+  /* 3. ensure leaving items are taken out of layout flow so that moving
+        animations can be calculated correctly. */
+  .fade-leave-active {
+    position: absolute;
   }
 </style>
