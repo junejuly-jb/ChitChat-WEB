@@ -5,7 +5,6 @@
     const chatStore = useChatStore();
     const userStore = useUserStore();
 </script>
-// TODO: add scroller
 <template>
     <div class="messages-wrapper">
         <!-- <v-container> -->
@@ -13,13 +12,14 @@
                 <div id="stat_wrapper" v-show="chatStore.chatState"><small><i>Updating conversation...</i></small></div>
             </transition> -->
             <!-- <div ref="scroll" class="scroller"></div> -->
-            <div class="msgs">
-                <div v-for="message in chatStore.selectedChat.messages" key="message._id">
-                    <div class="msg" :class="message.sender == userStore.user._id ? 'sent' : 'received'">
-                        <p>{{ message.message }}</p>
+                <div class="msgs">
+                    <div v-for="message in chatStore.selectedChat.messages" :key="message._id">
+                        <div class="msg" :class="message.sender == userStore.user._id ? 'sent' : 'received'">
+                            <p>{{ message.message }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+
         <!-- </v-container> -->
     </div>
 </template>
@@ -103,4 +103,5 @@
         padding: 0;
         margin: 0;
     }
+    
 </style>

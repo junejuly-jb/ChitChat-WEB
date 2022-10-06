@@ -129,6 +129,8 @@
       const chat_event = `chat-${userStore.user._id}`
       var chatChannel = pusher.subscribe('chitchat')
       chatChannel.bind(chat_event, function(data){
+        //TODO: add new chat room when someone is chatting
+        //TODO: update updatedAt on incoming messages
         chats.sendMessage(data.data)
       })
     } catch (error) {

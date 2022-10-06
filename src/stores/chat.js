@@ -55,12 +55,16 @@ export const useChatStore = defineStore({
       this.rooms.sort( function(a, b){
         var dateA = new Date(a.updatedAt);
         var dateB = new Date(b.updatedAt);
-        return dateA - dateB
+        return dateB - dateA
       })
-    }
+    },
+    updateChatroomTime(payload){
+      const room = this.rooms.findIndex( el => el._id == payload._id)
+      this.rooms[room].updatedAt = payload.updatedAt
+    },
     
-    // testShuffle(){
-    //    this.rooms.sort( () => .5 - Math.random() );
-    // }
+    testShuffle(){
+       this.selectedChat.messages.sort( () => .5 - Math.random() );
+    }
   }
 })
