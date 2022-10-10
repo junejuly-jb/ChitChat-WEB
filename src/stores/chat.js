@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useUserStore } from './user'
 
 export const useChatStore = defineStore({
   id: 'chat',
@@ -66,6 +67,13 @@ export const useChatStore = defineStore({
     
     testShuffle(){
        this.selectedChat.messages.sort( () => .5 - Math.random() );
+    }
+  },
+  getters: {
+    getUnreadMessages: (state) => {
+      //TODO: make it dynamic
+      const userStore = useUserStore()
+      return () => state.selectedChat.unreadMessages.filter( el => el.receiver == userStore.user._id)
     }
   }
 })

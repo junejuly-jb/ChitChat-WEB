@@ -10,6 +10,13 @@
                 <h5>{{ chat.user.name }}</h5>
                 <div><small>{{ trim(chat.lastMessage) }}</small></div>
             </div>
+            <div class="badge__wrapper">
+                <v-badge
+                color="blue"
+                content="6"
+                >
+                </v-badge>
+            </div>
         </div>
     </div>
 </template>
@@ -53,6 +60,7 @@
         display: flex;
         align-items: center;
         padding: 10px 5px;
+        position: relative;
     }
     h4{
         padding: 0 !important;
@@ -76,5 +84,9 @@
     .active:hover{
         background-color: dodgerblue;
         color: white;
+    }
+    .badge__wrapper{
+        position: absolute;
+        right: 10px;
     }
 </style>

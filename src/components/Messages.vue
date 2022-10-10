@@ -1,11 +1,21 @@
 <script setup>
+    import { onMounted } from 'vue';
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
     const chatStore = useChatStore();
     const userStore = useUserStore();
+
+    const handleScroll = ({ target: { scrollTop, clientHeight, scrollHeight }}) => {
+        if (scrollTop + clientHeight >= scrollHeight) {
+            console.log('test')
+        }
+        console.log('test123')
+    }   
+
+    // onMounted(() => onScrollEvent(e))
 </script>
 <template>
-    <div class="messages-wrapper">
+    <div class="messages-wrapper" @scroll.passive="handleScroll">
         <!-- <v-container> -->
             <!-- <transition name="fade" mode="out-in">
                 <div id="stat_wrapper" v-show="chatStore.chatState"><small><i>Updating conversation...</i></small></div>

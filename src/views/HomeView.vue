@@ -131,7 +131,6 @@
       console.log(chat_event)
       var chatChannel = pusher.subscribe('chitchat')
       chatChannel.bind(chat_event, function(data){
-        //TODO: add new chat room when someone is chatting
         console.log(data)
         const exists = chats.rooms.find( el => el._id == data.chatroom._id)
         if(exists){
@@ -141,7 +140,6 @@
           chats.sortRoom()
         }
         else{
-          //TODO : This is an error
           console.log('not exists')
           chats.setNewRoom(data.chatroom)
           chats.sendMessage(data.data)
@@ -164,6 +162,7 @@
     getUserInfo()
     await getUsers()
     await getChatRooms()
+    console.log(chats.getUnreadMessages())
   })
 </script>
 
