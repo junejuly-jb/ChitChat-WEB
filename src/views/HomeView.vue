@@ -38,23 +38,7 @@
         <MessageHeader/>
         <Messages/>
         <Input/>
-        <!-- <div>hello {{ Object.keys(chats.selectedChat).length }}</div> -->
       </div>
-      <v-dialog
-        v-model="appState.newMessageDialog"
-        width="500"
-      >
-        <v-card>
-          <v-card-title>New message</v-card-title>
-          <v-container>
-            <span>Send to: <b>{{ userStore.selectedUser.name}}</b></span>
-          </v-container>
-          <v-card-actions>
-            <v-btn color="secondary" @click="appState.newMessageDialogHandler(false)">Close</v-btn>
-            <v-btn color="success" @click="handleSend">Send</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </div>
   </div>
 </template>
@@ -81,15 +65,12 @@
   const appState = useAppStore()
   const userStore = useUserStore()
   const router = useRouter()
-
- 
   const pusher = pusherInstance(getToken())
   
   var presenceChannel = pusher.subscribe('presence-online')
   presenceChannel.bind('presence-online')
 
   presenceChannel.bind("pusher:member_added", (member) => {
-    // console.log('added' + JSON.stringify(member, null, 2))
     userStore.updateUserStatus({ _id: member.id, isOnline: true })
   });
 
@@ -133,6 +114,7 @@
       chatChannel.bind(chat_event, function(data){
         console.log(data)
         const exists = chats.rooms.find( el => el._id == data.chatroom._id)
+        //TODO: check incoming chats for read message
         if(exists){
           console.log('exists')
           chats.updateChatroom({_id: data.chatroom._id, updatedAt: data.chatroom.updatedAt, lastMessage: data.chatroom.lastMessage})
@@ -162,7 +144,6 @@
     getUserInfo()
     await getUsers()
     await getChatRooms()
-    console.log(chats.getUnreadMessages())
   })
 </script>
 

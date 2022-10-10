@@ -63,17 +63,6 @@ export const useChatStore = defineStore({
       const room = this.rooms.findIndex( el => el._id == payload._id)
       this.rooms[room].updatedAt = payload.updatedAt
       this.rooms[room].lastMessage = payload.lastMessage
-    },
-    
-    testShuffle(){
-       this.selectedChat.messages.sort( () => .5 - Math.random() );
     }
   },
-  getters: {
-    getUnreadMessages: (state) => {
-      //TODO: make it dynamic
-      const userStore = useUserStore()
-      return () => state.selectedChat.unreadMessages.filter( el => el.receiver == userStore.user._id)
-    }
-  }
 })

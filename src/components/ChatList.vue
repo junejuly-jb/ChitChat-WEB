@@ -10,10 +10,10 @@
                 <h5>{{ chat.user.name }}</h5>
                 <div><small>{{ trim(chat.lastMessage) }}</small></div>
             </div>
-            <div class="badge__wrapper">
+            <div class="badge__wrapper" v-if="getUnreadLength(chat.unreadMessages) > 0 && chatStore.selectedChat._id != chat._id">
                 <v-badge
                 color="blue"
-                content="6"
+                :content="getUnreadLength(chat.unreadMessages)"
                 >
                 </v-badge>
             </div>
@@ -47,6 +47,10 @@
         return user.isOnline
     }
     
+    const getUnreadLength = (unread) => {
+        const unreadmessage = unread.filter( el => el.receiver == userStore.user._id)
+        return unreadmessage.length
+    }
 </script>
 <style scoped>
     .main_chat{
