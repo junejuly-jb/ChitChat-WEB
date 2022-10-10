@@ -1,5 +1,4 @@
 <script setup>
-    import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
     const chatStore = useChatStore();

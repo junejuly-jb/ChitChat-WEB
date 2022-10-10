@@ -115,6 +115,7 @@
 
   const signout = async () => {
     pusher.unsubscribe('presence-online')
+    pusher.unsubscribe('chitchat')
     removeUser()
     destroyToken()
     chats.onLogout()
@@ -127,11 +128,27 @@
       const result = await ChitChatServices.getUsers()
       userStore.setUsers(result.data)
       const chat_event = `chat-${userStore.user._id}`
+      console.log(chat_event)
       var chatChannel = pusher.subscribe('chitchat')
       chatChannel.bind(chat_event, function(data){
         //TODO: add new chat room when someone is chatting
-        //TODO: update updatedAt on incoming messages
-        chats.sendMessage(data.data)
+        console.log(data)
+        const exists = chats.rooms.find( el => el._id == data.chatroom._id)
+        if(exists){
+          console.log('exists')
+          chats.updateChatroom({_id: data.chatroom._id, updatedAt: data.chatroom.updatedAt, lastMessage: data.chatroom.lastMessage})
+          chats.sendMessage(data.data)
+          chats.sortRoom()
+        }
+        else{
+          //TODO : This is an error
+          console.log('not exists')
+          chats.setNewRoom(data.chatroom)
+          chats.sendMessage(data.data)
+          if(chats.rooms.length == 0){
+            chats.setActiveChat()
+          }
+        }
       })
     } catch (error) {
       console.log(error.response)

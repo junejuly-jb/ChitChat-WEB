@@ -37,7 +37,7 @@
                 appStore.changeAppState('chats')              
             }
             else{
-                chatStore.updateChatroomTime({_id: result.data.chatroom._id, updatedAt: result.data.chatroom.updatedAt})
+                chatStore.updateChatroom({_id: result.data.chatroom._id, updatedAt: result.data.chatroom.updatedAt, lastMessage: result.data.chatroom.lastMessage})
             }
             chatStore.sendMessage(result.data.data)
             chatStore.sortRoom()
@@ -58,8 +58,7 @@
 <template>
     <div class="input-wrapper">
         <v-container>
-            //TODO: MAKE input autofocus to TRUE
-            <input type="text" v-model="chatStore.selectedChat.input" @keyup.enter="btnSend" tabindex="1"/>
+            <input type="text" v-model="chatStore.selectedChat.input" @keyup.enter="btnSend" tabindex="1" autofocus/>
             <v-btn color="blue" type="submit" @click="btnSend"><v-icon icon="mdi-send"></v-icon></v-btn>
         </v-container>
     </div>

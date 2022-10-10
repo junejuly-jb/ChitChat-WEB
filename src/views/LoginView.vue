@@ -22,6 +22,7 @@
                                                 autocomplete="false"
                                                 class="mt-16"
                                                 v-model="login_email"
+                                                @keyup.enter="handleLogin"
                                             />
                                             <v-text-field
                                                 label="Password"
@@ -31,6 +32,7 @@
                                                 autocomplete="false"
                                                 type="password"
                                                 v-model="login_password"
+                                                @keyup.enter="handleLogin"
                                             />
                                             <div>
                                                 <div class="py-5">
