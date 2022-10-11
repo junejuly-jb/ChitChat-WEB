@@ -40,6 +40,8 @@
         chatStore.setChatState(true)
         const result = await ChitChatServices.getMessages(chat._id)
         chatStore.setSelectedChat({ chat, messages: result.data.data})
+        await ChitChatServices.readMessage(chat._id)
+        chatStore.removeUnreadMessages(chat._id)
     }
 
     const getStatus = (user_id) => {

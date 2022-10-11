@@ -89,6 +89,8 @@
       const rooms = await ChitChatServices.getChatRooms()
       const messages = await ChitChatServices.getMessages(rooms.data.data[0]._id)
       chats.addChats({ rooms: rooms.data.data, messages: messages.data.data })
+      await ChitChatServices.readMessage(chats.selectedChat._id)
+      chats.removeUnreadMessages(chats.selectedChat._id)
     } catch (error) {
       console.log(error.response)
     }
@@ -111,10 +113,9 @@
       const chat_event = `chat-${userStore.user._id}`
       console.log(chat_event)
       var chatChannel = pusher.subscribe('chitchat')
-      chatChannel.bind(chat_event, function(data){
+      chatChannel.bind(chat_event, async function(data){
         console.log(data)
         const exists = chats.rooms.find( el => el._id == data.chatroom._id)
-        //TODO: check incoming chats for read message
         if(exists){
           console.log('exists')
           chats.updateChatroom({_id: data.chatroom._id, updatedAt: data.chatroom.updatedAt, lastMessage: data.chatroom.lastMessage})
@@ -125,9 +126,20 @@
           console.log('not exists')
           chats.setNewRoom(data.chatroom)
           chats.sendMessage(data.data)
-          if(chats.rooms.length == 0){
+          if(Object.keys(chats.selectedChat).length == 0){
             chats.setActiveChat()
           }
+        }
+
+        if(chats.selectedChat._id == data.chatroom._id){
+          const unread = await ChitChatServices.readMessage(data.chatroom._id)
+          if(unread.data.success){
+            chats.removeUnreadMessages(data.chatroom._id)
+          }
+        }
+        else{
+          console.log('not equal')
+          chats.addUnreadMessages({ _id: data.chatroom._id, unreadMessages: data.chatroom.unreadMessages })
         }
       })
     } catch (error) {

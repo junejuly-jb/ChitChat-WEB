@@ -63,6 +63,15 @@ export const useChatStore = defineStore({
       const room = this.rooms.findIndex( el => el._id == payload._id)
       this.rooms[room].updatedAt = payload.updatedAt
       this.rooms[room].lastMessage = payload.lastMessage
+    },
+    addUnreadMessages(payload){
+       console.log(payload)
+      const room = this.rooms.findIndex( el => el._id == payload._id)
+      this.rooms[room].unreadMessages = payload.unreadMessages
+    },
+    removeUnreadMessages(payload){
+      const room = this.rooms.findIndex( el => el._id == payload)
+      this.rooms[room].unreadMessages = []
     }
   },
 })

@@ -40,4 +40,9 @@ export default {
             headers: { 'Authorization': 'Bearer ' + getToken() }
         })
     },
+    readMessage(payload){
+        return apiClient.get('/read/' + payload, {
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        })
+    }
 }
