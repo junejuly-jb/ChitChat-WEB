@@ -15,21 +15,19 @@
     // onMounted(() => onScrollEvent(e))
 </script>
 <template>
+    
+    <!-- v-show="chatStore.chatState" -->
     <div class="messages-wrapper" @scroll.passive="handleScroll">
-        <!-- <v-container> -->
-            <!-- <transition name="fade" mode="out-in">
-                <div id="stat_wrapper" v-show="chatStore.chatState"><small><i>Updating conversation...</i></small></div>
-            </transition> -->
-            <!-- <div ref="scroll" class="scroller"></div> -->
-                <div class="msgs">
-                    <div v-for="message in chatStore.selectedChat.messages" :key="message._id">
-                        <div class="msg" :class="message.sender == userStore.user._id ? 'sent' : 'received'">
-                            <p>{{ message.message }}</p>
-                        </div>
-                    </div>
+        <div class="msgs">
+            <div v-for="message in chatStore.selectedChat.messages" :key="message._id">
+                <div class="msg" :class="message.sender == userStore.user._id ? 'sent' : 'received'">
+                    <p>{{ message.message }}</p>
                 </div>
-
-        <!-- </v-container> -->
+            </div>
+        </div>
+        <transition name="fade" mode="out-in">
+            <div id="stat_wrapper" v-show="chatStore.chatState"><small><i>Updating conversation...</i></small></div>
+        </transition>
     </div>
 </template>
 <style scoped>
@@ -39,9 +37,10 @@
         padding: 0px 20px;
         display: flex;
         flex-direction: column-reverse;
+        position: relative;
     }
     #stat_wrapper{
-        position: sticky;
+        position: absolute;
         position: -webkit-sticky;
         top: 0;
         background-color: orange;

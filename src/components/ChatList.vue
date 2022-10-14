@@ -42,6 +42,7 @@
         chatStore.setSelectedChat({ chat, messages: result.data.data})
         await ChitChatServices.readMessage(chat._id)
         chatStore.removeUnreadMessages(chat._id)
+        setTimeout(() => chatStore.setChatState(false), 500)
     }
 
     const getStatus = (user_id) => {
@@ -56,7 +57,7 @@
 </script>
 <style scoped>
     .main_chat{
-        /* background-color: dodgerblue; */
+        cursor: pointer;
         border-radius: 20px;
         transition: 400ms;
         padding: 0px 15px;

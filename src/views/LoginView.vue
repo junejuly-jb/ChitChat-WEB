@@ -107,6 +107,7 @@
                                     autocomplete="false"
                                     class="mt-4"
                                     v-model="reg_fname"
+                                    @keyup.enter="handleSignUp"
                                 />
                                     </v-col>
                                     <v-col cols="12" sm="6">
@@ -118,6 +119,7 @@
                                     autocomplete="false"
                                     class="mt-4"
                                     v-model="reg_lname"
+                                    @keyup.enter="handleSignUp"
                                 />
                                     </v-col>
                                     </v-row>
@@ -128,6 +130,7 @@
                                     color="blue"
                                     autocomplete="false"
                                     v-model="reg_email"
+                                    @keyup.enter="handleSignUp"
                                 />
                                 <v-text-field
                                     label="Password"
@@ -137,6 +140,7 @@
                                     autocomplete="false"
                                     type="password"
                                     v-model="reg_password"
+                                    @keyup.enter="handleSignUp"
                                 />
                                 <v-text-field
                                     label="Confirm Password"
@@ -146,9 +150,18 @@
                                     autocomplete="false"
                                     type="password"
                                     v-model="reg_conpassword"
+                                    @keyup.enter="handleSignUp"
                                 />
                                 <div class="py-5"></div>
-                                <v-btn @click="handleSignUp" color="blue" dark block tile>Sign up</v-btn>
+                                <v-btn @click="handleSignUp" color="blue" dark block tile>
+                                    <div  v-if="isLoading">
+                                        Signing up... 
+                                        <v-progress-circular indeterminate color="white"></v-progress-circular>
+                                    </div>
+                                    <div v-else>
+                                        Sign Up
+                                    </div>
+                                </v-btn>
                                 </v-col>
                                 </v-row>  
                             </v-card-text>
@@ -173,9 +186,8 @@
 <script setup>
 import { ref } from 'vue';
 import ChitChatServices from '../services/ChitChatServices';
-import { setToken, setUser, getToken } from '../authentication/auth';
+import { setToken, setUser} from '../authentication/auth';
 import { useRouter } from 'vue-router';
-import pusherInstance from '../pusher';
 
     const step = ref(1)
     const login_email = ref('')
@@ -204,10 +216,17 @@ import pusherInstance from '../pusher';
             setUser({ _id: result.data.user._id, name: result.data.user.name })
             router.push({ path: '/home', replace: true })
         } catch (error) {
-            console.log(error)
             hasError.value = true
             alertType.value = 'error'
-            errorMessage.value = error.response.data.message
+            if(!error.response.data){
+                errorMessage.value = 'Could not connect to server. Please try again later.'
+            }
+            else{
+                errorMessage.value = error.response.data.message
+            }
+            setTimeout( () => {
+                onCloseAlert()
+            }, 4000)
         }
         isLoading.value = false;
     }
@@ -227,15 +246,30 @@ import pusherInstance from '../pusher';
             setTimeout( () => {
                 onCloseAlert()
             }, 1500)
+            step.value = 1
+            resetRegistrationForm();
         } catch (error) {
             hasError.value = true
             alertType.value = 'error'
-            errorMessage.value = error.response.data.message
+            if(!error.response.data){
+                errorMessage.value = 'Could not connect to server. Please try again later.'
+            }
+            else{
+                errorMessage.value = error.response.data.message
+            }
             setTimeout( () => {
                 onCloseAlert()
             }, 1500)
         }
         isLoading.value = false;
+    }
+
+    const resetRegistrationForm = () => {
+        reg_lname.value = ''
+        reg_fname.value = ''
+        reg_email.value = ''
+        reg_password.value = ''
+        reg_conpassword.value = ''
     }
 </script>
 

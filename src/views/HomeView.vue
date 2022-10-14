@@ -1,43 +1,46 @@
 <template>
-  <div class="header">
-    <h4>Welcome, {{ userStore.user.name }}</h4>
-  </div>
+  
   <div class="wrapper">
-    <div class="content d-flex">
-      <div id="pref">
-        <SideBar @onSignout="signout"/>
+    <div class="outer__content">
+      <div class="name__header">
+        <h4>Welcome, {{userStore.user.name}}</h4>
       </div>
-      <div class="w-20" id="list">
-          <div class="active_user_head">
-            <h2>{{ appState.activeTab == 'chats' ? 'Chats' : 'Active users' }}</h2>
-          </div>
-          <div class="chat_list">
-            <div v-if="appState.activeTab == 'chats'">
-              <div v-if="chats.rooms.length != 0">
-                <TransitionGroup tag="ul" name="fade" class="container">
-                  <div v-for="chat in chats.rooms" class="item" :key="chat._id">
-                    <ChatListVue :chat="chat"/>
-                  </div>
-                </TransitionGroup>
-              </div>
-              <div v-else class="text-center">
-                <div>
-                  <v-icon icon="mdi-inbox-outline" size="50" class="text-center"></v-icon>
+      <div class="content d-flex">
+        <div id="pref">
+          <SideBar @onSignout="signout"/>
+        </div>
+        <div class="w-20" id="list">
+            <div class="active_user_head">
+              <h2>{{ appState.activeTab == 'chats' ? 'Chats' : 'Active users' }}</h2>
+            </div>
+            <div class="chat_list">
+              <div v-if="appState.activeTab == 'chats'">
+                <div v-if="chats.rooms.length != 0">
+                  <TransitionGroup tag="ul" name="fade" class="container">
+                    <div v-for="chat in chats.rooms" class="item" :key="chat._id">
+                      <ChatListVue :chat="chat"/>
+                    </div>
+                  </TransitionGroup>
                 </div>
-                <h3>No Conversations</h3>
+                <div v-else class="text-center">
+                  <div>
+                    <v-icon icon="mdi-inbox-outline" size="50" class="text-center"></v-icon>
+                  </div>
+                  <h3>No Conversations</h3>
+                </div>
+              </div>
+              <div v-else>
+                <div v-for="user in userStore.users">
+                  <UserList :user="user"/>
+                </div>
               </div>
             </div>
-            <div v-else>
-              <div v-for="user in userStore.users">
-                <UserList :user="user"/>
-              </div>
-            </div>
-          </div>
-      </div>
-      <div id="chat" :key="chats.selectedChat._id" v-if="Object.keys(chats.selectedChat).length != '0'">
-        <MessageHeader/>
-        <Messages/>
-        <Input/>
+        </div>
+        <div id="chat" :key="chats.selectedChat._id" v-if="Object.keys(chats.selectedChat).length != '0'">
+          <MessageHeader/>
+          <Messages/>
+          <Input/>
+        </div>
       </div>
     </div>
   </div>
@@ -46,8 +49,7 @@
 
 
 <script setup>
-  import { onMounted, ref } from 'vue';
-  import ChatListVue from '../components/ChatList.vue';
+  import { defineAsyncComponent, onMounted, ref } from 'vue';
   import SideBar from '../components/SideBar.vue';
   import ChitChatServices from '../services/ChitChatServices';
   import { useAppStore } from '../stores/app';
@@ -56,16 +58,21 @@
   import UserList from '../components/UserList.vue';
   import pusherInstance from '../pusher';
   import { getUser, getToken, removeUser, destroyToken } from '../authentication/auth';
-  import MessageHeader from '../components/MessageHeader.vue';
-  import Messages from '../components/Messages.vue';
+  // import MessageHeader from '../components/MessageHeader.vue';
+  // import Messages from '../components/Messages.vue';
   import { useRouter } from 'vue-router';
-  import Input from '../components/Input.vue';
+  // import Input from '../components/Input.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
   const userStore = useUserStore()
   const router = useRouter()
   const pusher = pusherInstance(getToken())
+
+  const ChatListVue = defineAsyncComponent(() => import('../components/ChatList.vue'));
+  const MessageHeader = defineAsyncComponent(() => import('../components/MessageHeader.vue'));
+  const Messages = defineAsyncComponent(() => import('../components/Messages.vue'));
+  const Input = defineAsyncComponent(() => import('../components/Input.vue'));
   
   var presenceChannel = pusher.subscribe('presence-online')
   presenceChannel.bind('presence-online')
@@ -117,13 +124,11 @@
         console.log(data)
         const exists = chats.rooms.find( el => el._id == data.chatroom._id)
         if(exists){
-          console.log('exists')
           chats.updateChatroom({_id: data.chatroom._id, updatedAt: data.chatroom.updatedAt, lastMessage: data.chatroom.lastMessage})
           chats.sendMessage(data.data)
           chats.sortRoom()
         }
         else{
-          console.log('not exists')
           chats.setNewRoom(data.chatroom)
           chats.sendMessage(data.data)
           if(Object.keys(chats.selectedChat).length == 0){
@@ -138,7 +143,6 @@
           }
         }
         else{
-          console.log('not equal')
           chats.addUnreadMessages({ _id: data.chatroom._id, unreadMessages: data.chatroom.unreadMessages })
         }
       })
@@ -165,7 +169,7 @@
     padding: 0;
   }
   .header{
-    padding: 20px 130px;
+    /* padding: 20px 130px; */
     text-align: right;
     background-color: rgb(236, 236, 236);
   }
@@ -173,14 +177,27 @@
     display: flex;
     height: 100vh;
     justify-content: center;
-    /* align-items: center; */
+    align-items: center;
     background-color: rgb(236, 236, 236);
   }
   .content{
-    height: 85%;
-    width: 85%;
+    position: absolute;
+    bottom: 0;
+    height: 95%;
+    width: 100%;
     border-radius: 30px;
     background-color: white;
+  }
+  .outer__content{    
+    position: relative;
+    width: 80%;
+    height: 95%;
+  }
+
+  .name__header{
+    position: absolute;
+    right: 0;
+    /* top: 20px; */
   }
   #pref{
     width: 5%;

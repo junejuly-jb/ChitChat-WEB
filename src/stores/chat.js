@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { useUserStore } from './user'
 
 export const useChatStore = defineStore({
   id: 'chat',
