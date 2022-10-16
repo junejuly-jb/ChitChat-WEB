@@ -108,8 +108,7 @@
     pusher.unsubscribe('chitchat')
     removeUser()
     destroyToken()
-    chats.onLogout()
-    userStore.removeState()
+    userStore.onLogOut()
     router.push({ path: '/', replace: true })
   }
 

@@ -22,10 +22,6 @@ export const useChatStore = defineStore({
     setActiveChat(payload){
       this.selectedChat = payload
     },
-    onLogout(){
-      this.rooms = []
-      this.selectedChat = {}
-    },
     setChatState(payload){
       this.chatState = payload
     },

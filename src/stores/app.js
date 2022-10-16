@@ -4,8 +4,6 @@ export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
     activeTab: 'chats',
-    scroll: null,
-    newMessageDialog: false
   }),
 
   actions:{
