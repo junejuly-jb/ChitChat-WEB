@@ -37,12 +37,17 @@
     }
 
     const selectChatRoom = async (chat) => {
-        chatStore.setChatState(true)
-        const result = await ChitChatServices.getMessages(chat._id)
-        chatStore.setSelectedChat({ chat, messages: result.data.data})
-        await ChitChatServices.readMessage(chat._id)
-        chatStore.removeUnreadMessages(chat._id)
-        setTimeout(() => chatStore.setChatState(false), 500)
+        try {
+            chatStore.setChatState(true)
+            const result = await ChitChatServices.getMessages(chat._id)
+            chatStore.setSelectedChat({ chat, messages: result.data.data})
+            await ChitChatServices.readMessage(chat._id)
+            chatStore.removeUnreadMessages(chat._id)
+            setTimeout(() => chatStore.setChatState(false), 500) 
+        } catch (error) {
+            
+        }
+        
     }
 
     const getStatus = (user_id) => {

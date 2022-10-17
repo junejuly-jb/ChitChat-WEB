@@ -7,12 +7,11 @@ export const useUserStore = defineStore({
   state: () => ({
     users: [],
     user: {},
-    selectedUser: {}
+    selectedUser: {},
   }),
 
   actions: {
     setUsers(payload){
-      // this.users = payload
       payload.map( el => {
         el.isOnline = false
         this.users.push(el)
@@ -33,11 +32,12 @@ export const useUserStore = defineStore({
       const appStore = useAppStore()
       this.users = []
       this.user = {}
+      this.unauthenticated = false
       chatStore.rooms = [],
       chatStore.selectedChat = {},
       chatStore.chatState = false,
       appStore.activeTab = 'chats'
-    }
+    },
   },
 
   getters:{

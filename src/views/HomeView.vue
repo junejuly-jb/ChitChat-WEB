@@ -2,6 +2,9 @@
   
   <div class="wrapper">
     <div class="outer__content">
+      <small class="error__header" v-if="errorStore.hasError">
+        {{errorStore.errorMessage}}
+      </small>
       <div class="name__header">
         <h4>Welcome, {{userStore.user.name}}</h4>
       </div>
@@ -44,9 +47,10 @@
       </div>
     </div>
   </div>
+  <div v-if="errorStore.unauthenticated">
+    <Dialog @signout="signout"/>
+  </div>
 </template>
-
-
 
 <script setup>
   import { defineAsyncComponent, onMounted, ref } from 'vue';
@@ -55,17 +59,16 @@
   import { useAppStore } from '../stores/app';
   import { useChatStore } from '../stores/chat';
   import { useUserStore } from '../stores/user';
+  import { useErrorStore } from '../stores/error';
   import UserList from '../components/UserList.vue';
   import pusherInstance from '../pusher';
   import { getUser, getToken, removeUser, destroyToken } from '../authentication/auth';
-  // import MessageHeader from '../components/MessageHeader.vue';
-  // import Messages from '../components/Messages.vue';
   import { useRouter } from 'vue-router';
-  // import Input from '../components/Input.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
   const userStore = useUserStore()
+  const errorStore = useErrorStore();
   const router = useRouter()
   const pusher = pusherInstance(getToken())
 
@@ -73,6 +76,7 @@
   const MessageHeader = defineAsyncComponent(() => import('../components/MessageHeader.vue'));
   const Messages = defineAsyncComponent(() => import('../components/Messages.vue'));
   const Input = defineAsyncComponent(() => import('../components/Input.vue'));
+  const Dialog = defineAsyncComponent(() => import('../components/Dialog.vue'));
   
   var presenceChannel = pusher.subscribe('presence-online')
   presenceChannel.bind('presence-online')
@@ -99,7 +103,7 @@
       await ChitChatServices.readMessage(chats.selectedChat._id)
       chats.removeUnreadMessages(chats.selectedChat._id)
     } catch (error) {
-      console.log(error.response)
+      console.log('chatroom error')
     }
   }
 
@@ -146,7 +150,15 @@
         }
       })
     } catch (error) {
-      console.log(error.response)
+      if(!error.response.data){
+          errorStore.setError({message: 'Could not connect to server. Please try again later.', hasError: true})
+      }
+      else{
+        errorStore.setError({message: error.response.data.message, hasError: true})
+      }
+      if(error.response.data.status == 401){
+        errorStore.setAuthorization(true)
+      }
     }
   }
 
@@ -198,6 +210,16 @@
     right: 0;
     /* top: 20px; */
   }
+
+  .error__header{
+    position: absolute;
+    left: 0;
+    background-color: rgb(255, 102, 102);
+    padding: 5px 20px;
+    border-radius: 20px;
+    color: white;
+  }
+
   #pref{
     width: 5%;
     display: flex;

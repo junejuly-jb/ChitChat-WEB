@@ -188,6 +188,7 @@ import { ref } from 'vue';
 import ChitChatServices from '../services/ChitChatServices';
 import { setToken, setUser} from '../authentication/auth';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '../stores/user';
 
     const step = ref(1)
     const login_email = ref('')
@@ -202,6 +203,7 @@ import { useRouter } from 'vue-router';
     const errorMessage = ref('')
     const hasError = ref(false)
     const alertType= ref('error')
+    const userStore = useUserStore()
 
     const onCloseAlert = () => {
         hasError.value = false
