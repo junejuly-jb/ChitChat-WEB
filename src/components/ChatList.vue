@@ -1,5 +1,5 @@
 <template>
-    <div @click="selectChatRoom(chat)" class="main_chat" :class="chatStore.selectedChat._id == chat._id ? 'active' : ''">
+    <div @click="selectChatRoom(chat)" class="main_chat" :class="chatStore.selectedChat._id === chat._id ? 'active' : ''">
         <div class="chat_wrapper">
             <v-badge color="green-darken-1" dot offset-y="35" :offset-x="5" v-if="getStatus(chat.user._id)"> 
                 <v-avatar color="grey" size="large">{{ chat.user.initials }}</v-avatar>
@@ -10,7 +10,7 @@
                 <h5>{{ chat.user.name }}</h5>
                 <div><small>{{ trim(chat.lastMessage) }}</small></div>
             </div>
-            <div class="badge__wrapper" v-if="getUnreadLength(chat.unreadMessages) > 0 && chatStore.selectedChat._id != chat._id">
+            <div class="badge__wrapper" v-if="getUnreadLength(chat.unreadMessages) > 0 && chatStore.selectedChat._id !== chat._id">
                 <v-badge
                 color="blue"
                 :content="getUnreadLength(chat.unreadMessages)"
@@ -22,13 +22,14 @@
 </template>
 <script setup>
     import ChitChatServices from '../services/ChitChatServices';
-    import { useChatStore } from '../stores/chat';
-    import { useUserStore } from '../stores/user';
+    import { useChatStore } from '@/stores/chat';
+    import { useUserStore } from '@/stores/user';
+    import {useErrorStore} from "@/stores/error";
     defineProps(['chat'])
-    const emit = defineEmits(['handleScrollEvent'])
 
     const chatStore = useChatStore()
     const userStore = useUserStore()
+    const errorStore = useErrorStore()
 
     const trim = (string) => {
         let newString = string.substring(0, 25)
@@ -45,9 +46,17 @@
             chatStore.removeUnreadMessages(chat._id)
             setTimeout(() => chatStore.setChatState(false), 500) 
         } catch (error) {
-            
+          if(!error.response.data){
+            errorStore.setError({message: 'Could not connect to server. Please try again later.', hasError: true})
+          }
+          else{
+            errorStore.setError({message: error.response.data.message, hasError: true})
+          }
+          if(error.response.data.status === 401){
+            console.log('here')
+            errorStore.setAuthorization(true)
+          }
         }
-        
     }
 
     const getStatus = (user_id) => {
@@ -56,7 +65,7 @@
     }
     
     const getUnreadLength = (unread) => {
-        const unreadmessage = unread.filter( el => el.receiver == userStore.user._id)
+        const unreadmessage = unread.filter( el => el.receiver === userStore.user._id)
         return unreadmessage.length
     }
 </script>
@@ -65,7 +74,7 @@
         cursor: pointer;
         border-radius: 20px;
         transition: 400ms;
-        padding: 0px 15px;
+        padding: 0 15px;
         margin: 5px 5px;
     }
     .chat_wrapper{
@@ -81,9 +90,6 @@
     .main_chat:hover{
         transition: 400ms;
         background-color: rgb(231, 231, 231);
-    }
-    .avatar{
-        padding: 0px 0px;
     }
     .content{
         white-space: nowrap;

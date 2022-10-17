@@ -49,23 +49,23 @@ export const useChatStore = defineStore({
     },
     sortRoom(){
       this.rooms.sort( function(a, b){
-        var dateA = new Date(a.updatedAt);
-        var dateB = new Date(b.updatedAt);
+        const dateA = new Date(a.updatedAt);
+        const dateB = new Date(b.updatedAt);
         return dateB - dateA
       })
     },
     updateChatroom(payload){
-      const room = this.rooms.findIndex( el => el._id == payload._id)
+      const room = this.rooms.findIndex( el => el._id === payload._id)
       this.rooms[room].updatedAt = payload.updatedAt
       this.rooms[room].lastMessage = payload.lastMessage
     },
     addUnreadMessages(payload){
        console.log(payload)
-      const room = this.rooms.findIndex( el => el._id == payload._id)
+      const room = this.rooms.findIndex( el => el._id === payload._id)
       this.rooms[room].unreadMessages = payload.unreadMessages
     },
     removeUnreadMessages(payload){
-      const room = this.rooms.findIndex( el => el._id == payload)
+      const room = this.rooms.findIndex( el => el._id === payload)
       this.rooms[room].unreadMessages = []
     }
   },

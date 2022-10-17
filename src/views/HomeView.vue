@@ -14,11 +14,11 @@
         </div>
         <div class="w-20" id="list">
             <div class="active_user_head">
-              <h2>{{ appState.activeTab == 'chats' ? 'Chats' : 'Active users' }}</h2>
+              <h2>{{ appState.activeTab === 'chats' ? 'Chats' : 'Active users' }}</h2>
             </div>
             <div class="chat_list">
-              <div v-if="appState.activeTab == 'chats'">
-                <div v-if="chats.rooms.length != 0">
+              <div v-if="appState.activeTab === 'chats'">
+                <div v-if="chats.rooms.length !== 0">
                   <TransitionGroup tag="ul" name="fade" class="container">
                     <div v-for="chat in chats.rooms" class="item" :key="chat._id">
                       <ChatListVue :chat="chat"/>
@@ -39,7 +39,7 @@
               </div>
             </div>
         </div>
-        <div id="chat" :key="chats.selectedChat._id" v-if="Object.keys(chats.selectedChat).length != '0'">
+        <div id="chat" :key="chats.selectedChat._id" v-if="Object.keys(chats.selectedChat).length !== 0">
           <MessageHeader/>
           <Messages/>
           <Input/>
@@ -56,13 +56,13 @@
   import { defineAsyncComponent, onMounted, ref } from 'vue';
   import SideBar from '../components/SideBar.vue';
   import ChitChatServices from '../services/ChitChatServices';
-  import { useAppStore } from '../stores/app';
-  import { useChatStore } from '../stores/chat';
-  import { useUserStore } from '../stores/user';
-  import { useErrorStore } from '../stores/error';
+  import { useAppStore } from '@/stores/app';
+  import { useChatStore } from '@/stores/chat';
+  import { useUserStore } from '@/stores/user';
+  import { useErrorStore } from '@/stores/error';
   import UserList from '../components/UserList.vue';
   import pusherInstance from '../pusher';
-  import { getUser, getToken, removeUser, destroyToken } from '../authentication/auth';
+  import { getUser, getToken, removeUser, destroyToken } from '@/authentication/auth';
   import { useRouter } from 'vue-router';
 
   const chats = useChatStore()
@@ -78,7 +78,7 @@
   const Input = defineAsyncComponent(() => import('../components/Input.vue'));
   const Dialog = defineAsyncComponent(() => import('../components/Dialog.vue'));
   
-  var presenceChannel = pusher.subscribe('presence-online')
+  const presenceChannel = pusher.subscribe('presence-online')
   presenceChannel.bind('presence-online')
 
   presenceChannel.bind("pusher:member_added", (member) => {
@@ -113,7 +113,7 @@
     removeUser()
     destroyToken()
     userStore.onLogOut()
-    router.push({ path: '/', replace: true })
+    await router.push({path: '/', replace: true})
   }
 
   const getUsers = async () => {
@@ -122,10 +122,10 @@
       userStore.setUsers(result.data)
       const chat_event = `chat-${userStore.user._id}`
       console.log(chat_event)
-      var chatChannel = pusher.subscribe('chitchat')
+      const chatChannel = pusher.subscribe('chitchat')
       chatChannel.bind(chat_event, async function(data){
         console.log(data)
-        const exists = chats.rooms.find( el => el._id == data.chatroom._id)
+        const exists = chats.rooms.find( el => el._id === data.chatroom._id)
         if(exists){
           chats.updateChatroom({_id: data.chatroom._id, updatedAt: data.chatroom.updatedAt, lastMessage: data.chatroom.lastMessage})
           chats.sendMessage(data.data)
@@ -134,12 +134,12 @@
         else{
           chats.setNewRoom(data.chatroom)
           chats.sendMessage(data.data)
-          if(Object.keys(chats.selectedChat).length == 0){
-            chats.setActiveChat()
+          if(Object.keys(chats.selectedChat).length === 0){
+            chats.setActiveChat(data.chatroom)
           }
         }
 
-        if(chats.selectedChat._id == data.chatroom._id){
+        if(chats.selectedChat._id === data.chatroom._id){
           const unread = await ChitChatServices.readMessage(data.chatroom._id)
           if(unread.data.success){
             chats.removeUnreadMessages(data.chatroom._id)
@@ -156,7 +156,7 @@
       else{
         errorStore.setError({message: error.response.data.message, hasError: true})
       }
-      if(error.response.data.status == 401){
+      if(error.response.data.status === 401){
         errorStore.setAuthorization(true)
       }
     }
@@ -168,7 +168,7 @@
   }
 
   onMounted( async () => {
-    getUserInfo()
+    await getUserInfo()
     await getUsers()
     await getChatRooms()
   })
@@ -232,7 +232,7 @@
     width: 70%;
   }
   .active_user_head{
-    padding: 0px 20px;
+    padding: 0 20px;
     height: 15%;
     display: flex;
     align-items: center;
