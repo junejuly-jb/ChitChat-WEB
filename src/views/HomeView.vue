@@ -47,9 +47,7 @@
       </div>
     </div>
   </div>
-  <div v-if="errorStore.unauthenticated">
-    <Dialog @signout="signout"/>
-  </div>
+  <Dialog @signout="signout" v-show="errorStore.unauthenticated"/>
 </template>
 
 <script setup>
@@ -112,9 +110,10 @@
     pusher.unsubscribe('chitchat')
     removeUser()
     destroyToken()
-    userStore.onLogOut()
     await router.push({path: '/', replace: true})
-  }
+    userStore.onLogOut()
+  }    
+
 
   const getUsers = async () => {
     try {

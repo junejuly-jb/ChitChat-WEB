@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useAppStore } from './app'
 import { useChatStore } from './chat'
+import { useErrorStore } from './error'
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -30,6 +31,7 @@ export const useUserStore = defineStore({
     onLogOut(){
       const chatStore = useChatStore()
       const appStore = useAppStore()
+      const errorStore = useErrorStore()
       this.users = []
       this.user = {}
       this.unauthenticated = false
@@ -37,6 +39,9 @@ export const useUserStore = defineStore({
       chatStore.selectedChat = {},
       chatStore.chatState = false,
       appStore.activeTab = 'chats'
+      errorStore.hasError = false
+      errorStore.errorMessage = ''
+      errorStore.unauthenticated = false
     },
   },
 

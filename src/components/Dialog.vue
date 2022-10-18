@@ -1,26 +1,16 @@
 <script setup>
-import { useUserStore } from '../stores/user';
+import { useErrorStore } from '../stores/error';
 
-    const userStore = useUserStore()
-    const dialog = userStore.unauthenticated
+    const errorStore = useErrorStore();
     const emit = defineEmits(['signout'])
 
 </script>
 
 <template>
-
     <v-dialog
-      v-model="dialog"
+      v-model="errorStore.unauthenticated"
       persistent width="500px" height="200px"
     >
-      <template v-slot:activator="{ props }">
-        <v-btn
-          color="primary"
-          v-bind="props"
-        >
-          Open Dialog
-        </v-btn>
-      </template>
       <v-card>
         <v-card-title>
           <span class="text-h5">Token Expired</span>

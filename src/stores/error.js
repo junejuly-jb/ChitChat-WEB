@@ -5,7 +5,7 @@ export const useErrorStore = defineStore({
   state: () => ({
     errorMessage: '',
     hasError: false,
-    unauthenticated: true
+    unauthenticated: false
   }),
 
   actions: {
