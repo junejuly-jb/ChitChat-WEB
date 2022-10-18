@@ -46,8 +46,8 @@
         </div>
       </div>
     </div>
+    <Dialog @signout="signout" v-show="errorStore.unauthenticated"/>
   </div>
-  <Dialog @signout="signout" v-show="errorStore.unauthenticated"/>
 </template>
 
 <script setup>
