@@ -1,5 +1,5 @@
 <template>
-    <div @click="selectChatRoom(chat)" class="main_chat" :class="chatStore.selectedChat._id === chat._id ? 'active' : ''">
+    <div @click="selectChatRoom(chat)" class="main_chat" :class="chatStore.selectedChat._id === chat._id && 'active'">
         <div class="chat_wrapper">
             <v-badge color="green-darken-1" dot offset-y="35" :offset-x="5" v-if="getStatus(chat.user._id)"> 
                 <v-avatar color="grey" size="large">{{ chat.user.initials }}</v-avatar>
@@ -19,20 +19,21 @@
             </div>
             <div class="context__menu">
                 <v-btn
-                color="primary"
+                icon
+                size="x-small"
                 >
-                Parent activator
-
+                <v-icon>mdi-dots-horizontal</v-icon>
                 <v-menu activator="parent">
                     <v-list>
-                    <v-list-item
-                    >
-                        <v-list-item-title>test1</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item
-                    >
-                        <v-list-item-title>test2</v-list-item-title>
-                    </v-list-item>
+                        <v-list-item>
+                            <v-list-item-title @click="handleClickDelete(chat)">Delete</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-title >Block</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-title >Archive</v-list-item-title>
+                        </v-list-item>
                     </v-list>
                 </v-menu>
                 </v-btn>
@@ -44,12 +45,14 @@
     import ChitChatServices from '../services/ChitChatServices';
     import { useChatStore } from '@/stores/chat';
     import { useUserStore } from '@/stores/user';
-    import {useErrorStore} from "@/stores/error";
+    import { useErrorStore } from "@/stores/error";
+    import { useAppStore } from '../stores/app';
     defineProps(['chat'])
 
     const chatStore = useChatStore()
     const userStore = useUserStore()
     const errorStore = useErrorStore()
+    const appStore = useAppStore();
 
     const trim = (string) => {
         let newString = string.substring(0, 25)
@@ -58,6 +61,7 @@
     }
 
     const selectChatRoom = async (chat) => {
+        console.log('chat')
         try {
             chatStore.setChatState(true)
             const result = await ChitChatServices.getMessages(chat._id)
@@ -87,6 +91,11 @@
     const getUnreadLength = (unread) => {
         const unreadmessage = unread.filter( el => el.receiver === userStore.user._id)
         return unreadmessage.length
+    }
+
+    const handleClickDelete = (chat) => {
+        chatStore.setConvoForDeletion({name: chat.user.name, _id: chat._id})
+        appStore.setDialogPrompt(true)
     }
 </script>
 <style scoped>
@@ -139,5 +148,12 @@
     .badge__wrapper{
         position: absolute;
         right: 10px;
+    }
+    .v-list-item:hover{
+        background-color: rgb(170, 212, 255);
+        cursor: pointer;
+    }
+    .v-list{
+        width: 200px;
     }
 </style>

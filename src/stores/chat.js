@@ -5,7 +5,11 @@ export const useChatStore = defineStore({
   state: () => ({
     rooms: [],
     selectedChat: {},
-    chatState: false
+    chatState: false,
+    forDeletion: {
+      name: '',
+      id: ''
+    }
   }),
 
   actions: {
@@ -70,6 +74,10 @@ export const useChatStore = defineStore({
     deleteRoom(payload){
       const room = this.rooms.findIndex( el => el._id === payload)
       this.rooms.splice(room, 1)
+    },
+    setConvoForDeletion(payload){
+      this.forDeletion.name = payload.name
+      this.forDeletion.id = payload._id
     }
   },
 })

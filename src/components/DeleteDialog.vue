@@ -35,11 +35,11 @@ import { useErrorStore } from '../stores/error';
     >
       <v-card>
         <v-card-title>
-          <span class="text-h5">Delete</span>
+          <span class="text-h5">Delete </span>
         </v-card-title>
         <v-card-text>
           <v-container>
-            Are you sure to delete this conversation? You can't revert this v-card-actions.
+            Are you sure you to delete your conversation with <b>{{chatStore.forDeletion.name}}</b> ? This action cannot be undone.
           </v-container>
         </v-card-text>
             <v-card-actions>

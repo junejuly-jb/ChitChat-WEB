@@ -5,7 +5,6 @@ export const useAppStore = defineStore({
   state: () => ({
     activeTab: 'chats',
     dialogPrompt: false,
-    selectedIDForDelete: ''
   }),
 
   actions:{

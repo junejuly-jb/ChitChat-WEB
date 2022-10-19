@@ -13,6 +13,10 @@
         return status
     }
 
+    const handleDelete = () => {
+        chatStore.setConvoForDeletion({name: chatStore.selectedChat.user.name, _id: chatStore.selectedChat._id})
+        appStore.setDialogPrompt(true)
+    }
     
 </script>
 
@@ -27,7 +31,8 @@
             <v-btn
                 icon
                 size="small"
-                @click="appStore.setDialogPrompt(true)"
+                @click="handleDelete"
+                variant="plain"
             >
                 <v-icon color="red">mdi-delete</v-icon>
             </v-btn>

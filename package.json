@@ -9,7 +9,9 @@
     "preview": "vite preview --port 4173"
   },
   "dependencies": {
+    "@vueuse/core": "^9.3.1",
     "axios": "^0.27.2",
+    "click-outside-vue3": "^4.0.1",
     "pinia": "^2.0.21",
     "pusher-js": "^7.4.0",
     "timeago.js": "^4.0.2",

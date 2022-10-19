@@ -100,12 +100,14 @@
   const getChatRooms = async () => {
     try {
       const rooms = await ChitChatServices.getChatRooms()
-      const messages = await ChitChatServices.getMessages(rooms.data.data[0]._id)
-      chats.addChats({ rooms: rooms.data.data, messages: messages.data.data })
-      await ChitChatServices.readMessage(chats.selectedChat._id)
-      chats.removeUnreadMessages(chats.selectedChat._id)
+      if(rooms.data.data.length !== 0){
+        const messages = await ChitChatServices.getMessages(rooms.data.data[0]._id)
+        chats.addChats({ rooms: rooms.data.data, messages: messages.data.data })
+        await ChitChatServices.readMessage(chats.selectedChat._id)
+        chats.removeUnreadMessages(chats.selectedChat._id)
+      }
     } catch (error) {
-      console.log('chatroom error')
+      console.log(error)
     }
   }
 
@@ -124,7 +126,6 @@
       const result = await ChitChatServices.getUsers()
       userStore.setUsers(result.data)
       const chat_event = `chat-${userStore.user._id}`
-      console.log(chat_event)
       const chatChannel = pusher.subscribe('chitchat')
       chatChannel.bind(chat_event, async function(data){
         console.log(data)

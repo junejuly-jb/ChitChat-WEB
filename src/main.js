@@ -4,7 +4,7 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import { isAuthenticated } from './authentication/auth.js'
 import { createPinia } from 'pinia'
-
+import vClickOutside from "click-outside-vue3"
 
 const pinia = createPinia()
 
@@ -33,4 +33,5 @@ createApp(App)
   .use(router)
   .use(vuetify)
   .use(pinia)
+  .use(vClickOutside)
   .mount('#app')
