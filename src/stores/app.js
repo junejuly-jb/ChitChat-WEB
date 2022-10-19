@@ -4,6 +4,8 @@ export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
     activeTab: 'chats',
+    dialogPrompt: false,
+    selectedIDForDelete: ''
   }),
 
   actions:{
@@ -12,6 +14,9 @@ export const useAppStore = defineStore({
     },
     newMessageDialogHandler(payload){
       this.newMessageDialog = payload
+    },
+    setDialogPrompt(payload){
+      this.dialogPrompt = payload
     }
   }
 })

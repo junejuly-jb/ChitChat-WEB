@@ -60,13 +60,16 @@ export const useChatStore = defineStore({
       this.rooms[room].lastMessage = payload.lastMessage
     },
     addUnreadMessages(payload){
-       console.log(payload)
       const room = this.rooms.findIndex( el => el._id === payload._id)
       this.rooms[room].unreadMessages = payload.unreadMessages
     },
     removeUnreadMessages(payload){
       const room = this.rooms.findIndex( el => el._id === payload)
       this.rooms[room].unreadMessages = []
+    },
+    deleteRoom(payload){
+      const room = this.rooms.findIndex( el => el._id === payload)
+      this.rooms.splice(room, 1)
     }
   },
 })

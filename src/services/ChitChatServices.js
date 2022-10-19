@@ -44,5 +44,10 @@ export default {
         return apiClient.get('/read/' + payload, {
             headers: { 'Authorization': 'Bearer ' + getToken() }
         })
+    },
+    deleteMessage(payload){
+        return apiClient.delete('/message/' + payload, {
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        })
     }
 }

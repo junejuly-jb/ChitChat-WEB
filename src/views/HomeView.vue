@@ -46,7 +46,10 @@
         </div>
       </div>
     </div>
-    <Dialog @signout="signout" v-show="errorStore.unauthenticated"/>
+    <div v-if="errorStore.unauthenticated">
+      <Dialog @signout="signout"/>
+    </div>
+    <DeleteDialog/>
   </div>
 </template>
 
@@ -75,6 +78,7 @@
   const Messages = defineAsyncComponent(() => import('../components/Messages.vue'));
   const Input = defineAsyncComponent(() => import('../components/Input.vue'));
   const Dialog = defineAsyncComponent(() => import('../components/Dialog.vue'));
+  const DeleteDialog = defineAsyncComponent(() => import('../components/DeleteDialog.vue'))
   
   const presenceChannel = pusher.subscribe('presence-online')
   presenceChannel.bind('presence-online')

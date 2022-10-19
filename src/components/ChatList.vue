@@ -17,6 +17,26 @@
                 >
                 </v-badge>
             </div>
+            <div class="context__menu">
+                <v-btn
+                color="primary"
+                >
+                Parent activator
+
+                <v-menu activator="parent">
+                    <v-list>
+                    <v-list-item
+                    >
+                        <v-list-item-title>test1</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item
+                    >
+                        <v-list-item-title>test2</v-list-item-title>
+                    </v-list-item>
+                    </v-list>
+                </v-menu>
+                </v-btn>
+            </div>
         </div>
     </div>
 </template>
@@ -86,10 +106,23 @@
     h4{
         padding: 0 !important;
     }
-
+    .context__menu{
+        position: absolute;
+        right: 0;
+        opacity: 0;
+    }
     .main_chat:hover{
         transition: 400ms;
         background-color: rgb(231, 231, 231);
+    }
+    .main_chat:hover .context__menu{
+        opacity: 1;
+        transition: 400ms;
+    }
+
+    .context__menu:hover{
+        opacity: 1;
+        transition: 400ms;
     }
     .content{
         white-space: nowrap;

@@ -1,12 +1,36 @@
 <script setup>
-    defineProps(['dialog'])
+import ChitChatServices from '../services/ChitChatServices';
+import { useChatStore } from '../stores/chat';
+import { useAppStore } from '../stores/app';
+import { useErrorStore } from '../stores/error';
+
+    const emit = defineEmits(['handleDialog'])
+    const chatStore = useChatStore();
+    const errorStore = useErrorStore();
+    const appStore = useAppStore();
+
+    const handleDelete = async () => {
+        try {
+            let result = await ChitChatServices.deleteMessage(chatStore.selectedChat._id)
+            
+        } catch (error) {
+            if(!error.response.data){
+                errorStore.setError({message: 'Network error. Please try again later.', hasError: true})
+            }
+            else{
+                errorStore.setError({message: error.response.data.message, hasError: true})
+            }
+            if(error.response.data.status === 401){
+                errorStore.setAuthorization(true)
+            }
+        }
+    }
 </script>
 
-//TODO: fix error on non element root node
-
 <template>
+    <div>
     <v-dialog
-      v-model="dialog"
+      v-model="appStore.dialogPrompt"
       persistent width="500px" height="300px"
     >
       <v-card>
@@ -15,7 +39,7 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            Are you sure to delete this conversation? This cannot be undone.
+            Are you sure to delete this conversation? You can't revert this v-card-actions.
           </v-container>
         </v-card-text>
             <v-card-actions>
@@ -23,17 +47,19 @@
                 <v-btn
                     color="red"
                     text
-                
+                    @click="appStore.setDialogPrompt(false)"
                 >
                     Cancel
                 </v-btn>
                 <v-btn
                     color="red"
                     text
+                    @click="handleDelete"
                 >
                     Delete
                 </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
+    </div>
 </template>
