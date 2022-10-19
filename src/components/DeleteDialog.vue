@@ -39,7 +39,7 @@ import { useErrorStore } from '../stores/error';
         </v-card-title>
         <v-card-text>
           <v-container>
-            Are you sure you to delete your conversation with <b>{{chatStore.forDeletion.name}}</b> ? This action cannot be undone.
+            Are you sure you want to delete your conversation with <b>{{chatStore.forDeletion.name}}</b> ? This action cannot be undone.
           </v-container>
         </v-card-text>
             <v-card-actions>

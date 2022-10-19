@@ -7,16 +7,13 @@
             <v-avatar color="grey" size="large" v-else>{{ chat.user.initials }}</v-avatar>
             <div style="width: 15px;"></div>
             <div class="content">
-                <h5>{{ chat.user.name }}</h5>
+                <div class="d-flex">
+                    <h5>{{ chat.user.name }}</h5>
+                    <span class="dot" v-if="getUnreadLength(chat.unreadMessages) > 0 && chatStore.selectedChat._id !== chat._id"><small>{{getUnreadLength(chat.unreadMessages)}}</small></span>
+                </div>
                 <div><small>{{ trim(chat.lastMessage) }}</small></div>
             </div>
-            <div class="badge__wrapper" v-if="getUnreadLength(chat.unreadMessages) > 0 && chatStore.selectedChat._id !== chat._id">
-                <v-badge
-                color="blue"
-                :content="getUnreadLength(chat.unreadMessages)"
-                >
-                </v-badge>
-            </div>
+            
             <div class="context__menu">
                 <v-btn
                 icon
@@ -145,9 +142,16 @@
         background-color: dodgerblue;
         color: white;
     }
-    .badge__wrapper{
-        position: absolute;
-        right: 10px;
+    .dot{
+        background-color: red;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin: 0 10px;
     }
     .v-list-item:hover{
         background-color: rgb(170, 212, 255);
