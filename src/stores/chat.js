@@ -9,7 +9,8 @@ export const useChatStore = defineStore({
     forDeletion: {
       name: '',
       id: ''
-    }
+    },
+    selectedContextMenu: ''
   }),
 
   actions: {

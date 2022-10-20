@@ -33,7 +33,7 @@
                 </div>
               </div>
               <div v-else>
-                <div v-for="user in userStore.users">
+                <div v-for="user in userStore.users" :key="user._id">
                   <UserList :user="user"/>
                 </div>
               </div>

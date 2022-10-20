@@ -1,23 +1,11 @@
 <script setup>
-    import { onMounted } from 'vue';
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
     const chatStore = useChatStore();
     const userStore = useUserStore();
-
-    const handleScroll = ({ target: { scrollTop, clientHeight, scrollHeight }}) => {
-        if (scrollTop + clientHeight >= scrollHeight) {
-            console.log('test')
-        }
-        console.log('test123')
-    }   
-
-    // onMounted(() => onScrollEvent(e))
 </script>
 <template>
-    
-    <!-- v-show="chatStore.chatState" -->
-    <div class="messages-wrapper" @scroll.passive="handleScroll">
+    <div class="messages-wrapper">
         <div class="msgs">
             <div v-for="message in chatStore.selectedChat.messages" :key="message._id">
                 <div class="msg" :class="message.sender == userStore.user._id ? 'sent' : 'received'">
