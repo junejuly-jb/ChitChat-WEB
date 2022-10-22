@@ -14,25 +14,23 @@
                 <div><small>{{ trim(chat.lastMessage) }}</small></div>
             </div>
             
-            <div class="context__menu">
-                <v-btn
-                icon
-                size="x-small"
-                >
-                <v-icon>mdi-dots-horizontal</v-icon>
-                <v-menu activator="parent">
-                    <v-list>
-                        <v-list-item>
-                            <v-list-item-title @click="handleClickDelete(chat)">Delete</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item>
-                            <v-list-item-title >Block</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item>
-                            <v-list-item-title >Archive</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
+            <div class="context__menu" :style="[chat._id === chatStore.selectedContextMenu && { opacity: '1'}]">
+                <div v-if="chat._id === chatStore.selectedContextMenu" v-click-outside="onClickOutside"></div>
+                <v-btn icon size="x-small" @click="selectContextMenu(chat._id)">
+                  <v-icon>mdi-dots-horizontal</v-icon>
+                  <v-menu activator="parent">
+                      <v-list>
+                          <v-list-item>
+                              <v-list-item-title @click="handleClickDelete(chat)">Delete</v-list-item-title>
+                          </v-list-item>
+                          <v-list-item>
+                              <v-list-item-title >Block</v-list-item-title>
+                          </v-list-item>
+                          <v-list-item>
+                              <v-list-item-title >Archive</v-list-item-title>
+                          </v-list-item>
+                      </v-list>
+                  </v-menu>
                 </v-btn>
             </div>
         </div>
@@ -43,13 +41,18 @@
     import { useChatStore } from '@/stores/chat';
     import { useUserStore } from '@/stores/user';
     import { useErrorStore } from "@/stores/error";
-    import { useAppStore } from '../stores/app';
+    import { useAppStore } from '@/stores/app';
     defineProps(['chat'])
 
     const chatStore = useChatStore()
     const userStore = useUserStore()
     const errorStore = useErrorStore()
     const appStore = useAppStore();
+
+    const selectContextMenu = (id) => chatStore.setSelectedContextMenu(id)
+
+    const onClickOutside = () => chatStore.setSelectedContextMenu('')
+    
 
     const trim = (string) => {
         let newString = string.substring(0, 25)

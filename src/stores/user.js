@@ -39,6 +39,7 @@ export const useUserStore = defineStore({
       chatStore.selectedChat = {},
       chatStore.forDeletion = {}
       chatStore.chatState = false,
+      chatStore.selectedContextMenu = ''
       appStore.activeTab = 'chats'
       appStore.dialogPrompt = false
       errorStore.hasError = false

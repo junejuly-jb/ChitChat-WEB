@@ -34,7 +34,7 @@ export const useChatStore = defineStore({
       this.selectedChat.input = ''
     },
     sendMessage(payload){
-      const idx = this.rooms.findIndex( el => el._id == payload.chatroomID)
+      const idx = this.rooms.findIndex( el => el._id === payload.chatroomID)
       this.rooms[idx].messages.unshift(payload)
     },
     clearActiveChat(){
@@ -79,6 +79,9 @@ export const useChatStore = defineStore({
     setConvoForDeletion(payload){
       this.forDeletion.name = payload.name
       this.forDeletion.id = payload._id
+    },
+    setSelectedContextMenu(payload){
+      this.selectedContextMenu = payload
     }
   },
 })
