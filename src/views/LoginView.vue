@@ -173,23 +173,17 @@
             </v-col>
         </v-row>
     </v-container>
-    <v-alert
-    closable
-    :type="alertType"
-    :model-value="hasError"
-    transition="scale-transition"
-    @input="onCloseAlert"
-    >
-        {{ errorMessage }}
-    </v-alert>
+    <Snackbar/>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import ChitChatServices from '../services/ChitChatServices';
 import { setToken, setUser} from '../authentication/auth';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '../stores/user';
+import { useAppStore } from '../stores/app';
 
+    const Snackbar = defineAsyncComponent( () => import('../components/SnackBar.vue'))
+    const appStore = useAppStore();
     const step = ref(1)
     const login_email = ref('')
     const login_password = ref('')
@@ -200,15 +194,6 @@ import { useUserStore } from '../stores/user';
     const reg_conpassword = ref('')
     const isLoading = ref(false)
     const router = useRouter()
-    const errorMessage = ref('')
-    const hasError = ref(false)
-    const alertType= ref('error')
-    const userStore = useUserStore()
-
-    const onCloseAlert = () => {
-        hasError.value = false
-        errorMessage.value = ''
-    }
 
     const handleLogin = async () => {
         isLoading.value = true
@@ -218,17 +203,14 @@ import { useUserStore } from '../stores/user';
             setUser({ _id: result.data.user._id, name: result.data.user.name })
             router.push({ path: '/home', replace: true })
         } catch (error) {
-            hasError.value = true
-            alertType.value = 'error'
+            let message = ''
             if(!error.response.data){
-                errorMessage.value = 'Could not connect to server. Please try again later.'
+                message = 'Could not connect to server. Please try again later.'
             }
             else{
-                errorMessage.value = error.response.data.message
+                message = error.response.data.message
             }
-            setTimeout( () => {
-                onCloseAlert()
-            }, 4000)
+            appStore.setSnackBar({message, type: 'error'})
         }
         isLoading.value = false;
     }
@@ -285,14 +267,6 @@ import { useUserStore } from '../stores/user';
 
     .text_blue{
         color: dodgerblue;
-    }
-
-    .v-alert {
-        position: fixed;
-        left: 50%;
-        bottom: 50px;
-        transform: translate(-50%, -50%);
-        margin: 0 auto;
     }
 </style>
   

@@ -5,6 +5,11 @@ export const useAppStore = defineStore({
   state: () => ({
     activeTab: 'chats',
     dialogPrompt: false,
+    snackbar: {
+      status: false,
+      message: '',
+      type: ''
+    }
   }),
 
   actions:{
@@ -16,6 +21,16 @@ export const useAppStore = defineStore({
     },
     setDialogPrompt(payload){
       this.dialogPrompt = payload
+    },
+    setSnackBar(payload){
+      this.snackbar.status = true
+      this.snackbar.message = payload.message
+      this.snackbar.type = payload.type
+      setTimeout(() => {
+        this.snackbar.status = false
+        this.snackbar.message = ''
+        this.snackbar.type = ''
+      }, 4000)
     }
   }
 })
