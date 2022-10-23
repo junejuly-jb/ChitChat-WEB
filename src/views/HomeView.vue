@@ -50,6 +50,7 @@
       <Dialog @signout="signout"/>
     </div>
     <DeleteDialog/>
+    <Snackbar/>
   </div>
 </template>
 
@@ -79,6 +80,7 @@
   const Input = defineAsyncComponent(() => import('../components/Input.vue'));
   const Dialog = defineAsyncComponent(() => import('../components/Dialog.vue'));
   const DeleteDialog = defineAsyncComponent(() => import('../components/DeleteDialog.vue'))
+  const Snackbar = defineAsyncComponent(() => import('../components/SnackBar.vue'))
   
   const presenceChannel = pusher.subscribe('presence-online')
   presenceChannel.bind('presence-online')
