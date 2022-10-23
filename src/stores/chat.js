@@ -75,6 +75,9 @@ export const useChatStore = defineStore({
     deleteRoom(payload){
       const room = this.rooms.findIndex( el => el._id === payload)
       this.rooms.splice(room, 1)
+      if(payload === this.selectedChat._id){
+        this.selectedChat = {}
+      }
     },
     setConvoForDeletion(payload){
       this.forDeletion.name = payload.name
