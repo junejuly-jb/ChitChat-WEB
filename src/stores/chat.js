@@ -45,6 +45,7 @@ export const useChatStore = defineStore({
       this.selectedChat.input = ''
       this.selectedChat._id = '1'
       this.selectedChat.user = {}
+      this.selectedChat.typing = []
       this.selectedChat.user._id = payload._id
       this.selectedChat.user.name = payload.name
     },
@@ -84,6 +85,18 @@ export const useChatStore = defineStore({
     },
     setSelectedContextMenu(payload){
       this.selectedContextMenu = payload
+    },
+    setTyping(payload){
+      this.selectedChat.typing.push(payload)
+    },
+    unSetTyping(payload){
+      this.selectedChat.typing = this.selectedChat.typing.filter( el => el !== payload)
     }
   },
+
+  getters:{
+    getChatroom: (state) => {
+      return (payload) => state.rooms.find( el => el._id === payload)
+    }
+  }
 })

@@ -10,7 +10,7 @@
     <div class="messages-wrapper">
         <div class="msgs">
             <div class="d-flex wave__wrapper" >
-                <div id="wave" :style="[appStore.test && { marginBottom: '0'}]">
+                <div id="wave" :style="[chatStore.selectedChat.typing.includes(chatStore.selectedChat.user._id) && { marginBottom: '0'}]">
                     <span class="dot"></span>
                     <span class="dot"></span>
                     <span class="dot"></span>

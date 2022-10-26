@@ -61,7 +61,6 @@
     }
 
     const selectChatRoom = async (chat) => {
-        console.log('chat')
         try {
             chatStore.setChatState(true)
             const result = await ChitChatServices.getMessages(chat._id)

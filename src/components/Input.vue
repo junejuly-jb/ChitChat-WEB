@@ -7,6 +7,8 @@
     const chatStore = useChatStore()
     const userStore = useUserStore()
     const appStore = useAppStore()
+    
+    const emit = defineEmits(['handleTyping', 'handleStopTyping'])
 
     const btnSend = async () => {
         if(chatStore.selectedChat.input.trim().length === 0) return;
@@ -56,18 +58,14 @@
         return initials;
     }
 
-    const handleTyping = () => {
-        console.log('typing')
-    }
+    
 
-    const handleFocusOut = () => {
-        console.log('unfocus')
-    }
+    
 </script>
 <template>
     <div class="input-wrapper">
         <v-container>
-            <input @keydown="handleTyping" @focusout="handleFocusOut" type="text" v-model="chatStore.selectedChat.input" @keyup.enter="btnSend" tabindex="1"/>
+            <input @keydown="emit('handleTyping')" @focusout="emit('handleStopTyping')" type="text" v-model="chatStore.selectedChat.input" @keyup.enter="btnSend" tabindex="1"/>
             <v-btn color="blue" type="submit" @click="btnSend"><v-icon icon="mdi-send"></v-icon></v-btn>
         </v-container>
     </div>

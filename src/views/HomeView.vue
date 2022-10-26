@@ -42,7 +42,7 @@
         <div id="chat" :key="chats.selectedChat._id" v-if="Object.keys(chats.selectedChat).length !== 0">
           <MessageHeader/>
           <Messages/>
-          <Input/>
+          <Input @handleTyping="handleTyping" @handleStopTyping="handleStopTyping"/>
         </div>
       </div>
     </div>
@@ -83,6 +83,8 @@
   const Snackbar = defineAsyncComponent(() => import('../components/SnackBar.vue'))
   
   const presenceChannel = pusher.subscribe('presence-online')
+  const typingChannel = pusher.subscribe('private-typing')
+
   presenceChannel.bind('presence-online')
 
   presenceChannel.bind("pusher:member_added", (member) => {
@@ -127,34 +129,7 @@
     try {
       const result = await ChitChatServices.getUsers()
       userStore.setUsers(result.data)
-      const chat_event = `chat-${userStore.user._id}`
-      const chatChannel = pusher.subscribe('chitchat')
-      chatChannel.bind(chat_event, async function(data){
-        console.log(data)
-        const exists = chats.rooms.find( el => el._id === data.chatroom._id)
-        if(exists){
-          chats.updateChatroom({_id: data.chatroom._id, updatedAt: data.chatroom.updatedAt, lastMessage: data.chatroom.lastMessage})
-          chats.sendMessage(data.data)
-          chats.sortRoom()
-        }
-        else{
-          chats.setNewRoom(data.chatroom)
-          chats.sendMessage(data.data)
-          if(Object.keys(chats.selectedChat).length === 0){
-            chats.setActiveChat(data.chatroom)
-          }
-        }
-
-        if(chats.selectedChat._id === data.chatroom._id){
-          const unread = await ChitChatServices.readMessage(data.chatroom._id)
-          if(unread.data.success){
-            chats.removeUnreadMessages(data.chatroom._id)
-          }
-        }
-        else{
-          chats.addUnreadMessages({ _id: data.chatroom._id, unreadMessages: data.chatroom.unreadMessages })
-        }
-      })
+      
     } catch (error) {
       if(!error.response.data){
           errorStore.setError({message: 'Could not connect to server. Please try again later.', hasError: true})
@@ -168,14 +143,70 @@
     }
   }
 
+  const channelEventListener = () => {
+    const chatChannel = pusher.subscribe('chitchat')
+    const chat_event = `chat-${userStore.user._id}`
+    
+    chatChannel.bind(chat_event, async function(data){
+      const exists = chats.rooms.find( el => el._id === data.chatroom._id)
+      if(exists){
+        chats.updateChatroom({_id: data.chatroom._id, updatedAt: data.chatroom.updatedAt, lastMessage: data.chatroom.lastMessage})
+        chats.sendMessage(data.data)
+        chats.sortRoom()
+      }
+      else{
+        chats.setNewRoom(data.chatroom)
+        chats.sendMessage(data.data)
+        if(Object.keys(chats.selectedChat).length === 0){
+          chats.setActiveChat(data.chatroom)
+        }
+      }
+
+      if(chats.selectedChat._id === data.chatroom._id){
+        const unread = await ChitChatServices.readMessage(data.chatroom._id)
+        if(unread.data.success){
+          chats.removeUnreadMessages(data.chatroom._id)
+        }
+      }
+      else{
+        chats.addUnreadMessages({ _id: data.chatroom._id, unreadMessages: data.chatroom.unreadMessages })
+      }
+    })
+
+    typingChannel.bind('client-isTyping', (data) => {
+      console.log('is typing' + data)
+    })
+
+    typingChannel.bind('client-isNotTyping', (data) => {
+      console.log('is not typing' + data)
+    })
+  }
+
   const getUserInfo = async () => {
     const user = await getUser()
     userStore.setUserInfo(user)
   }
 
+  const handleTyping = () => {
+    if (chats.selectedChat._id !== '1') {
+      if(!chats.selectedChat.typing.includes(userStore.user._id)){
+        chats.setTyping(userStore.user._id)
+      }
+    }
+  }
+
+  const handleStopTyping = () => {
+    if (chats.selectedChat._id !== '1') {
+      if(chats.selectedChat.typing.includes(userStore.user._id)){
+        chats.unSetTyping(userStore.user._id)
+      }
+    }
+  }
+
   onMounted( async () => {
     await getUserInfo()
     await getUsers()
+    channelEventListener()
     await getChatRooms()
   })
 </script>
