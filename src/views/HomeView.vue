@@ -55,7 +55,7 @@
 </template>
 
 <script setup>
-  import { defineAsyncComponent, onMounted, ref } from 'vue';
+  import { defineAsyncComponent, onMounted } from 'vue';
   import SideBar from '../components/SideBar.vue';
   import ChitChatServices from '../services/ChitChatServices';
   import { useAppStore } from '@/stores/app';

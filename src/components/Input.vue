@@ -55,11 +55,19 @@
         }
         return initials;
     }
+
+    const handleTyping = () => {
+        console.log('typing')
+    }
+
+    const handleFocusOut = () => {
+        console.log('unfocus')
+    }
 </script>
 <template>
     <div class="input-wrapper">
         <v-container>
-            <input type="text" v-model="chatStore.selectedChat.input" @keyup.enter="btnSend" tabindex="1" autofocus/>
+            <input @keydown="handleTyping" @focusout="handleFocusOut" type="text" v-model="chatStore.selectedChat.input" @keyup.enter="btnSend" tabindex="1"/>
             <v-btn color="blue" type="submit" @click="btnSend"><v-icon icon="mdi-send"></v-icon></v-btn>
         </v-container>
     </div>
