@@ -216,20 +216,15 @@ import { useAppStore } from '../stores/app';
     }
 
     const handleSignUp = async () => {
-        isLoading.value = true
         try {
+            isLoading.value = true
             const result = await ChitChatServices.register({
                 name: reg_fname.value + ' ' + reg_lname.value,
                 email: reg_email.value,
                 password: reg_password.value,
                 confirmPassword: reg_conpassword.value
             })
-            alertType.value = 'success'
-            hasError.value = true
-            errorMessage.value = result.data.message
-            setTimeout( () => {
-                onCloseAlert()
-            }, 1500)
+            appStore.setSnackBar({ status: true, message: result.data.message, type: 'success'})
             step.value = 1
             resetRegistrationForm();
         } catch (error) {
@@ -241,11 +236,9 @@ import { useAppStore } from '../stores/app';
             else{
                 errorMessage.value = error.response.data.message
             }
-            setTimeout( () => {
-                onCloseAlert()
-            }, 1500)
+        } finally{
+            isLoading.value = false;
         }
-        isLoading.value = false;
     }
 
     const resetRegistrationForm = () => {
@@ -264,7 +257,6 @@ import { useAppStore } from '../stores/app';
     .v-application .rounded-br-xl {
         border-bottom-right-radius: 300px !important;
     }
-
     .text_blue{
         color: dodgerblue;
     }

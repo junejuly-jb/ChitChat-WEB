@@ -9,7 +9,8 @@ export const useAppStore = defineStore({
       status: false,
       message: '',
       type: ''
-    }
+    },
+    test: true
   }),
 
   actions:{
@@ -31,6 +32,9 @@ export const useAppStore = defineStore({
         this.snackbar.message = ''
         this.snackbar.type = ''
       }, 4000)
+    },
+    setTest(){
+      this.test = !this.test
     }
   }
 })

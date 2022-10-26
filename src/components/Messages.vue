@@ -1,12 +1,21 @@
 <script setup>
+    import { useAppStore } from '../stores/app';
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
     const chatStore = useChatStore();
     const userStore = useUserStore();
+    const appStore = useAppStore();
 </script>
 <template>
     <div class="messages-wrapper">
         <div class="msgs">
+            <div class="d-flex wave__wrapper" >
+                <div id="wave" :style="[appStore.test && { marginBottom: '0'}]">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
             <div v-for="message in chatStore.selectedChat.messages" :key="message._id">
                 <div class="msg" :class="message.sender == userStore.user._id ? 'sent' : 'received'">
                     <p>{{ message.message }}</p>
@@ -93,11 +102,52 @@
         padding: 5px 15px;
         max-width: 50%;
         border-radius: 20px;
+        transition: 0.5s;
     }
 
     p{
         padding: 0;
         margin: 0;
     }
+
+    #wave{
+        padding: 12px 15px;
+        background-color: lightgray;
+        border-radius: 20px;
+        transition: 0.5s;
+        margin-bottom: -33px;
+    }
+
+    .wave__wrapper{
+        margin-top: 3px;
+    }
     
+    .dot {
+        display:inline-block;
+        width:8px;
+        height:8px;
+        border-radius:50%;
+        margin-right:3px;
+        background: gray;
+        animation: wave 1s linear infinite;
+        z-index: -1;
+    }
+
+    .dot:nth-child(2) {
+        animation-delay: -0.8s;
+    }
+
+    .dot:nth-child(3) {
+        animation-delay: -0.6s;
+    }
+
+    @keyframes wave {
+        0%, 60%, 100% {
+            transform: initial;
+        }
+
+        30% {
+            transform: translateY(-5px);
+        }
+    }
 </style>

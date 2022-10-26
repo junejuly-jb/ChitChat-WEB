@@ -17,6 +17,10 @@
         chatStore.setConvoForDeletion({name: chatStore.selectedChat.user.name, _id: chatStore.selectedChat._id})
         appStore.setDialogPrompt(true)
     }
+
+    const handleTest = () => {
+        appStore.setTest()
+    }
     
 </script>
 
@@ -36,6 +40,7 @@
             >
                 <v-icon color="red">mdi-delete</v-icon>
             </v-btn>
+            <v-btn @click="handleTest">Test</v-btn>
         </div>
     </div>
 </template>
