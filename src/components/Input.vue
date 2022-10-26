@@ -9,6 +9,7 @@
     const appStore = useAppStore()
 
     const btnSend = async () => {
+        if(chatStore.selectedChat.input.trim().length === 0) return;
         let result;
         if(chatStore.selectedChat._id == '1'){
             result = await ChitChatServices.sendMessage({ 
