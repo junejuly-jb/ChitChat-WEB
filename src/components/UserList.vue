@@ -21,9 +21,7 @@
     const chatStore = useChatStore();
     
     const handleClickUser = (user) => {
-        console.log(user)
         const user_exists = chatStore.rooms.find( el => el.user._id == user._id)
-        console.log(user_exists)
         if(!user_exists){
             chatStore.composeMessage({ _id: user._id, name: user.name })
         }

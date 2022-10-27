@@ -45,7 +45,6 @@
             chatStore.sendMessage(result.data.data)
             chatStore.sortRoom()
         }
-        console.log(result)
     }
 
     const getInitials = (string) => {
@@ -58,9 +57,6 @@
         return initials;
     }
 
-    
-
-    
 </script>
 <template>
     <div class="input-wrapper">

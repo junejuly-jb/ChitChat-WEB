@@ -91,6 +91,14 @@ export const useChatStore = defineStore({
     },
     unSetTyping(payload){
       this.selectedChat.typing = this.selectedChat.typing.filter( el => el !== payload)
+    },
+    setTypingForIncomingEvent(payload){
+      const room = this.rooms.findIndex( el => el._id === payload.roomID)
+      this.rooms[room].typing.push(payload.user)
+    },
+    unSetTypingForIncomingEvent(payload){
+      const room = this.rooms.findIndex( el => el._id === payload.roomID)
+      this.rooms[room].typing = this.rooms[room].typing.filter( el => el !== payload.user)
     }
   },
 

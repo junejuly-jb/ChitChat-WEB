@@ -76,7 +76,6 @@
             errorStore.setError({message: error.response.data.message, hasError: true})
           }
           if(error.response.data.status === 401){
-            console.log('here')
             errorStore.setAuthorization(true)
           }
         }

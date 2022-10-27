@@ -174,11 +174,15 @@
     })
 
     typingChannel.bind('client-isTyping', (data) => {
-      console.log('is typing' + data)
+      if(chats.rooms.find( e => e._id === data.roomID)){
+        chats.setTypingForIncomingEvent(data)
+      }
     })
 
     typingChannel.bind('client-isNotTyping', (data) => {
-      console.log('is not typing' + data)
+      if(chats.rooms.find( e => e._id === data.roomID)){
+        chats.unSetTypingForIncomingEvent(data)
+      }
     })
   }
 
@@ -191,6 +195,7 @@
     if (chats.selectedChat._id !== '1') {
       if(!chats.selectedChat.typing.includes(userStore.user._id)){
         chats.setTyping(userStore.user._id)
+        typingChannel.trigger('client-isTyping', { roomID: chats.selectedChat._id, user: userStore.user._id })
       }
     }
   }
@@ -199,6 +204,7 @@
     if (chats.selectedChat._id !== '1') {
       if(chats.selectedChat.typing.includes(userStore.user._id)){
         chats.unSetTyping(userStore.user._id)
+        typingChannel.trigger('client-isNotTyping', { roomID: chats.selectedChat._id, user: userStore.user._id })
       }
     }
   }
