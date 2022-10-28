@@ -19,7 +19,7 @@
 <template>
     <div class="messages-wrapper">
         <div class="msgs">
-            <div class="d-flex wave__wrapper">
+            <div class="d-flex pt-2" v-if="chatStore.selectedChat._id !== '1'">
                 <v-avatar 
                     class="avatar__wave" 
                     color="grey" 
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div 
-                :class="['d-flex', (message.sender == userStore.user._id && 'justify-end')]" 
+                :class="['d-flex align-center', (message.sender == userStore.user._id && 'justify-end')]" 
                 v-for="(message, idx) in chatStore.selectedChat.messages" 
                 :key="message._id"
             >
@@ -125,8 +125,6 @@
         /* float: right; */
     }
 
-    
-
     .received {
         background-color: lightgray;
         /* float: left; */
@@ -139,7 +137,6 @@
         padding: 5px 15px;
         max-width: 50%;
         border-radius: 20px;
-        transition: 0.5s;
     }
 
     p{

@@ -44,6 +44,7 @@
             }
             chatStore.sendMessage(result.data.data)
             chatStore.sortRoom()
+            emit('handleStopTyping')
         }
     }
 

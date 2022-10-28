@@ -152,7 +152,6 @@
       if(exists){
         chats.updateChatroom({_id: data.chatroom._id, updatedAt: data.chatroom.updatedAt, lastMessage: data.chatroom.lastMessage})
         chats.sendMessage(data.data)
-        chats.sortRoom()
       }
       else{
         chats.setNewRoom(data.chatroom)
@@ -161,6 +160,7 @@
           chats.setActiveChat(data.chatroom)
         }
       }
+      chats.sortRoom()
 
       if(chats.selectedChat._id === data.chatroom._id){
         const unread = await ChitChatServices.readMessage(data.chatroom._id)
@@ -192,10 +192,15 @@
   }
 
   const handleTyping = () => {
+    console.log('keydown')
     if (chats.selectedChat._id !== '1') {
       if(!chats.selectedChat.typing.includes(userStore.user._id)){
         chats.setTyping(userStore.user._id)
         typingChannel.trigger('client-isTyping', { roomID: chats.selectedChat._id, user: userStore.user._id })
+      }
+      if(chats.selectedChat.typing.includes(userStore.user._id) && chats.selectedChat.input.length <= 1){
+        chats.unSetTyping(userStore.user._id)
+        typingChannel.trigger('client-isNotTyping', { roomID: chats.selectedChat._id, user: userStore.user._id })
       }
     }
   }
