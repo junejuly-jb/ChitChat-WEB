@@ -105,6 +105,6 @@ export const useChatStore = defineStore({
   getters:{
     getChatroom: (state) => {
       return (payload) => state.rooms.find( el => el._id === payload)
-    }
+    },
   }
 })

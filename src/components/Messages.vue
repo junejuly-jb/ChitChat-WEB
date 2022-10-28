@@ -14,25 +14,38 @@
         if(differentUser) return true
         
         return false
-
-    /*const hasBeenAwhile = new Date(msg.createdAt).getSeconds() > 60 ;
-    return hasBeenAwhile */
     }
 </script>
 <template>
     <div class="messages-wrapper">
         <div class="msgs">
-            <div class="d-flex wave__wrapper pt-2">
-                <v-avatar class="avatar__wave" color="grey" size="small" :style="[chatStore.selectedChat.typing.includes(chatStore.selectedChat.user._id) && { marginBottom: '0'}]">RN</v-avatar>
+            <div class="d-flex wave__wrapper">
+                <v-avatar 
+                    class="avatar__wave" 
+                    color="grey" 
+                    size="small" 
+                    :style="[chatStore.selectedChat.typing.includes(chatStore.selectedChat.user._id) && { marginBottom: '0'}]"
+                    >{{chatStore.getChatroom(chatStore.selectedChat._id).user.initials}}
+                </v-avatar>
                 <div class="ml-1" id="wave" :style="[chatStore.selectedChat.typing.includes(chatStore.selectedChat.user._id) && { marginBottom: '0'}]">
                     <span class="dot"></span>
                     <span class="dot"></span>
                     <span class="dot"></span>
                 </div>
             </div>
-            <div class="d-flex align-end messageWrapper" :class="message.sender == userStore.user._id && 'justify-end'" v-for="(message, idx) in chatStore.selectedChat.messages" :key="message._id">
+            <div 
+                :class="['d-flex', (message.sender == userStore.user._id && 'justify-end')]" 
+                v-for="(message, idx) in chatStore.selectedChat.messages" 
+                :key="message._id"
+            >
                 <div v-if="shouldShowAvatar(chatStore.selectedChat.messages[idx -1], message)">
-                    <v-avatar color="grey" size="small" v-if="message.receiver == userStore.user._id" class="userAvatar">{{idx}}</v-avatar>
+                    <v-avatar 
+                        color="grey" 
+                        size="small" 
+                        v-if="message.receiver == userStore.user._id"
+                    >
+                        {{chatStore.getChatroom(message.chatroomID).user.initials}}
+                    </v-avatar>
                 </div>
                 <div
                     :class="['msg', 
@@ -135,16 +148,16 @@
     }
 
     #wave{
-        padding: 12px 15px;
+        padding: 12px 10px;
         background-color: lightgray;
         border-radius: 20px;
         transition: 0.5s;
-        margin-bottom: -34px;
+        margin-bottom: -40px;
     }
 
     .avatar__wave{
         transition: 0.5s;
-        margin-bottom: -34px;
+        margin-bottom: -40px;
     }
     
     .dot {
