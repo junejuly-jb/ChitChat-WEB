@@ -1,10 +1,22 @@
 <script setup>
-    import { useAppStore } from '../stores/app';
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
     const chatStore = useChatStore();
     const userStore = useUserStore();
-    const appStore = useAppStore();
+
+    const shouldShowAvatar = (previous, msg) => {
+        const isFirst = !previous;
+        
+        if(isFirst) return true
+        
+        const differentUser = msg.sender !== previous.sender;
+        if(differentUser) return true
+        
+        return false
+
+    /*const hasBeenAwhile = new Date(msg.createdAt).getSeconds() > 60 ;
+    return hasBeenAwhile */
+    }
 </script>
 <template>
     <div class="messages-wrapper">
@@ -16,8 +28,16 @@
                     <span class="dot"></span>
                 </div>
             </div>
-            <div v-for="message in chatStore.selectedChat.messages" :key="message._id">
-                <div class="msg" :class="message.sender == userStore.user._id ? 'sent' : 'received'">
+            <div class="d-flex align-end messageWrapper" :class="message.sender == userStore.user._id && 'justify-end'" v-for="(message, idx) in chatStore.selectedChat.messages" :key="message._id">
+                <div v-if="shouldShowAvatar(chatStore.selectedChat.messages[idx -1], message)">
+                    <v-avatar color="grey" size="small" v-if="message.receiver == userStore.user._id" class="userAvatar">{{idx}}</v-avatar>
+                </div>
+                <div
+                    :class="['msg', 
+                        (message.sender == userStore.user._id ? 'sent' : 'received ml-1'),
+                        (!shouldShowAvatar(chatStore.selectedChat.messages[idx -1], message) && 'ml-9')
+                    ]"
+                >
                     <p>{{ message.message }}</p>
                 </div>
             </div>
@@ -87,13 +107,15 @@
     .sent {
         background-color: #395dff;
         color: white;
-        float: right;
+        /* float: right; */
     }
+
+    
 
     .received {
         background-color: lightgray;
-        float: left;
-        margin-left: 2px;
+        /* float: left; */
+        /* margin-left: 2px; */
     }
 
     .msg{
