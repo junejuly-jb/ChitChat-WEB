@@ -4,12 +4,13 @@
     const chatStore = useChatStore();
     const userStore = useUserStore();
 
+
     const shouldShowAvatar = (previous, msg) => {
         const isFirst = !previous;
         
         if(isFirst) return true
         
-        const differentUser = msg.sender !== previous.sender;
+        const differentUser = msg.sender !== previous.sender
         if(differentUser) return true
         
         return false
@@ -21,8 +22,9 @@
 <template>
     <div class="messages-wrapper">
         <div class="msgs">
-            <div class="d-flex wave__wrapper" >
-                <div id="wave" :style="[chatStore.selectedChat.typing.includes(chatStore.selectedChat.user._id) && { marginBottom: '0'}]">
+            <div class="d-flex wave__wrapper pt-2">
+                <v-avatar class="avatar__wave" color="grey" size="small" :style="[chatStore.selectedChat.typing.includes(chatStore.selectedChat.user._id) && { marginBottom: '0'}]">RN</v-avatar>
+                <div class="ml-1" id="wave" :style="[chatStore.selectedChat.typing.includes(chatStore.selectedChat.user._id) && { marginBottom: '0'}]">
                     <span class="dot"></span>
                     <span class="dot"></span>
                     <span class="dot"></span>
@@ -137,11 +139,12 @@
         background-color: lightgray;
         border-radius: 20px;
         transition: 0.5s;
-        margin-bottom: -33px;
+        margin-bottom: -34px;
     }
 
-    .wave__wrapper{
-        margin-top: 3px;
+    .avatar__wave{
+        transition: 0.5s;
+        margin-bottom: -34px;
     }
     
     .dot {
