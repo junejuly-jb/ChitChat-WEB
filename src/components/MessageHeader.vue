@@ -30,6 +30,21 @@
             >
                 <v-icon color="red">mdi-delete</v-icon>
             </v-btn>
+            <v-btn
+                icon
+                size="small"
+                @click=""
+                variant="plain"
+            >
+                <v-icon v-if="!chatStore.chatState">mdi-refresh</v-icon>
+                <v-progress-circular
+                :size="20"
+                :width="3"
+                color="white"
+                indeterminate
+                v-else
+                ></v-progress-circular>
+            </v-btn>
         </div>
     </div>
 </template>
