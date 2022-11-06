@@ -18,7 +18,7 @@
                 <div v-if="chat._id === chatStore.selectedContextMenu" v-click-outside="onClickOutside"></div>
                 <v-btn icon size="x-small" @click="selectContextMenu(chat._id)">
                   <v-icon>mdi-dots-horizontal</v-icon>
-                  <v-menu activator="parent">
+                  <v-menu activator="parent" class="conversation__menu">
                       <v-list>
                           <v-list-item>
                               <v-list-item-title @click="handleClickDelete(chat)">Delete</v-list-item-title>
@@ -52,7 +52,6 @@
     const selectContextMenu = (id) => chatStore.setSelectedContextMenu(id)
 
     const onClickOutside = () => chatStore.setSelectedContextMenu('')
-    
 
     const trim = (string) => {
         let newString = string.substring(0, 25)
@@ -67,6 +66,7 @@
                 chatStore.setChatState(true)
                 const result = await ChitChatServices.getMessages(chat._id)
                 chatStore.setMessages({ id: chat._id, messages: result.data.data})
+                chatStore.setChatState(false)
                 await ChitChatServices.readMessage(chat._id)
                 chatStore.removeUnreadMessages(chat._id)
             } catch (error) {
@@ -79,8 +79,6 @@
                 if(error.response.data.status === 401){
                     errorStore.setAuthorization(true)
                 }
-            } finally{
-                chatStore.setChatState(false)
             }
         }
     }
@@ -108,9 +106,6 @@
         align-items: center;
         padding: 10px 5px;
         position: relative;
-    }
-    h4{
-        padding: 0 !important;
     }
     .context__menu{
         position: absolute;
@@ -159,5 +154,6 @@
     }
     .v-list{
         width: 200px;
+        border-radius: 20px !important;
     }
 </style>

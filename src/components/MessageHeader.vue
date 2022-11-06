@@ -4,7 +4,6 @@
     import { useUserStore } from '../stores/user';
 
     const chatStore = useChatStore()
-    const userStore = useUserStore()
     const appStore = useAppStore();
 
     const handleDelete = () => {
@@ -25,14 +24,6 @@
             <v-btn
                 icon
                 size="small"
-                @click="handleDelete"
-                variant="plain"
-            >
-                <v-icon color="red">mdi-delete</v-icon>
-            </v-btn>
-            <v-btn
-                icon
-                size="small"
                 @click=""
                 variant="plain"
             >
@@ -44,6 +35,22 @@
                 indeterminate
                 v-else
                 ></v-progress-circular>
+            </v-btn>
+            <v-btn icon size="small" variant="plain">
+                <v-icon>mdi-dots-vertical</v-icon>
+                <v-menu activator="parent" class="conversation__menu">
+                    <v-list>
+                        <v-list-item>
+                            <v-list-item-title @click="handleDelete">Delete</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-title >Theme</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-title >Emoji</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
             </v-btn>
         </div>
     </div>
@@ -73,5 +80,15 @@
         margin: 0;
         font-size: 20px;
         font-weight: bold;
+    }
+
+    .v-list{
+        width: 200px;
+        border-radius: 20px !important;
+    }
+
+    .v-list-item:hover{
+        background-color: rgb(170, 212, 255);
+        cursor: pointer;
     }
 </style>
