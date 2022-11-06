@@ -30,6 +30,14 @@
             >
                 <v-icon color="red">mdi-delete</v-icon>
             </v-btn>
+            <v-btn
+                icon
+                size="small"
+                @click=""
+                variant="plain"
+            >
+                <v-icon>mdi-refresh</v-icon>
+            </v-btn>
         </div>
     </div>
 </template>
