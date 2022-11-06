@@ -1,7 +1,7 @@
 <template>
     <div @click="selectChatRoom(chat)" class="main_chat" :class="chatStore.selectedChat._id === chat._id && 'active'">
         <div class="chat_wrapper">
-            <v-badge color="green-darken-1" dot offset-y="35" :offset-x="5" v-if="getStatus(chat.user._id)"> 
+            <v-badge color="green-darken-1" dot offset-y="35" :offset-x="5" v-if="chat.isOnline"> 
                 <v-avatar color="grey" size="large">{{ chat.user.initials }}</v-avatar>
             </v-badge>
             <v-avatar color="grey" size="large" v-else>{{ chat.user.initials }}</v-avatar>
@@ -61,29 +61,28 @@
     }
 
     const selectChatRoom = async (chat) => {
-        try {
-            chatStore.setChatState(true)
-            const result = await ChitChatServices.getMessages(chat._id)
-            chatStore.setSelectedChat({ chat, messages: result.data.data})
-            await ChitChatServices.readMessage(chat._id)
-            chatStore.removeUnreadMessages(chat._id)
-            setTimeout(() => chatStore.setChatState(false), 500) 
-        } catch (error) {
-          if(!error.response.data){
-            errorStore.setError({message: 'Could not connect to server. Please try again later.', hasError: true})
-          }
-          else{
-            errorStore.setError({message: error.response.data.message, hasError: true})
-          }
-          if(error.response.data.status === 401){
-            errorStore.setAuthorization(true)
-          }
+        chatStore.chooseChat(chat._id)
+        if(!chat.hasOwnProperty('messages')){
+            try {
+                chatStore.setChatState(true)
+                const result = await ChitChatServices.getMessages(chat._id)
+                chatStore.setMessages({ id: chat._id, messages: result.data.data})
+                await ChitChatServices.readMessage(chat._id)
+                chatStore.removeUnreadMessages(chat._id)
+            } catch (error) {
+                if(!error.response.data){
+                    errorStore.setError({message: 'Could not connect to server. Please try again later.', hasError: true})
+                }
+                else{
+                    errorStore.setError({message: error.response.data.message, hasError: true})
+                }
+                if(error.response.data.status === 401){
+                    errorStore.setAuthorization(true)
+                }
+            } finally{
+                chatStore.setChatState(false)
+            }
         }
-    }
-
-    const getStatus = (user_id) => {
-        const user = userStore.getUserOnlineStatus(user_id)
-        return user.isOnline
     }
     
     const getUnreadLength = (unread) => {

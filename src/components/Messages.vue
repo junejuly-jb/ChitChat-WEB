@@ -4,7 +4,6 @@
     const chatStore = useChatStore();
     const userStore = useUserStore();
 
-
     const shouldShowAvatar = (previous, msg) => {
         const isFirst = !previous;
         
@@ -15,9 +14,10 @@
         
         return false
     }
+
 </script>
 <template>
-    <div class="messages-wrapper">
+    <div class="messages-wrapper" id="messageComponent">
         <div class="msgs">
             <div class="d-flex pt-2" v-if="chatStore.selectedChat._id !== '1'">
                 <v-avatar 
@@ -57,9 +57,7 @@
                 </div>
             </div>
         </div>
-        <transition name="fade" mode="out-in">
-            <div id="stat_wrapper" v-show="chatStore.chatState"><small><i>Updating conversation...</i></small></div>
-        </transition>
+        <div id="stat_wrapper" :style="[chatStore.chatState && { height: '20px'}]"><small><i>Updating conversation...</i></small></div>
     </div>
 </template>
 <style scoped>
@@ -70,33 +68,17 @@
         display: flex;
         flex-direction: column-reverse;
         position: relative;
+        transition: 0.5s;
     }
     #stat_wrapper{
         position: absolute;
-        position: -webkit-sticky;
         top: 0;
         background-color: orange;
         color: white;
         text-align: center;
         width: 100%;
-        margin-bottom: -24px;
-        transition: opacity 0.5s linear;
-    }
-    #stat_wrapper.hide{
-        opacity: 0;
-    }
-
-    .fade-enter-active,
-    .fade-leave-active {
-    transition: opacity 1s
-    }
-
-    .fade-enter,
-    .fade-leave-to
-    /* .fade-leave-active in <2.1.8 */
-
-    {
-    opacity: 0
+        height: 0;
+        transition: 0.5s;
     }
 
     .msgs{

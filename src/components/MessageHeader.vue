@@ -7,12 +7,6 @@
     const userStore = useUserStore()
     const appStore = useAppStore();
 
-    const getStatus = (user_id) => {
-        let user = userStore.getUserOnlineStatus(user_id)
-        const status = user.isOnline ? 'active now' : 'offline'
-        return status
-    }
-
     const handleDelete = () => {
         chatStore.setConvoForDeletion({name: chatStore.selectedChat.user.name, _id: chatStore.selectedChat._id})
         appStore.setDialogPrompt(true)
@@ -25,7 +19,7 @@
         <div>
             <div v-if="chatStore.selectedChat._id == '1'">New message</div>
             <span v-if="chatStore.selectedChat._id == '1'">To:&nbsp;&nbsp;</span><span class="username">{{chatStore.selectedChat.user.name}}</span>
-            <div class="stats" v-if="getStatus(chatStore.selectedChat.user._id) == 'active now'">{{ getStatus(chatStore.selectedChat.user._id) }}</div>
+            <div class="stats" v-if="chatStore.selectedChat.user.isOnline">{{ chatStore.selectedChat.user.isOnline ? 'Active now' : 'Offline' }}</div>
         </div>
         <div class="btn__wrapper" v-if="chatStore.selectedChat._id !== '1'">
             <v-btn

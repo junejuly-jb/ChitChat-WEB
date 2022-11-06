@@ -13,10 +13,8 @@ export const useChatStore = defineStore({
   }),
 
   actions: {
-    addChats(payload){
-      this.rooms = payload.rooms
-      this.selectedChat = payload.rooms[0]
-      this.selectedChat.messages = payload.messages
+    addRooms(payload){
+      this.rooms = payload
     },
     setSelectedChat(payload){
       this.selectedChat = {}
@@ -99,7 +97,25 @@ export const useChatStore = defineStore({
     unSetTypingForIncomingEvent(payload){
       const room = this.rooms.findIndex( el => el._id === payload.roomID)
       this.rooms[room].typing = this.rooms[room].typing.filter( el => el !== payload.user)
-    }
+    },
+    chooseChat(id){
+      const room = this.rooms.findIndex( el => el._id === id)
+      this.selectedChat = this.rooms[room]
+    },
+    setMessages(payload){
+      const room = this.rooms.findIndex( el => el._id === payload.id)
+      this.rooms[room].messages = payload.messages
+    },
+    updateUserOnlineStatus(payload){
+      this.rooms.map( el => {
+        if(el.user._id === payload._id){
+          el.user.isOnline = payload.isOnline
+        }
+        else{
+          el.user.isOnline = false
+        }
+      })
+    },
   },
 
   getters:{

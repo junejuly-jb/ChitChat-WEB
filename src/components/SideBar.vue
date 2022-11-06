@@ -1,15 +1,25 @@
 <script setup>
 import { ref } from 'vue';
 import { useAppStore } from '../stores/app';
-  const emit = defineEmits(['onSignout'])
+import { useUserStore } from '../stores/user';
+  const emit = defineEmits(['onSignout', 'getUsers'])
   const appState = useAppStore()
   const dialog = ref(false)
   const errDialog = ref(false)
+  const userStore = useUserStore()
+
+  const handleUserTabClick = async () => {
+    if(userStore.users.length === 0){
+      await emit('getUsers')
+    }
+    appState.changeAppState('users')
+
+  }
 </script>
 <template>
     <v-container class="text-center">
         <div>
-            <v-icon @click="appState.changeAppState('users')" :color="appState.activeTab == 'users' ? 'blue' : 'grey'" size="20" icon="mdi-account-multiple"></v-icon>
+            <v-icon @click="handleUserTabClick" :color="appState.activeTab == 'users' ? 'blue' : 'grey'" size="20" icon="mdi-account-multiple"></v-icon>
         </div>
         <div class="py-5"></div>
         <div>

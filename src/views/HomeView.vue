@@ -10,7 +10,7 @@
       </div>
       <div class="content d-flex">
         <div id="pref">
-          <SideBar @onSignout="signout"/>
+          <SideBar @onSignout="signout" @getUsers="getUsers"/>
         </div>
         <div class="w-20" id="list">
             <div class="active_user_head">
@@ -94,6 +94,7 @@
   presenceChannel.bind("pusher:subscription_succeeded", (members) => {
     members.each((member) => {
       userStore.updateUserStatus({ _id: member.id, isOnline: true })
+      chats.updateUserOnlineStatus({ _id: member.id, isOnline: true})
     });
   });
 
@@ -105,10 +106,7 @@
     try {
       const rooms = await ChitChatServices.getChatRooms()
       if(rooms.data.data.length !== 0){
-        const messages = await ChitChatServices.getMessages(rooms.data.data[0]._id)
-        chats.addChats({ rooms: rooms.data.data, messages: messages.data.data })
-        await ChitChatServices.readMessage(chats.selectedChat._id)
-        chats.removeUnreadMessages(chats.selectedChat._id)
+        chats.addRooms(rooms.data.data)
       }
     } catch (error) {
       console.log(error)
@@ -216,7 +214,6 @@
 
   onMounted( async () => {
     await getUserInfo()
-    await getUsers()
     channelEventListener()
     await getChatRooms()
   })
