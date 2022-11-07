@@ -15,26 +15,46 @@
         <div class="w-20" id="list">
             <div class="active_user_head">
               <h2>{{ appState.activeTab === 'chats' ? 'Chats' : 'Active users' }}</h2>
+              <div>
+                <v-btn
+                  icon
+                  size="small"
+                  @click="handleRefresh(appState.activeTab)"
+                  variant="plain"
+                >
+                  <v-icon>mdi-refresh</v-icon>
+                </v-btn>
+              </div>
             </div>
             <div class="chat_list">
               <div v-if="appState.activeTab === 'chats'">
-                <div v-if="chats.rooms.length !== 0">
+                <div v-if="chats.rooms.length !== 0 && !isFetchingChat">
                   <TransitionGroup tag="ul" name="fade" class="container">
                     <div v-for="chat in chats.rooms" class="item" :key="chat._id">
                       <ChatListVue :chat="chat"/>
                     </div>
                   </TransitionGroup>
                 </div>
-                <div v-else class="text-center">
-                  <div>
-                    <v-icon icon="mdi-inbox-outline" size="50" class="text-center"></v-icon>
-                  </div>
-                  <h3>No Conversations</h3>
+                <div class="h-100 no__conversation" v-if="chats.rooms.length === 0 && !isFetchingChat">
+                  <NoData title="No Conversations" icon="mdi-inbox-outline"/>
+                </div>
+                <div v-if="isFetchingChat" class="h-100 loader">
+                  <Loader title="Fetching Conversations..."/>
                 </div>
               </div>
               <div v-else>
-                <div v-for="user in userStore.users" :key="user._id">
-                  <UserList :user="user"/>
+                <div v-if="userStore.users.length !== 0 && !isFetchingUser">
+                  <TransitionGroup tag="ul" name="fade" class="container">
+                    <div v-for="user in userStore.users" :key="user._id">
+                      <UserList :user="user"/>
+                    </div>
+                  </TransitionGroup>
+                </div>
+                <div class="h-100 no__conversation" v-if="userStore.users.length === 0 && !isFetchingUser">
+                  <NoData title="No Users" icon="mdi-inbox-outline"/>
+                </div>
+                <div v-if="isFetchingUser" class="h-100 loader">
+                  <Loader title="Fetching Users..."/>
                 </div>
               </div>
             </div>
@@ -55,7 +75,7 @@
 </template>
 
 <script setup>
-  import { defineAsyncComponent, onMounted } from 'vue';
+  import { defineAsyncComponent, onMounted, ref } from 'vue';
   import SideBar from '../components/SideBar.vue';
   import ChitChatServices from '../services/ChitChatServices';
   import { useAppStore } from '@/stores/app';
@@ -66,6 +86,8 @@
   import pusherInstance from '../pusher';
   import { getUser, getToken, removeUser, destroyToken } from '@/authentication/auth';
   import { useRouter } from 'vue-router';
+  import NoData from '../components/NoData.vue';
+  import Loader from '../components/Loader.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
@@ -73,6 +95,8 @@
   const errorStore = useErrorStore();
   const router = useRouter()
   const pusher = pusherInstance(getToken())
+  const isFetchingChat = ref(false);
+  const isFetchingUser = ref(false);
 
   const ChatListVue = defineAsyncComponent(() => import('../components/ChatList.vue'));
   const MessageHeader = defineAsyncComponent(() => import('../components/MessageHeader.vue'));
@@ -127,7 +151,6 @@
     try {
       const result = await ChitChatServices.getUsers()
       userStore.setUsers(result.data)
-      
     } catch (error) {
       if(!error.response.data){
           errorStore.setError({message: 'Could not connect to server. Please try again later.', hasError: true})
@@ -212,10 +235,25 @@
     }
   }
 
+  const handleRefresh = async (state) => {
+    if(state == 'chats'){
+      isFetchingChat.value = true
+      await getChatRooms();
+      isFetchingChat.value = false
+    }
+    else{
+      isFetchingUser.value = true
+      await getUsers();
+      isFetchingUser.value = false
+    }
+  }
+
   onMounted( async () => {
+    isFetchingChat.value = true
     await getUserInfo()
     channelEventListener()
     await getChatRooms()
+    isFetchingChat.value = false
   })
 </script>
 
@@ -281,6 +319,7 @@
     height: 15%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
   }
   .chat_list{
     height: 80%;
@@ -320,5 +359,16 @@
         animations can be calculated correctly. */
   .fade-leave-active {
     position: absolute;
+  }
+
+  .loader{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  .no__conversation{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
   }
 </style>

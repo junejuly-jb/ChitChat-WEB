@@ -1,10 +1,9 @@
 <script setup>  
+    import ChitChatServices from '../services/ChitChatServices';
     import { useAppStore } from '../stores/app';
     import { useChatStore } from '../stores/chat';
-    import { useUserStore } from '../stores/user';
 
     const chatStore = useChatStore()
-    const userStore = useUserStore()
     const appStore = useAppStore();
 
     const handleDelete = () => {
@@ -12,6 +11,28 @@
         appStore.setDialogPrompt(true)
     }
     
+    const handleRefresh = async () => {
+        try {
+            chatStore.setChatState(true)
+            const result = await ChitChatServices.getMessages(chatStore.selectedChat._id)
+            
+            chatStore.setMessages({ id: chatStore.selectedChat._id, messages: result.data.data})
+            chatStore.setChatState(false)
+            await ChitChatServices.readMessage(chatStore.selectedChat._id)
+            chatStore.removeUnreadMessages(chatStore.selectedChat._id)
+        } catch (error) {
+            console.log(error)
+            if(!error.response.data){
+                errorStore.setError({message: 'Could not connect to server. Please try again later.', hasError: true})
+            }
+            else{
+                errorStore.setError({message: error.response.data.message, hasError: true})
+            }
+            if(error.response.data.status === 401){
+                errorStore.setAuthorization(true)
+            }
+        }
+    }
 </script>
 
 <template>
@@ -25,15 +46,7 @@
             <v-btn
                 icon
                 size="small"
-                @click="handleDelete"
-                variant="plain"
-            >
-                <v-icon color="red">mdi-delete</v-icon>
-            </v-btn>
-            <v-btn
-                icon
-                size="small"
-                @click=""
+                @click="handleRefresh"
                 variant="plain"
             >
                 <v-icon v-if="!chatStore.chatState">mdi-refresh</v-icon>
@@ -44,6 +57,22 @@
                 indeterminate
                 v-else
                 ></v-progress-circular>
+            </v-btn>
+            <v-btn icon size="small" variant="plain">
+                <v-icon>mdi-dots-vertical</v-icon>
+                <v-menu activator="parent" class="conversation__menu">
+                    <v-list>
+                        <v-list-item>
+                            <v-list-item-title @click="handleDelete">Delete</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-title >Theme</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-title >Emoji</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
             </v-btn>
         </div>
     </div>
@@ -73,5 +102,15 @@
         margin: 0;
         font-size: 20px;
         font-weight: bold;
+    }
+
+    .v-list{
+        width: 200px;
+        border-radius: 20px !important;
+    }
+
+    .v-list-item:hover{
+        background-color: rgb(170, 212, 255);
+        cursor: pointer;
     }
 </style>

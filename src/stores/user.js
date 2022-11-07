@@ -13,6 +13,7 @@ export const useUserStore = defineStore({
 
   actions: {
     setUsers(payload){
+      this.users = []
       payload.map( el => {
         el.isOnline = false
         this.users.push(el)

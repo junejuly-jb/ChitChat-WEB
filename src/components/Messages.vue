@@ -55,6 +55,11 @@
                 >
                     <p>{{ message.message }}</p>
                 </div>
+                <div class="h-100 d-flex align-end">
+                    <span class="tick" v-if="message.sender === userStore.user._id">
+                        <v-icon color="white" size="xx-small">mdi-check-bold</v-icon>
+                    </span>
+                </div>
             </div>
         </div>
         <div id="stat_wrapper" :style="[chatStore.chatState && { height: '20px'}]"><small><i>Updating conversation...</i></small></div>
@@ -115,7 +120,7 @@
 
     .msg{
         display: flex;
-        margin: 3px 0px;
+        margin: 2px 0px;
         padding: 5px 15px;
         max-width: 50%;
         border-radius: 20px;
@@ -156,6 +161,17 @@
 
     .dot:nth-child(3) {
         animation-delay: -0.6s;
+    }
+
+    .tick{
+        height: 15px;
+        width: 15px;
+        background-color: dodgerblue;
+        border-radius: 100%;
+        margin: 0px 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     @keyframes wave {
