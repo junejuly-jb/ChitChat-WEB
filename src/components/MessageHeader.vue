@@ -1,7 +1,7 @@
 <script setup>  
+    import ChitChatServices from '../services/ChitChatServices';
     import { useAppStore } from '../stores/app';
     import { useChatStore } from '../stores/chat';
-    import { useUserStore } from '../stores/user';
 
     const chatStore = useChatStore()
     const appStore = useAppStore();
@@ -11,6 +11,28 @@
         appStore.setDialogPrompt(true)
     }
     
+    const handleRefresh = async () => {
+        try {
+            chatStore.setChatState(true)
+            const result = await ChitChatServices.getMessages(chatStore.selectedChat._id)
+            
+            chatStore.setMessages({ id: chatStore.selectedChat._id, messages: result.data.data})
+            chatStore.setChatState(false)
+            await ChitChatServices.readMessage(chatStore.selectedChat._id)
+            chatStore.removeUnreadMessages(chatStore.selectedChat._id)
+        } catch (error) {
+            console.log(error)
+            if(!error.response.data){
+                errorStore.setError({message: 'Could not connect to server. Please try again later.', hasError: true})
+            }
+            else{
+                errorStore.setError({message: error.response.data.message, hasError: true})
+            }
+            if(error.response.data.status === 401){
+                errorStore.setAuthorization(true)
+            }
+        }
+    }
 </script>
 
 <template>
@@ -24,7 +46,7 @@
             <v-btn
                 icon
                 size="small"
-                @click=""
+                @click="handleRefresh"
                 variant="plain"
             >
                 <v-icon v-if="!chatStore.chatState">mdi-refresh</v-icon>
