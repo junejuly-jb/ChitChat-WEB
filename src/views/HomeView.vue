@@ -2,19 +2,39 @@
   
   <div class="wrapper">
     <div class="outer__content">
-      <small class="error__header" v-if="errorStore.hasError">
+      <!-- <small class="error__header" v-if="errorStore.hasError">
         {{errorStore.errorMessage}}
       </small>
-      <div class="name__header">
+      <div class="name__header  align-center">
         <h4>Welcome, {{userStore.user.name}}</h4>
-      </div>
+        <v-btn icon size="small">
+            <v-icon>mdi-cog</v-icon>
+            <v-menu activator="parent" class="conversation__menu">
+                <v-list>
+                    <v-list-item>
+                        <v-list-item-title @click="handleDelete">Delete</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item>
+                        <v-list-item-title >Theme</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item>
+                        <v-list-item-title >Emoji</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+        </v-btn>
+      </div> -->
       <div class="content d-flex">
         <div id="pref">
           <SideBar @onSignout="signout" @getUsers="getUsers"/>
         </div>
         <div class="w-20" id="list">
             <div class="active_user_head">
-              <h2>{{ appState.activeTab === 'chats' ? 'Chats' : 'Active users' }}</h2>
+              <div>
+                <v-avatar color="grey" size="small">JB</v-avatar>
+                <div class="py-1"></div>
+                <h2>{{ appState.activeTab === 'chats' ? 'Chats' : 'Active users' }}</h2>
+              </div>
               <div>
                 <v-btn
                   icon
@@ -86,8 +106,6 @@
   import pusherInstance from '../pusher';
   import { getUser, getToken, removeUser, destroyToken } from '@/authentication/auth';
   import { useRouter } from 'vue-router';
-  import NoData from '../components/NoData.vue';
-  import Loader from '../components/Loader.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
@@ -105,7 +123,9 @@
   const Dialog = defineAsyncComponent(() => import('../components/Dialog.vue'));
   const DeleteDialog = defineAsyncComponent(() => import('../components/DeleteDialog.vue'))
   const Snackbar = defineAsyncComponent(() => import('../components/SnackBar.vue'))
-  
+  const NoData = defineAsyncComponent(() => import('../components/NoData.vue'))
+  const Loader = defineAsyncComponent(() => import('../components/Loader.vue'))
+
   const presenceChannel = pusher.subscribe('presence-online')
   const typingChannel = pusher.subscribe('private-typing')
 
@@ -125,6 +145,12 @@
   presenceChannel.bind("pusher:member_removed", async (member) => {
     userStore.updateUserStatus({ _id: member.id, isOnline: false })
   });
+
+  const mutateFetch = (val) => {
+    isFetchingUser.value = val;
+
+    console.log(isFetchingUser.value + 'fetch')
+  }
 
   const getChatRooms = async () => {
     try {
@@ -149,6 +175,7 @@
 
   const getUsers = async () => {
     try {
+      isFetchingUser.value = true
       const result = await ChitChatServices.getUsers()
       userStore.setUsers(result.data)
     } catch (error) {
@@ -161,6 +188,8 @@
       if(error.response.data.status === 401){
         errorStore.setAuthorization(true)
       }
+    } finally{
+      isFetchingUser.value = false
     }
   }
 
@@ -236,6 +265,7 @@
   }
 
   const handleRefresh = async (state) => {
+    chats.clearActiveChat()
     if(state == 'chats'){
       isFetchingChat.value = true
       await getChatRooms();
@@ -275,15 +305,12 @@
     background-color: rgb(236, 236, 236);
   }
   .content{
-    position: absolute;
-    bottom: 0;
-    height: 95%;
+    height: 100%;
     width: 100%;
     border-radius: 30px;
     background-color: white;
   }
-  .outer__content{    
-    position: relative;
+  .outer__content{
     width: 80%;
     height: 95%;
   }

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "bson": "^4.7.0",
     "pinia": "^2.0.21",
     "pusher-js": "^7.4.0",
     "timeago.js": "^4.0.2",

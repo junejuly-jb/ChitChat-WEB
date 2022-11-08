@@ -1,8 +1,8 @@
 <script setup>
-import { ref } from 'vue';
-import { useAppStore } from '../stores/app';
-import { useUserStore } from '../stores/user';
-  const emit = defineEmits(['onSignout', 'getUsers'])
+  import { ref } from 'vue';
+  import { useAppStore } from '../stores/app';
+  import { useUserStore } from '../stores/user';
+  const emit = defineEmits(['onSignout', 'getUsers', 'mutateFetch'])
   const appState = useAppStore()
   const dialog = ref(false)
   const errDialog = ref(false)

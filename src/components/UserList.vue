@@ -19,7 +19,8 @@
     const user = defineProps(['user'])   
     const appStore = useAppStore()
     const chatStore = useChatStore();
-    
+
+    //TODO: CHECK IF THIS USER HAS MESSAGES
     const handleClickUser = (user) => {
         const user_exists = chatStore.rooms.find( el => el.user._id == user._id)
         if(!user_exists){
