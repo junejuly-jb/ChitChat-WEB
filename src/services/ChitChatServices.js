@@ -6,8 +6,8 @@ const getToken = function () {
 }
 
 const apiClient = axios.create({
-    baseURL: 'https://chitchatapi.vercel.app/api/v1',
-    // baseURL: 'http://localhost:5050/api/v1'
+    // baseURL: 'https://chitchatapi.vercel.app/api/v1',
+    baseURL: 'http://localhost:5050/api/v1'
 })
 
 export default {

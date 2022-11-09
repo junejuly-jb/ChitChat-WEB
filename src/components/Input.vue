@@ -3,6 +3,7 @@
     import { useAppStore } from '../stores/app';
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
+    import { ObjectID } from 'bson';
 
     const chatStore = useChatStore()
     const userStore = useUserStore()
@@ -10,42 +11,71 @@
     
     const emit = defineEmits(['handleTyping', 'handleStopTyping'])
 
+    const generateObjectID = () => {
+        const id  = new ObjectID();
+        return id.toString()
+    }
+
     const btnSend = async () => {
         if(chatStore.selectedChat.input.trim().length === 0) return;
-        let result;
-        if(chatStore.selectedChat._id == '1'){
-            result = await ChitChatServices.sendMessage({ 
-                receiver: chatStore.selectedChat.user._id,
-                chatRoomID: '',
-                message: chatStore.selectedChat.input,
+
+        let message = {
+            receiver: chatStore.selectedChat.user._id,
+            chatRoomID: chatStore.selectedChat._id == '1' ? '' : chatStore.selectedChat._id,
+            messageClientID: generateObjectID(),
+            sentStatus: 'sending',
+            message: chatStore.selectedChat.input,
+            ...(chatStore.selectedChat._id == '1') && {
                 participants: [
                     { _id: userStore.user._id, name: userStore.user.name, initials: getInitials(userStore.user.name) },
                     { _id: chatStore.selectedChat.user._id, name: chatStore.selectedChat.user.name, initials: getInitials(chatStore.selectedChat.user.name) },
                 ]
-            })
+            }
         }
-        else{
-            result = await ChitChatServices.sendMessage({ 
-                receiver: chatStore.selectedChat.user._id,
-                chatRoomID: chatStore.selectedChat._id,
-                message: chatStore.selectedChat.input
-            })
+        // TODO: FIX
+        if(chatStore.selectedChat._id != '1'){
+            chatStore.sendMessage(message)
         }
+
+        const result = await ChitChatServices.sendMessage(message)
         
+
+        // let result;
+        // if(chatStore.selectedChat._id == '1'){
+        //     result = await ChitChatServices.sendMessage({ 
+        //         receiver: chatStore.selectedChat.user._id,
+        //         chatRoomID: '',
+        //         message: chatStore.selectedChat.input,
+        //         participants: [
+        //             { _id: userStore.user._id, name: userStore.user.name, initials: getInitials(userStore.user.name) },
+        //             { _id: chatStore.selectedChat.user._id, name: chatStore.selectedChat.user.name, initials: getInitials(chatStore.selectedChat.user.name) },
+        //         ]
+        //     })
+        // }
+        // else{
+        //     result = await ChitChatServices.sendMessage({ 
+        //         receiver: chatStore.selectedChat.user._id,
+        //         chatRoomID: chatStore.selectedChat._id,
+        //         message: chatStore.selectedChat.input
+        //     })
+        // }
+        
+        console.log(result)
+
         chatStore.clearInput()
-        if(result.data.success){
-            if(chatStore.selectedChat._id == '1'){
-                chatStore.setNewRoom(result.data.chatroom)
-                chatStore.setActiveChat(result.data.chatroom)
-                appStore.changeAppState('chats')              
-            }
-            else{
-                chatStore.updateChatroom({_id: result.data.chatroom._id, updatedAt: result.data.chatroom.updatedAt, lastMessage: result.data.chatroom.lastMessage})
-            }
-            chatStore.sendMessage(result.data.data)
-            chatStore.sortRoom()
-            emit('handleStopTyping')
-        }
+        // if(result.data.success){
+        //     if(chatStore.selectedChat._id == '1'){
+        //         chatStore.setNewRoom(result.data.chatroom)
+        //         chatStore.setActiveChat(result.data.chatroom)
+        //         appStore.changeAppState('chats')              
+        //     }
+        //     else{
+        //         chatStore.updateChatroom({_id: result.data.chatroom._id, updatedAt: result.data.chatroom.updatedAt, lastMessage: result.data.chatroom.lastMessage})
+        //     }
+        //     chatStore.sendMessage(result.data.data)
+        //     chatStore.sortRoom()
+        //     emit('handleStopTyping')
+        // }
     }
 
     const getInitials = (string) => {

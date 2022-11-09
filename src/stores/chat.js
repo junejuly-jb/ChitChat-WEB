@@ -104,7 +104,7 @@ export const useChatStore = defineStore({
     },
     setMessages(payload){
       const room = this.rooms.findIndex( el => el._id === payload.id)
-      this.rooms[room].messages = payload.messages
+      this.rooms[room].messages = payload.messages.map( obj => ({...obj, sentStatus: 'sent'}))
     },
     updateUserOnlineStatus(payload){
       this.rooms.map( el => {

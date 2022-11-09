@@ -242,15 +242,19 @@
   }
 
   const handleTyping = () => {
-    console.log('keydown')
+    console.log('keydownsss')
     if (chats.selectedChat._id !== '1') {
       if(!chats.selectedChat.typing.includes(userStore.user._id)){
         chats.setTyping(userStore.user._id)
         typingChannel.trigger('client-isTyping', { roomID: chats.selectedChat._id, user: userStore.user._id })
       }
-      if(chats.selectedChat.typing.includes(userStore.user._id) && chats.selectedChat.input.length <= 1){
-        chats.unSetTyping(userStore.user._id)
-        typingChannel.trigger('client-isNotTyping', { roomID: chats.selectedChat._id, user: userStore.user._id })
+      if(chats.selectedChat.typing.includes(userStore.user._id)){
+        if(chats.selectedChat.input){
+          if(chats.selectedChat.input.length <= 1){
+            chats.unSetTyping(userStore.user._id)
+            typingChannel.trigger('client-isNotTyping', { roomID: chats.selectedChat._id, user: userStore.user._id })
+          }
+        }
       }
     }
   }
