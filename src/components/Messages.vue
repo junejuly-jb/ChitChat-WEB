@@ -56,9 +56,13 @@
                     <p>{{ message.message }}</p>
                 </div>
                 <div class="h-100 d-flex align-end">
-                    <span class="tick" v-if="message.sender === userStore.user._id && message.sentStatus == 'sending'">
-                        <v-icon color="white" size="xx-small">mdi-check-bold</v-icon>
-                    </span>
+                    <v-progress-circular
+                    v-if="message.sender === userStore.user._id && message.sentStatus == 'sending'"
+                    :width="2"
+                    :size="15"
+                    color="blue"
+                    indeterminate
+                    ></v-progress-circular>
                 </div>
             </div>
         </div>
