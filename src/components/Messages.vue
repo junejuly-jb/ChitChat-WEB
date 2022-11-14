@@ -56,7 +56,7 @@
                     <p>{{ message.message }}</p>
                 </div>
                 <div class="h-100 d-flex align-end">
-                    <span class="tick" v-if="message.sender === userStore.user._id">
+                    <span class="tick" v-if="message.sender === userStore.user._id && message.sentStatus == 'sending'">
                         <v-icon color="white" size="xx-small">mdi-check-bold</v-icon>
                     </span>
                 </div>
@@ -124,6 +124,7 @@
         padding: 5px 15px;
         max-width: 50%;
         border-radius: 20px;
+        transition: 0.5s;
     }
 
     p{

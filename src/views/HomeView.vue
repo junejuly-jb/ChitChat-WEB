@@ -198,17 +198,17 @@
     const chat_event = `chat-${userStore.user._id}`
     
     chatChannel.bind(chat_event, async function(data){
+      // data = JSON.parse(data)
+      console.log(data)
       const exists = chats.rooms.find( el => el._id === data.chatroom._id)
       if(exists){
         chats.updateChatroom({_id: data.chatroom._id, updatedAt: data.chatroom.updatedAt, lastMessage: data.chatroom.lastMessage})
-        chats.sendMessage(data.data)
+        if(exists.messages){
+          chats.sendMessage(data.data)
+        }
       }
       else{
         chats.setNewRoom(data.chatroom)
-        chats.sendMessage(data.data)
-        if(Object.keys(chats.selectedChat).length === 0){
-          chats.setActiveChat(data.chatroom)
-        }
       }
       chats.sortRoom()
 
@@ -219,7 +219,7 @@
         }
       }
       else{
-        chats.addUnreadMessages({ _id: data.chatroom._id, unreadMessages: data.chatroom.unreadMessages })
+        chats.addUnreadMessages({ _id: data.chatroom._id, message: { _id: data.chatroom._id, sender: data.data.sender, message: data.data.message} })
       }
     })
 
@@ -242,7 +242,6 @@
   }
 
   const handleTyping = () => {
-    console.log('keydownsss')
     if (chats.selectedChat._id !== '1') {
       if(!chats.selectedChat.typing.includes(userStore.user._id)){
         chats.setTyping(userStore.user._id)

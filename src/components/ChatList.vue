@@ -61,13 +61,14 @@
 
     const selectChatRoom = async (chat) => {
         chatStore.chooseChat(chat._id)
-        if(!chat.hasOwnProperty('messages')){
+        if(!chat.hasOwnProperty('messages') || chat.messages.length === 0){
             try {
                 chatStore.setChatState(true)
-                const result = await ChitChatServices.getMessages(chat._id)
+                const getMessagePromise = ChitChatServices.getMessages(chat._id)
+                const getUnreadPromise = ChitChatServices.readMessage(chat._id)
+                const [ result, unread ] = await Promise.all([ getMessagePromise, getUnreadPromise ])
                 chatStore.setMessages({ id: chat._id, messages: result.data.data})
                 chatStore.setChatState(false)
-                await ChitChatServices.readMessage(chat._id)
                 chatStore.removeUnreadMessages(chat._id)
             } catch (error) {
                 if(!error.response.data){
@@ -84,7 +85,7 @@
     }
     
     const getUnreadLength = (unread) => {
-        const unreadmessage = unread.filter( el => el.receiver === userStore.user._id)
+        const unreadmessage = unread.filter( el => el.sender !== userStore.user._id)
         return unreadmessage.length
     }
 

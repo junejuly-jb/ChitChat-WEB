@@ -16,10 +16,13 @@ export const useChatStore = defineStore({
     addRooms(payload){
       this.rooms = payload
     },
+    addRoom(payload){
+      this.rooms.push(payload)
+    },
     setSelectedChat(payload){
       this.selectedChat = {}
-      this.selectedChat = payload.chat
-      this.selectedChat.messages = payload.messages
+      this.selectedChat = payload
+      // this.selectedChat.messages = payload.messages
     },
     setActiveChat(payload){
       this.selectedChat = payload
@@ -31,7 +34,7 @@ export const useChatStore = defineStore({
       this.selectedChat.input = ''
     },
     sendMessage(payload){
-      const idx = this.rooms.findIndex( el => el._id === payload.chatroomID)
+      const idx = this.rooms.findIndex( el => el._id == payload.chatRoomID)
       this.rooms[idx].messages.unshift(payload)
     },
     clearActiveChat(){
@@ -64,7 +67,7 @@ export const useChatStore = defineStore({
     },
     addUnreadMessages(payload){
       const room = this.rooms.findIndex( el => el._id === payload._id)
-      this.rooms[room].unreadMessages = payload.unreadMessages
+      this.rooms[room].unreadMessages.push(payload.message)
     },
     removeUnreadMessages(payload){
       const room = this.rooms.findIndex( el => el._id === payload)
@@ -105,6 +108,11 @@ export const useChatStore = defineStore({
     setMessages(payload){
       const room = this.rooms.findIndex( el => el._id === payload.id)
       this.rooms[room].messages = payload.messages.map( obj => ({...obj, sentStatus: 'sent'}))
+    },
+    updateMessage(payload){
+      const room = this.rooms.findIndex( el => el._id === payload.chatroomID)
+      const msgIDX = this.rooms[room].messages.findIndex( el => el.messageClientID = payload.messageClientID)
+      this.rooms[room].messages[msgIDX] = {...payload, sentStatus: 'sent' }
     },
     updateUserOnlineStatus(payload){
       this.rooms.map( el => {

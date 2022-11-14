@@ -21,23 +21,24 @@
 
         let message = {
             receiver: chatStore.selectedChat.user._id,
-            chatRoomID: chatStore.selectedChat._id == '1' ? '' : chatStore.selectedChat._id,
+            sender: userStore.user._id,
+            chatRoomID: chatStore.selectedChat._id,
             messageClientID: generateObjectID(),
             sentStatus: 'sending',
-            message: chatStore.selectedChat.input,
-            ...(chatStore.selectedChat._id == '1') && {
-                participants: [
-                    { _id: userStore.user._id, name: userStore.user.name, initials: getInitials(userStore.user.name) },
-                    { _id: chatStore.selectedChat.user._id, name: chatStore.selectedChat.user.name, initials: getInitials(chatStore.selectedChat.user.name) },
-                ]
-            }
-        }
-        // TODO: FIX
-        if(chatStore.selectedChat._id != '1'){
-            chatStore.sendMessage(message)
+            message: chatStore.selectedChat.input
         }
 
+        chatStore.sendMessage(message)
+        
+        chatStore.clearInput()
         const result = await ChitChatServices.sendMessage(message)
+
+        if(result.data.success){
+            chatStore.updateMessage(result.data.data)
+            chatStore.updateChatroom({_id: result.data.chatroom._id, updatedAt: result.data.chatroom.updatedAt, lastMessage: result.data.chatroom.lastMessage})
+            chatStore.sortRoom()
+            emit('handleStopTyping')
+    }
         
 
         // let result;
@@ -59,10 +60,7 @@
         //         message: chatStore.selectedChat.input
         //     })
         // }
-        
-        console.log(result)
 
-        chatStore.clearInput()
         // if(result.data.success){
         //     if(chatStore.selectedChat._id == '1'){
         //         chatStore.setNewRoom(result.data.chatroom)
