@@ -91,6 +91,7 @@
     </div>
     <DeleteDialog/>
     <Snackbar/>
+    <NewMessageDialog/>
   </div>
 </template>
 
@@ -125,6 +126,7 @@
   const Snackbar = defineAsyncComponent(() => import('../components/SnackBar.vue'))
   const NoData = defineAsyncComponent(() => import('../components/NoData.vue'))
   const Loader = defineAsyncComponent(() => import('../components/Loader.vue'))
+  const NewMessageDialog = defineAsyncComponent(() => import('../components/NewMessageDialog.vue'));
 
   const presenceChannel = pusher.subscribe('presence-online')
   const typingChannel = pusher.subscribe('private-typing')

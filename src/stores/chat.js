@@ -5,11 +5,17 @@ export const useChatStore = defineStore({
     rooms: [],
     selectedChat: {},
     chatState: false,
+    newMessageDialog: false,
     forDeletion: {
       name: '',
       id: ''
     },
-    selectedContextMenu: ''
+    selectedContextMenu: '',
+    compose: {
+      name: '',
+      _id: '',
+      input: ''
+    }
   }),
 
   actions: {
@@ -40,15 +46,13 @@ export const useChatStore = defineStore({
     clearActiveChat(){
       this.selectedChat = {}
     },
+    handleNewMessageDialog(payload){
+      this.newMessageDialog = payload
+    },
     composeMessage(payload){
-      this.selectedChat = {}
-      this.selectedChat.messages = []
-      this.selectedChat.input = ''
-      this.selectedChat._id = '1'
-      this.selectedChat.user = {}
-      this.selectedChat.typing = []
-      this.selectedChat.user._id = payload._id
-      this.selectedChat.user.name = payload.name
+      console.log(payload)
+      this.compose._id = payload._id
+      this.compose.name = payload.name
     },
     setNewRoom(payload){
       this.rooms.push(payload)

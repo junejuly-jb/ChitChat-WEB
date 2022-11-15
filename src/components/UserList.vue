@@ -20,17 +20,17 @@
     const appStore = useAppStore()
     const chatStore = useChatStore();
 
-    //TODO: CHECK IF THIS USER HAS MESSAGES
     const handleClickUser = (user) => {
         const user_exists = chatStore.rooms.find( el => el.user._id == user._id)
         if(!user_exists){
+            console.log(user)
             chatStore.composeMessage({ _id: user._id, name: user.name })
+            chatStore.handleNewMessageDialog(true)
         }
         else{
             chatStore.setActiveChat(user_exists)
             appStore.changeAppState('chats')
         }
-    
     }
 </script>
 <style scoped>
