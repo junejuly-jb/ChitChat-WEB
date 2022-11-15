@@ -2,15 +2,69 @@
     import { ref } from 'vue';
     import ChitChatServices from '../services/ChitChatServices';
     import { useChatStore } from '../stores/chat';
+    import { ObjectID } from 'bson'
+    import { useUserStore } from '../stores/user';
+    import { useAppStore } from '../stores/app';
 
     const chatStore = useChatStore();
+    const userStore = useUserStore();
+    const appStore = useAppStore();
     const loading = ref(false)
 
-    const cancel = () => chatStore.handleNewMessageDialog(false)
+    const cancel = () =>{
+        chatStore.handleNewMessageDialog(false)
+        chatStore.uncomposeMessage()
+    }
+
+    const generateObjectID = () => {
+        const id  = new ObjectID();
+        return id.toString()
+    }
+
     const send = async () => {
-        loading.value = true
-        const result = await ChitChatServices.sendMessage()
-        console.log(chatStore.compose)
+        try {
+            loading.value = true
+
+            let message = {
+                chatRoomID: "",
+                messageClientID: generateObjectID(),
+                message: chatStore.compose.input,
+                receiver: chatStore.compose._id,
+                participants: [
+                    { _id: chatStore.compose._id, name: chatStore.compose.name, initials: chatStore.compose.initials },
+                    { ...userStore.user, initials: getInitials(userStore.user.name)}
+                ]
+            }
+
+            const result = await ChitChatServices.sendMessage(message)
+            console.log(result.data.chatroom)
+            if(result.data.success){
+                chatStore.addRoom(result.data.chatroom)
+                chatStore.sendMessage(result.data.data)
+                appStore.changeAppState('chats')
+                loading.value = false
+                chatStore.handleNewMessageDialog(false)
+                appStore.setSnackBar({message: result.data.message, type: 'success'})
+                chatStore.sortRoom()
+                chatStore.uncomposeMessage()
+            }
+            
+        } catch (error) {
+            console.log(error)
+            let message = error.response.data ? error.response.data.message : 'Could not connect to server. Please try again later.'
+            appStore.setSnackBar({message, type: 'error'})
+        }
+        
+    }
+
+    const getInitials = (string) => {
+        var names = string.split(' '),
+            initials = names[0].substring(0, 1).toUpperCase();
+
+        if (names.length > 1) {
+            initials += names[names.length - 1].substring(0, 1).toUpperCase();
+        }
+        return initials;
     }
 
 </script>
@@ -36,6 +90,7 @@
                 <v-btn
                     text
                     @click="cancel"
+                    :disabled="loading"
                 >
                     Cancel
                 </v-btn>
@@ -44,7 +99,12 @@
                     text
                     @click="send"
                 >
-                    Send
+                    <div  v-if="loading">
+                        <v-progress-circular size="20" indeterminate color="white"></v-progress-circular>
+                    </div>
+                    <div v-else>
+                        Send
+                    </div>
                 </v-btn>
             </v-card-actions>
         </v-card>

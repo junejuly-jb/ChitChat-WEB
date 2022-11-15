@@ -1,19 +1,21 @@
 <script setup>
   import { ref } from 'vue';
   import { useAppStore } from '../stores/app';
+  import { useChatStore } from '../stores/chat';
   import { useUserStore } from '../stores/user';
   const emit = defineEmits(['onSignout', 'getUsers', 'mutateFetch'])
   const appState = useAppStore()
   const dialog = ref(false)
   const errDialog = ref(false)
   const userStore = useUserStore()
+  const chatStore = useChatStore()
 
   const handleUserTabClick = async () => {
     if(userStore.users.length === 0){
       await emit('getUsers')
     }
     appState.changeAppState('users')
-
+    chatStore.clearActiveChat()
   }
 </script>
 <template>

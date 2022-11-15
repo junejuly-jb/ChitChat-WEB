@@ -38,7 +38,7 @@
             chatStore.updateChatroom({_id: result.data.chatroom._id, updatedAt: result.data.chatroom.updatedAt, lastMessage: result.data.chatroom.lastMessage})
             chatStore.sortRoom()
             emit('handleStopTyping')
-    }
+        }
         
 
         // let result;

@@ -14,7 +14,8 @@ export const useChatStore = defineStore({
     compose: {
       name: '',
       _id: '',
-      input: ''
+      input: '',
+      initials: ''
     }
   }),
 
@@ -40,7 +41,7 @@ export const useChatStore = defineStore({
       this.selectedChat.input = ''
     },
     sendMessage(payload){
-      const idx = this.rooms.findIndex( el => el._id == payload.chatRoomID)
+      const idx = this.rooms.findIndex( el => el._id == payload.chatroomID)
       this.rooms[idx].messages.unshift(payload)
     },
     clearActiveChat(){
@@ -53,6 +54,10 @@ export const useChatStore = defineStore({
       console.log(payload)
       this.compose._id = payload._id
       this.compose.name = payload.name
+      this.compose.initials = payload.initials
+    },
+    uncomposeMessage(){
+      this.compose.input = ''
     },
     setNewRoom(payload){
       this.rooms.push(payload)
