@@ -46,8 +46,10 @@
                 </v-btn>
               </div>
             </div>
+            <div class="search__container">
+              <input type="text" class="search" placeholder="Search . . . ">
+            </div>
             <div class="chat_list">
-              <input type="text" class="search">
               <div v-if="appState.activeTab === 'chats'">
                 <div v-if="chats.rooms.length !== 0 && !isFetchingChat">
                   <TransitionGroup tag="ul" name="fade" class="container">
@@ -349,14 +351,21 @@
   }
   .active_user_head{
     padding: 0 20px;
-    height: 15%;
+    height: 14%;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
   .chat_list{
-    height: 85%;
+    height: 80%;
     overflow: auto;
+  }
+
+  .search__container{
+    height: 6%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
 
