@@ -26,7 +26,7 @@
             loading.value = true
 
             let message = {
-                chatRoomID: "",
+                chatroomID: "",
                 messageClientID: generateObjectID(),
                 message: chatStore.compose.input,
                 receiver: chatStore.compose._id,
@@ -37,7 +37,7 @@
             }
 
             const result = await ChitChatServices.sendMessage(message)
-            console.log(result.data.chatroom)
+            console.log(result.data)
             if(result.data.success){
                 chatStore.addRoom(result.data.chatroom)
                 chatStore.sendMessage(result.data.data)
@@ -79,7 +79,7 @@
             </v-card-title>
             <v-card-text>
                 <div>
-                    <input type="text" v-model="chatStore.compose.name" readonly>
+                    <input class="contactInput" type="text" v-model="chatStore.compose.name" readonly>
                 </div>
                 <div class="mt-3">
                     <textarea name="" id="" rows="10" v-model="chatStore.compose.input"></textarea>
@@ -112,7 +112,7 @@
 </template>
 
 <style>
-    input{
+    .contactInput{
         background-color: rgb(230, 230, 230);
         border-radius: 10px;
         width: 100%;

@@ -41,6 +41,7 @@ export const useChatStore = defineStore({
       this.selectedChat.input = ''
     },
     sendMessage(payload){
+      console.log(payload)
       const idx = this.rooms.findIndex( el => el._id == payload.chatroomID)
       this.rooms[idx].messages.unshift(payload)
     },

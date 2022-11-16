@@ -30,9 +30,9 @@
         </div>
         <div class="w-20" id="list">
             <div class="active_user_head">
-              <div>
+              <div class="userHeader">
                 <v-avatar color="grey" size="small">JB</v-avatar>
-                <div class="py-1"></div>
+                <div class="my-2"></div>
                 <h2>{{ appState.activeTab === 'chats' ? 'Chats' : 'Active users' }}</h2>
               </div>
               <div>
@@ -47,6 +47,7 @@
               </div>
             </div>
             <div class="chat_list">
+              <input type="text" class="search">
               <div v-if="appState.activeTab === 'chats'">
                 <div v-if="chats.rooms.length !== 0 && !isFetchingChat">
                   <TransitionGroup tag="ul" name="fade" class="container">
@@ -354,7 +355,7 @@
     justify-content: space-between;
   }
   .chat_list{
-    height: 80%;
+    height: 85%;
     overflow: auto;
   }
 
@@ -402,5 +403,19 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+  }
+
+  .userHeader{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
+  .search{
+    background-color: rgb(230, 230, 230);
+    border-radius: 10px;
+    width: 100%;
+    height: 40px;
+    padding: 0px 20px;
   }
 </style>

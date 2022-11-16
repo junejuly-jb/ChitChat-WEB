@@ -22,7 +22,7 @@
         let message = {
             receiver: chatStore.selectedChat.user._id,
             sender: userStore.user._id,
-            chatRoomID: chatStore.selectedChat._id,
+            chatroomID: chatStore.selectedChat._id,
             messageClientID: generateObjectID(),
             sentStatus: 'sending',
             message: chatStore.selectedChat.input
@@ -45,7 +45,7 @@
         // if(chatStore.selectedChat._id == '1'){
         //     result = await ChitChatServices.sendMessage({ 
         //         receiver: chatStore.selectedChat.user._id,
-        //         chatRoomID: '',
+        //         chatroomID: '',
         //         message: chatStore.selectedChat.input,
         //         participants: [
         //             { _id: userStore.user._id, name: userStore.user.name, initials: getInitials(userStore.user.name) },
@@ -56,7 +56,7 @@
         // else{
         //     result = await ChitChatServices.sendMessage({ 
         //         receiver: chatStore.selectedChat.user._id,
-        //         chatRoomID: chatStore.selectedChat._id,
+        //         chatroomID: chatStore.selectedChat._id,
         //         message: chatStore.selectedChat.input
         //     })
         // }
