@@ -40,25 +40,24 @@
                       class="user__avatar"
                     >JB</v-avatar>
                   </template>
-
                   <v-list>
                     <v-list-item>
-                      <v-list-item-title>Test</v-list-item-title>
+                      <v-list-item-title @click="handleRefresh">Refresh</v-list-item-title>
                     </v-list-item>
                     <v-list-item>
-                      <v-list-item-title>Refresh</v-list-item-title>
+                      <v-list-item-title>Settings</v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
             </div>
             <div class="search__container">
-              <input type="text" class="search" placeholder="Search . . . ">
+              <input type="text" v-model="chats.search" class="search" placeholder="Search . . . ">
             </div>
             <div class="chat_list">
               <div v-if="appState.activeTab === 'chats'">
                 <div v-if="chats.rooms.length !== 0 && !isFetchingChat">
                   <TransitionGroup tag="ul" name="fade" class="container">
-                    <div v-for="chat in chats.rooms" class="item" :key="chat._id">
+                    <div v-for="chat in chats.searchChat" class="item" :key="chat._id">
                       <ChatListVue :chat="chat"/>
                     </div>
                   </TransitionGroup>
@@ -139,6 +138,8 @@
   const presenceChannel = pusher.subscribe('presence-online')
   const typingChannel = pusher.subscribe('private-typing')
 
+  console.log(chats.searchChat)
+
   presenceChannel.bind('presence-online')
 
   presenceChannel.bind("pusher:member_added", (member) => {
@@ -155,12 +156,6 @@
   presenceChannel.bind("pusher:member_removed", async (member) => {
     userStore.updateUserStatus({ _id: member.id, isOnline: false })
   });
-
-  const mutateFetch = (val) => {
-    isFetchingUser.value = val;
-
-    console.log(isFetchingUser.value + 'fetch')
-  }
 
   const getChatRooms = async () => {
     try {
@@ -277,7 +272,8 @@
     }
   }
 
-  const handleRefresh = async (state) => {
+  const handleRefresh = async () => {
+    const state = appState.activeTab
     chats.clearActiveChat()
     if(state == 'chats'){
       isFetchingChat.value = true
@@ -301,6 +297,14 @@
 </script>
 
 <style scoped>
+  .v-list-item:hover{
+    background-color: rgb(170, 212, 255);
+    cursor: pointer;
+  }
+  .v-list{
+      width: 200px;
+      border-radius: 20px !important;
+  }
   .user__avatar{
     cursor: pointer;
   }
