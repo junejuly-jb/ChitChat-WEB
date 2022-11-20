@@ -30,21 +30,26 @@
         </div>
         <div class="w-20" id="list">
             <div class="active_user_head">
-              <div class="userHeader">
-                <v-avatar color="grey" size="small">JB</v-avatar>
-                <div class="my-2"></div>
                 <h2>{{ appState.activeTab === 'chats' ? 'Chats' : 'Active users' }}</h2>
-              </div>
-              <div>
-                <v-btn
-                  icon
-                  size="small"
-                  @click="handleRefresh(appState.activeTab)"
-                  variant="plain"
-                >
-                  <v-icon>mdi-refresh</v-icon>
-                </v-btn>
-              </div>
+                <v-menu top>
+                  <template v-slot:activator="{ props }">
+                    <v-avatar 
+                      color="grey" 
+                      size="small"
+                      v-bind="props"
+                      class="user__avatar"
+                    >JB</v-avatar>
+                  </template>
+
+                  <v-list>
+                    <v-list-item>
+                      <v-list-item-title>Test</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-list-item-title>Refresh</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
             </div>
             <div class="search__container">
               <input type="text" class="search" placeholder="Search . . . ">
@@ -296,6 +301,9 @@
 </script>
 
 <style scoped>
+  .user__avatar{
+    cursor: pointer;
+  }
   .container {
     position: relative;
     padding: 0;
@@ -351,13 +359,13 @@
   }
   .active_user_head{
     padding: 0 20px;
-    height: 14%;
+    height: 10%;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
   .chat_list{
-    height: 80%;
+    height: 84%;
     overflow: auto;
   }
 
@@ -416,8 +424,7 @@
 
   .userHeader{
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between !important;
   }
 
   .search{
