@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 export const useChatStore = defineStore({
   id: 'chat',
   state: () => ({
+    search: '',
     rooms: [],
     selectedChat: {},
     chatState: false,
@@ -140,5 +141,6 @@ export const useChatStore = defineStore({
     getChatroom: (state) => {
       return (payload) => state.rooms.find( el => el._id === payload)
     },
+    searchChat: (state) => state.rooms.filter( el => el.user.name.toLowerCase().includes(state.search.toLowerCase()))
   }
 })
