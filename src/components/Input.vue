@@ -16,8 +16,10 @@
         return id.toString()
     }
 
-    const btnSend = async () => {
-        if(chatStore.selectedChat.input.trim().length === 0) return;
+    const btnSend = async (data) => {
+        if(data !== 'emoji'){
+            if(chatStore.selectedChat.input.trim().length === 0) return;
+        }
 
         let message = {
             receiver: chatStore.selectedChat.user._id,
@@ -25,7 +27,7 @@
             chatroomID: chatStore.selectedChat._id,
             messageClientID: generateObjectID(),
             sentStatus: 'sending',
-            message: chatStore.selectedChat.input
+            message: data === 'emoji' ? chatStore.selectedChat.emoji : chatStore.selectedChat.input
         }
 
         chatStore.sendMessage(message)
@@ -91,17 +93,33 @@
     <div class="input-wrapper">
         <v-container>
             <input @keydown="emit('handleTyping')" @focusout="emit('handleStopTyping')" type="text" v-model="chatStore.selectedChat.input" @keyup.enter="btnSend" tabindex="1"/>
-            <v-btn color="blue" type="submit" @click="btnSend"><v-icon icon="mdi-send"></v-icon></v-btn>
+            <!-- <v-btn color="blue" type="submit" @click="btnSend"><v-icon icon="mdi-send"></v-icon></v-btn> -->
+            <button 
+                class="btn__emoji"
+                @click="btnSend('emoji')"
+                v-if="!chatStore.selectedChat.input || chatStore.selectedChat.input.length === 0"
+            >{{chatStore.selectedChat.emoji}}
+            </button>
+            <button v-else class="btn__send" @click="btnSend('button')">
+                <v-icon>mdi-send</v-icon>
+            </button>
         </v-container>
     </div>
 </template>
 <style scoped>
+    button{
+        transition: 0.5s;
+    }
+    .btn__emoji{
+        font-size: 30px;
+    }
     input{
         background-color: rgb(230, 230, 230);
         border-radius: 20px;
         width: 85%;
         height: 40px;
         padding: 0px 20px;
+        transition: 0.5s;
     }
 
     input:focus{
@@ -117,6 +135,6 @@
     .v-container{
         display: flex;
         align-items: center;
-        justify-content: space-around;
+        justify-content: space-evenly;
     }
 </style>
