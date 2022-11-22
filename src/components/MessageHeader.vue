@@ -59,17 +59,21 @@
                 ></v-progress-circular>
             </v-btn>
             <v-btn icon size="small" variant="plain">
-                <v-icon>mdi-dots-vertical</v-icon>
+                <v-icon>mdi-information-outline</v-icon>
                 <v-menu activator="parent" class="conversation__menu">
                     <v-list>
                         <v-list-item>
                             <v-list-item-title @click="handleDelete">Delete</v-list-item-title>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-item-title >Theme</v-list-item-title>
+                            <div class="context__item">
+                                <div>Theme</div> <div class="theme__color" :style="{ backgroundColor: chatStore.selectedChat.theme}"></div>
+                            </div>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-item-title >Emoji</v-list-item-title>
+                            <div class="context__item">
+                                <div>Emoji</div> <div :style="{ fontSize: '20px'}">{{chatStore.selectedChat.emoji}}</div>
+                            </div>
                         </v-list-item>
                     </v-list>
                 </v-menu>
@@ -112,5 +116,16 @@
     .v-list-item:hover{
         background-color: rgb(170, 212, 255);
         cursor: pointer;
+    }
+
+    .context__item{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .theme__color{
+        width: 20px;
+        height: 20px;
+        border-radius: 50px;
     }
 </style>
