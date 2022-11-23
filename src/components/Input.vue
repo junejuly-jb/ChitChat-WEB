@@ -27,7 +27,8 @@
             chatroomID: chatStore.selectedChat._id,
             messageClientID: generateObjectID(),
             sentStatus: 'sending',
-            message: data === 'emoji' ? chatStore.selectedChat.emoji : chatStore.selectedChat.input
+            message: data === 'emoji' ? chatStore.selectedChat.emoji : chatStore.selectedChat.input,
+            createdAt: new Date()
         }
 
         chatStore.sendMessage(message)
