@@ -15,6 +15,34 @@
         return false
     }
 
+    const shouldShowTimestamp = (previous, msg) => {
+        const first = !previous;
+
+        if(first) return false;
+
+        let diffs = Math.abs(new Date(previous.createdAt) - new Date(msg.createdAt));
+        const diffmins = diffs / 1000;
+
+        return diffmins > 300 ? true : false;
+    }
+
+    const convertTime = (time) => {
+        let chatTime = new Date(time)
+        let oneday = new Date().getTime() + (1 * 24 * 60 * 60 * 1000);
+
+        var options = {
+            ...( oneday < chatTime && {
+                month: 'numeric',
+                day: 'numeric',
+                year: 'numeric',
+            }),
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        };
+        return chatTime.toLocaleString('en-US', options)
+    }
+
 </script>
 <template>
     <div class="messages-wrapper" id="messageComponent">
@@ -34,35 +62,43 @@
                 </div>
             </div>
             <div 
-                :class="['d-flex align-center', (message.sender == userStore.user._id && 'justify-end')]" 
                 v-for="(message, idx) in chatStore.selectedChat.messages" 
                 :key="message._id"
             >
-                <div v-if="shouldShowAvatar(chatStore.selectedChat.messages[idx -1], message)">
-                    <v-avatar 
-                        color="grey" 
-                        size="small" 
-                        v-if="message.receiver == userStore.user._id"
+                <div :class="['d-flex align-center', (message.sender == userStore.user._id && 'justify-end')]">
+                    <div v-if="shouldShowAvatar(chatStore.selectedChat.messages[idx -1], message)">
+                        <v-avatar 
+                            color="grey" 
+                            size="small" 
+                            v-if="message.receiver == userStore.user._id"
+                        >
+                            {{chatStore.getChatroom(message.chatroomID).user.initials}}
+                        </v-avatar>
+                    </div>
+                    <div
+                        :class="['msg', 
+                            (message.sender == userStore.user._id ? 'sent' : 'received ml-1'),
+                            (!shouldShowAvatar(chatStore.selectedChat.messages[idx -1], message) && 'ml-9')
+                        ]"
                     >
-                        {{chatStore.getChatroom(message.chatroomID).user.initials}}
-                    </v-avatar>
+                        <p>{{ message.message }}</p>
+                    </div>
+                    <!-- <v-btn>test</v-btn> -->
+                    <div class="h-100 d-flex align-end">
+                        <v-progress-circular
+                        v-if="message.sender === userStore.user._id && message.sentStatus == 'sending'"
+                        :width="2"
+                        :size="15"
+                        color="blue"
+                        indeterminate
+                        ></v-progress-circular>
+                    </div>
                 </div>
-                <div
-                    :class="['msg', 
-                        (message.sender == userStore.user._id ? 'sent' : 'received ml-1'),
-                        (!shouldShowAvatar(chatStore.selectedChat.messages[idx -1], message) && 'ml-9')
-                    ]"
+                <div 
+                    class="text-center" 
+                    v-if="shouldShowTimestamp(chatStore.selectedChat.messages[idx -1], message)"
                 >
-                    <p>{{ message.message }}</p>
-                </div>
-                <div class="h-100 d-flex align-end">
-                    <v-progress-circular
-                    v-if="message.sender === userStore.user._id && message.sentStatus == 'sending'"
-                    :width="2"
-                    :size="15"
-                    color="blue"
-                    indeterminate
-                    ></v-progress-circular>
+                    <small :style="{ color: 'grey'}">{{convertTime(chatStore.selectedChat.messages[idx -1].createdAt)}}</small>
                 </div>
             </div>
         </div>
