@@ -1,6 +1,7 @@
 <script setup>
     import { useChatStore } from '../stores/chat';
     import { useUserStore } from '../stores/user';
+    import HoverItems from '../components/HoverItems.vue'
     const chatStore = useChatStore();
     const userStore = useUserStore();
 
@@ -64,8 +65,9 @@
             <div 
                 v-for="(message, idx) in chatStore.selectedChat.messages" 
                 :key="message._id"
+                
             >
-                <div :class="['d-flex align-center', (message.sender == userStore.user._id && 'justify-end')]">
+                <div :class="['d-flex align-center message__list', (message.sender == userStore.user._id && 'justify-end')]">
                     <div v-if="shouldShowAvatar(chatStore.selectedChat.messages[idx -1], message)">
                         <v-avatar 
                             color="grey" 
@@ -83,6 +85,10 @@
                     >
                         <p>{{ message.message }}</p>
                     </div>
+                    <div v-if="message.sender !== userStore.user._id" class="hoverables">
+                        <HoverItems/>
+                    </div>
+                    
                     <!-- <v-btn>test</v-btn> -->
                     <div class="h-100 d-flex align-end">
                         <v-progress-circular
@@ -213,6 +219,15 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .hoverables{
+        opacity: 0;
+        transition: .5s;
+    }
+
+    .message__list:hover .hoverables{
+        opacity: 1;
     }
 
     @keyframes wave {
