@@ -2,89 +2,47 @@
   
   <div class="wrapper">
     <div class="outer__content">
-      <!-- <small class="error__header" v-if="errorStore.hasError">
-        {{errorStore.errorMessage}}
-      </small>
-      <div class="name__header  align-center">
-        <h4>Welcome, {{userStore.user.name}}</h4>
-        <v-btn icon size="small">
-            <v-icon>mdi-cog</v-icon>
-            <v-menu activator="parent" class="conversation__menu">
-                <v-list>
-                    <v-list-item>
-                        <v-list-item-title @click="handleDelete">Delete</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item>
-                        <v-list-item-title >Theme</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item>
-                        <v-list-item-title >Emoji</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-        </v-btn>
-      </div> -->
       <div class="content d-flex">
-        <div id="pref">
-          <SideBar @onSignout="signout" @getUsers="getUsers"/>
-        </div>
-        <div class="w-20" id="list">
-            <div class="active_user_head">
-                <h2>{{ appState.activeTab === 'chats' ? 'Chats' : 'Active users' }}</h2>
-                <v-menu top>
-                  <template v-slot:activator="{ props }">
-                    <v-avatar 
-                      color="grey" 
-                      size="small"
-                      v-bind="props"
-                      class="user__avatar"
-                    >JB</v-avatar>
-                  </template>
-                  <v-list>
-                    <v-list-item>
-                      <v-list-item-title @click="handleRefresh">Refresh</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item>
-                      <v-list-item-title>Settings</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
+        <div id="list">
+          <div class="active_user_head">
+              <h2>Chats</h2>
+              <v-menu top>
+                <template v-slot:activator="{ props }">
+                  <v-avatar 
+                    color="grey" 
+                    size="small"
+                    v-bind="props"
+                    class="user__avatar"
+                  >JB</v-avatar>
+                </template>
+                <v-list>
+                  <v-list-item>
+                    <v-list-item-title @click="handleRefresh">Refresh</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-title>Settings</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+          </div>
+          <div class="search__container">
+            <input type="text" v-model="chats.search" class="search" placeholder="Search . . . ">
+          </div>
+          <div class="chat_list">
+            <div v-if="chats.rooms.length !== 0 && !isFetchingChat">
+              <TransitionGroup tag="ul" name="fade" class="container">
+                <div v-for="chat in chats.searchChat" class="item" :key="chat._id">
+                  <ChatListVue :chat="chat"/>
+                </div>
+              </TransitionGroup>
             </div>
-            <div class="search__container">
-              <input type="text" v-model="chats.search" class="search" placeholder="Search . . . ">
+            <div class="h-100 no__conversation" v-if="chats.rooms.length === 0 && !isFetchingChat">
+              <NoData title="No Conversations" icon="mdi-inbox-outline"/>
             </div>
-            <div class="chat_list">
-              <div v-if="appState.activeTab === 'chats'">
-                <div v-if="chats.rooms.length !== 0 && !isFetchingChat">
-                  <TransitionGroup tag="ul" name="fade" class="container">
-                    <div v-for="chat in chats.searchChat" class="item" :key="chat._id">
-                      <ChatListVue :chat="chat"/>
-                    </div>
-                  </TransitionGroup>
-                </div>
-                <div class="h-100 no__conversation" v-if="chats.rooms.length === 0 && !isFetchingChat">
-                  <NoData title="No Conversations" icon="mdi-inbox-outline"/>
-                </div>
-                <div v-if="isFetchingChat" class="h-100 loader">
-                  <Loader title="Fetching Conversations..."/>
-                </div>
-              </div>
-              <div v-else>
-                <div v-if="userStore.users.length !== 0 && !isFetchingUser">
-                  <TransitionGroup tag="ul" name="fade" class="container">
-                    <div v-for="user in userStore.users" :key="user._id">
-                      <UserList :user="user"/>
-                    </div>
-                  </TransitionGroup>
-                </div>
-                <div class="h-100 no__conversation" v-if="userStore.users.length === 0 && !isFetchingUser">
-                  <NoData title="No Users" icon="mdi-inbox-outline"/>
-                </div>
-                <div v-if="isFetchingUser" class="h-100 loader">
-                  <Loader title="Fetching Users..."/>
-                </div>
-              </div>
+            <div v-if="isFetchingChat" class="h-100">
+              <SkeletonLoader/>
             </div>
+          </div>
         </div>
         <div id="chat" :key="chats.selectedChat._id" v-if="Object.keys(chats.selectedChat).length !== 0">
           <MessageHeader/>
@@ -114,6 +72,7 @@
   import pusherInstance from '../pusher';
   import { getUser, getToken, removeUser, destroyToken } from '@/authentication/auth';
   import { useRouter } from 'vue-router';
+import SkeletonLoader from '../components/SkeletonLoader.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
@@ -350,19 +309,19 @@
     color: white;
   }
 
-  #pref{
+  /* #pref{
     width: 5%;
     display: flex;
     align-items: center;
-  }
+  } */
   #list{
-    width: 25%;
+    width: 30%;
+    padding: 0 30px;
   }
   #chat{
     width: 70%;
   }
   .active_user_head{
-    padding: 0 20px;
     height: 10%;
     display: flex;
     align-items: center;
