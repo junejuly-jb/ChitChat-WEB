@@ -42,6 +42,9 @@
             <div v-if="isFetchingChat" class="h-100">
               <SkeletonLoader/>
             </div>
+            <div class="action__button">
+              <ActionButton/>
+            </div>
           </div>
         </div>
         <div id="chat" :key="chats.selectedChat._id" v-if="Object.keys(chats.selectedChat).length !== 0">
@@ -72,7 +75,8 @@
   import pusherInstance from '../pusher';
   import { getUser, getToken, removeUser, destroyToken } from '@/authentication/auth';
   import { useRouter } from 'vue-router';
-import SkeletonLoader from '../components/SkeletonLoader.vue';
+  import SkeletonLoader from '../components/SkeletonLoader.vue';
+  import ActionButton from '../components/ActionButton.vue';
 
   const chats = useChatStore()
   const appState = useAppStore()
@@ -328,8 +332,14 @@ import SkeletonLoader from '../components/SkeletonLoader.vue';
     justify-content: space-between;
   }
   .chat_list{
+    position: relative;
     height: 84%;
     overflow: auto;
+  }
+
+  .action__button{
+    position: absolute;
+    bottom: 25;
   }
 
   .search__container{
