@@ -1,11 +1,12 @@
 <template>
-    <button class="chat__btn">Start Chat</button>
+    <button class="chat__btn"> <v-icon color="white">mdi-chat</v-icon> &nbsp; Start Chat</button>
 </template>
 
 <style>
     .chat__btn{
-        padding: 5px 15px;
+        padding: 20px 25px;
         background-color: dodgerblue;
         border-radius: 20px;
+        color: white;
     }
 </style>
