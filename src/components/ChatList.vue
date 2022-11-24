@@ -100,7 +100,8 @@
         border-radius: 20px;
         transition: 400ms;
         padding: 0 15px;
-        margin: 5px 5px;
+        margin: 5px 0;
+        transition: 0.5s;
     }
     .chat_wrapper{
         display: flex;

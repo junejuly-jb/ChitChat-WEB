@@ -28,11 +28,15 @@
     }
 
     const convertTime = (time) => {
-        let chatTime = new Date(time)
-        let oneday = new Date().getTime() + (1 * 24 * 60 * 60 * 1000);
+        let then = new Date(time)
+        let now = new Date();
+
+        const msBetweenDates = Math.abs(then.getTime() - now.getTime());
+
+        const hoursBetweenDates = msBetweenDates / (60 * 60 * 1000);
 
         var options = {
-            ...( oneday < chatTime && {
+            ...( hoursBetweenDates > 24 && {
                 month: 'numeric',
                 day: 'numeric',
                 year: 'numeric',
@@ -41,7 +45,7 @@
             minute: 'numeric',
             hour12: true
         };
-        return chatTime.toLocaleString('en-US', options)
+        return then.toLocaleString('en-US', options)
     }
 
 </script>
