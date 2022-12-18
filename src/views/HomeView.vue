@@ -20,7 +20,7 @@
                     <v-list-item-title @click="handleRefresh">Refresh</v-list-item-title>
                   </v-list-item>
                   <v-list-item>
-                    <v-list-item-title>Settings</v-list-item-title>
+                    <v-list-item-title @click="dialogStore.dialogHandler({ state: 'settingsDialog', value: true })">Settings</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -54,9 +54,8 @@
         </div>
       </div>
     </div>
-    <div v-if="dialogStore.unauthenticated">
-      <Dialog @signout="signout"/>
-    </div>
+    <Dialog @signout="signout"/>
+    <SettingsDialog/>
     <DeleteDialog/>
     <Snackbar/>
   </div>
@@ -75,6 +74,7 @@
   import { useRouter } from 'vue-router';
   import SkeletonLoader from '../components/SkeletonLoader.vue';
   import ActionButton from '../components/ActionButton.vue';
+  import SettingsDialog from '../components/Dialogs/SettingsDialog.vue';
 
   // pinia store
   const chats = useChatStore()
