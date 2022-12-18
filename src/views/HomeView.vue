@@ -57,6 +57,7 @@
     <Dialog @signout="signout"/>
     <SettingsDialog/>
     <DeleteDialog/>
+    <NewMessageDialog/>
     <Snackbar/>
   </div>
 </template>
@@ -75,6 +76,7 @@
   import SkeletonLoader from '../components/SkeletonLoader.vue';
   import ActionButton from '../components/ActionButton.vue';
   import SettingsDialog from '../components/Dialogs/SettingsDialog.vue';
+  import NewMessageDialog from '../components/Dialogs/NewMessageDialog.vue';
 
   // pinia store
   const chats = useChatStore()
@@ -82,7 +84,6 @@
   const userStore = useUserStore()
   const errorStore = useErrorStore();
   const dialogStore = useDialogStore();
-
 
   const router = useRouter()
   const pusher = pusherInstance(getToken())

@@ -1,5 +1,16 @@
+<script setup>
+    import { useDialogStore } from '@/stores/dialog';
+
+    const dialogStore = useDialogStore();
+</script>
 <template>
-    <button class="chat__btn"> <v-icon color="white">mdi-chat</v-icon> &nbsp; Start Chat</button>
+    <button 
+        class="chat__btn"
+        @click="dialogStore.dialogHandler({ state: 'newMessageDialog', value: true })"
+    >
+        <v-icon color="white">mdi-chat</v-icon>
+         &nbsp; Start Chat
+    </button>
 </template>
 
 <style>
