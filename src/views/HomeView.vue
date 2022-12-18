@@ -54,34 +54,36 @@
         </div>
       </div>
     </div>
-    <div v-if="errorStore.unauthenticated">
+    <div v-if="dialogStore.unauthenticated">
       <Dialog @signout="signout"/>
     </div>
     <DeleteDialog/>
     <Snackbar/>
-    <NewMessageDialog/>
   </div>
 </template>
 
 <script setup>
   import { defineAsyncComponent, onMounted, ref } from 'vue';
-  import SideBar from '../components/SideBar.vue';
   import ChitChatServices from '../services/ChitChatServices';
   import { useAppStore } from '@/stores/app';
   import { useChatStore } from '@/stores/chat';
   import { useUserStore } from '@/stores/user';
   import { useErrorStore } from '@/stores/error';
-  import UserList from '../components/UserList.vue';
+  import { useDialogStore } from '@/stores/dialog'
   import pusherInstance from '../pusher';
   import { getUser, getToken, removeUser, destroyToken } from '@/authentication/auth';
   import { useRouter } from 'vue-router';
   import SkeletonLoader from '../components/SkeletonLoader.vue';
   import ActionButton from '../components/ActionButton.vue';
 
+  // pinia store
   const chats = useChatStore()
   const appState = useAppStore()
   const userStore = useUserStore()
   const errorStore = useErrorStore();
+  const dialogStore = useDialogStore();
+
+
   const router = useRouter()
   const pusher = pusherInstance(getToken())
   const isFetchingChat = ref(false);
@@ -91,17 +93,13 @@
   const MessageHeader = defineAsyncComponent(() => import('../components/MessageHeader.vue'));
   const Messages = defineAsyncComponent(() => import('../components/Messages.vue'));
   const Input = defineAsyncComponent(() => import('../components/Input.vue'));
-  const Dialog = defineAsyncComponent(() => import('../components/Dialog.vue'));
-  const DeleteDialog = defineAsyncComponent(() => import('../components/DeleteDialog.vue'))
+  const Dialog = defineAsyncComponent(() => import('../components/Dialogs/Dialog.vue'));
+  const DeleteDialog = defineAsyncComponent(() => import('../components/Dialogs/DeleteDialog.vue'))
   const Snackbar = defineAsyncComponent(() => import('../components/SnackBar.vue'))
   const NoData = defineAsyncComponent(() => import('../components/NoData.vue'))
-  const Loader = defineAsyncComponent(() => import('../components/Loader.vue'))
-  const NewMessageDialog = defineAsyncComponent(() => import('../components/NewMessageDialog.vue'));
 
   const presenceChannel = pusher.subscribe('presence-online')
   const typingChannel = pusher.subscribe('private-typing')
-
-  console.log(chats.searchChat)
 
   presenceChannel.bind('presence-online')
 
@@ -154,7 +152,7 @@
         errorStore.setError({message: error.response.data.message, hasError: true})
       }
       if(error.response.data.status === 401){
-        errorStore.setAuthorization(true)
+        dialogStore.dialogHandler({ state: 'unauthenticatedDialog', value: true})
       }
     } finally{
       isFetchingUser.value = false

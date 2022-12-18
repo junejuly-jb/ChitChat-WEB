@@ -1,14 +1,14 @@
 <script setup>  
     import ChitChatServices from '../services/ChitChatServices';
-    import { useAppStore } from '../stores/app';
     import { useChatStore } from '../stores/chat';
+    import { useDialogStore } from '@/stores/dialog'
 
     const chatStore = useChatStore()
-    const appStore = useAppStore();
+    const dialogStore = useDialogStore();
 
     const handleDelete = () => {
         chatStore.setConvoForDeletion({name: chatStore.selectedChat.user.name, _id: chatStore.selectedChat._id})
-        appStore.setDialogPrompt(true)
+        dialogStore.dialogHandler({ state: 'deleteDialog', value: true})
     }
     
     const handleRefresh = async () => {
@@ -29,7 +29,7 @@
                 errorStore.setError({message: error.response.data.message, hasError: true})
             }
             if(error.response.data.status === 401){
-                errorStore.setAuthorization(true)
+                dialogStore.dialogHandler({ state: 'unauthenticatedDialog', value: true})
             }
         }
     }

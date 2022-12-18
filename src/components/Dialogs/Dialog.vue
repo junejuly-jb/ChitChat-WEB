@@ -1,14 +1,14 @@
 <script setup>
-import { useErrorStore } from '../stores/error';
+  import { useDialogStore } from '@/stores/dialog'
 
-    const errorStore = useErrorStore();
-    const emit = defineEmits(['signout'])
+  const dialogStore = useDialogStore();
+  const emit = defineEmits(['signout'])
 
 </script>
 
 <template>
     <v-dialog
-      v-model="errorStore.unauthenticated"
+      v-model="dialogStore.unauthenticated"
       persistent width="500px" height="200px"
     >
       <v-card>

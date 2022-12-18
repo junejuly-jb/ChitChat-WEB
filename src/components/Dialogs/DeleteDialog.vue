@@ -1,13 +1,15 @@
 <script setup>
-import ChitChatServices from '../services/ChitChatServices';
-import { useChatStore } from '../stores/chat';
-import { useAppStore } from '../stores/app';
-import { useErrorStore } from '../stores/error';
+import ChitChatServices from '@/services/ChitChatServices';
+import { useChatStore } from '@/stores/chat';
+import { useAppStore } from '@/stores/app';
+import { useErrorStore } from '@/stores/error';
+import { useDialogStore } from '@/stores/dialog'
 import { ref } from 'vue';
 
     const chatStore = useChatStore();
     const errorStore = useErrorStore();
     const appStore = useAppStore();
+    const dialogStore = useDialogStore();
 
     const isLoading = ref(false)
 
@@ -15,11 +17,14 @@ import { ref } from 'vue';
         isLoading.value = true
         try {
             let result = await ChitChatServices.deleteMessage(chatStore.forDeletion.id)
-            appStore.setDialogPrompt(false)
+            if(!result.data.data){
+                throw new Error(result.data.message);
+            }
+            dialogStore.dialogHandler({ state: 'deleteDialog', value: false})
             appStore.setSnackBar({ message: result.data.message, type: 'success'})
             chatStore.deleteRoom(chatStore.forDeletion.id)
         } catch (error) {
-            appStore.setDialogPrompt(false)
+            dialogStore.dialogHandler({ state: 'deleteDialog', value: false})
             if(!error.response.data){
                 errorStore.setError({message: 'Network error. Please try again later.', hasError: true})
             }
@@ -27,7 +32,7 @@ import { ref } from 'vue';
                 errorStore.setError({message: error.response.data.message, hasError: true})
             }
             if(error.response.data.status === 401){
-                errorStore.setAuthorization(true)
+                dialogStore.dialogHandler({ state: 'unauthenticatedDialog', value: true})
             }
         }
         isLoading.value = false
@@ -37,7 +42,7 @@ import { ref } from 'vue';
 <template>
     <div>
         <v-dialog
-        v-model="appStore.dialogPrompt"
+        v-model="dialogStore.deleteDialog"
         persistent width="500px" height="300px"
         >
         <v-card>
@@ -57,7 +62,7 @@ import { ref } from 'vue';
                     <v-btn
                         color="red"
                         text
-                        @click="appStore.setDialogPrompt(false)"
+                        @click="dialogStore.dialogHandler({ state: 'deleteDialog', value: false})"
                     >
                         Cancel
                     </v-btn>

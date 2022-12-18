@@ -5,16 +5,12 @@ export const useErrorStore = defineStore({
   state: () => ({
     errorMessage: '',
     hasError: false,
-    unauthenticated: false
   }),
 
   actions: {
     setError(payload){
         this.errorMessage = payload.message
         this.hasError = payload.hasError
-    },  
-    setAuthorization(payload){
-        this.unauthenticated = payload
     }
   },
 })
