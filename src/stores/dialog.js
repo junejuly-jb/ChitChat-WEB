@@ -20,6 +20,9 @@ export const useDialogStore = defineStore({
         case 'unauthenticatedDialog':
           this.unauthenticatedDialog = payload.value
           break;
+        case 'newMessageDialog':
+          this.newMessageDialog = payload.value
+          break;
       }
     }
   }

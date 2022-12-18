@@ -46,7 +46,7 @@ import { ref } from 'vue';
     >
         <v-card class="rounded-xl">
             <v-card-title>
-            <span class="text-h5">Delete </span>
+            <span class="text-h6">Delete </span>
             </v-card-title>
             <v-card-text>
                 <div class="text-center" v-if="isLoading">

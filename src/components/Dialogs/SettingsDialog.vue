@@ -17,7 +17,7 @@ import { ref } from 'vue';
         <v-card class="rounded-xl">
             <v-card-title>
                 <div class="d-flex">
-                    <span class="text-h5">Settings</span>
+                    <span class="text-h6">Settings</span>
                     <v-spacer></v-spacer>
                     <v-btn variant="flat" size="small" icon @click="dialogStore.dialogHandler({ state:'settingsDialog', value: false })">
                         <v-icon>mdi-close</v-icon>
