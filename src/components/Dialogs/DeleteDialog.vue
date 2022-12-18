@@ -40,12 +40,11 @@ import { ref } from 'vue';
 </script>
 
 <template>
-    <div>
-        <v-dialog
-        v-model="dialogStore.deleteDialog"
-        persistent width="500px" height="300px"
-        >
-        <v-card>
+    <v-dialog
+    v-model="dialogStore.deleteDialog"
+    persistent width="500px" height="300px"
+    >
+        <v-card class="rounded-xl">
             <v-card-title>
             <span class="text-h5">Delete </span>
             </v-card-title>
@@ -57,24 +56,22 @@ import { ref } from 'vue';
                     Are you sure you want to delete your conversation with <b>{{chatStore.forDeletion.name}}</b> ? This action cannot be undone.
                 </v-container>
             </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        color="red"
-                        text
-                        @click="dialogStore.dialogHandler({ state: 'deleteDialog', value: false})"
-                    >
-                        Cancel
-                    </v-btn>
-                    <v-btn
-                        color="red"
-                        text
-                        @click="handleDelete"
-                    >
-                        Delete
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-    </div>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    text
+                    @click="dialogStore.dialogHandler({ state: 'deleteDialog', value: false})"
+                >
+                    Cancel
+                </v-btn>
+                <v-btn
+                    color="red"
+                    text
+                    @click="handleDelete"
+                >
+                    Delete
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
