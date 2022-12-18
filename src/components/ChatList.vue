@@ -42,12 +42,15 @@
     import { useUserStore } from '@/stores/user';
     import { useErrorStore } from "@/stores/error";
     import { useAppStore } from '@/stores/app';
+    import { useDialogStore } from '@/stores/dialog';
+import DeleteDialog from './Dialogs/DeleteDialog.vue';
     defineProps(['chat'])
 
     const chatStore = useChatStore()
     const userStore = useUserStore()
     const errorStore = useErrorStore()
     const appStore = useAppStore();
+    const dialogStore = useDialogStore();
 
     const selectContextMenu = (id) => chatStore.setSelectedContextMenu(id)
 
@@ -78,7 +81,7 @@
                     errorStore.setError({message: error.response.data.message, hasError: true})
                 }
                 if(error.response.data.status === 401){
-                    errorStore.setAuthorization(true)
+                    dialogStore.dialogHandler({ state: 'unauthenticatedDialog', value: true})
                 }
             }
         }
@@ -91,7 +94,7 @@
 
     const handleClickDelete = (chat) => {
         chatStore.setConvoForDeletion({name: chat.user.name, _id: chat._id})
-        appStore.setDialogPrompt(true)
+        dialogStore.dialogHandler({state: 'deleteDialog', value: true})
     }
 </script>
 <style scoped>

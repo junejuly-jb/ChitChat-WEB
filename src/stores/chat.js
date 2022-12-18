@@ -6,7 +6,6 @@ export const useChatStore = defineStore({
     rooms: [],
     selectedChat: {},
     chatState: false,
-    newMessageDialog: false,
     forDeletion: {
       name: '',
       id: ''
@@ -43,14 +42,11 @@ export const useChatStore = defineStore({
     },
     sendMessage(payload){
       console.log(payload)
-      const idx = this.rooms.findIndex( el => el._id == payload.chatroomID)
+      const idx = this.rooms.findIndex( el => el._id === payload.chatroomID)
       this.rooms[idx].messages.unshift(payload)
     },
     clearActiveChat(){
       this.selectedChat = {}
-    },
-    handleNewMessageDialog(payload){
-      this.newMessageDialog = payload
     },
     composeMessage(payload){
       console.log(payload)

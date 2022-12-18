@@ -5,7 +5,7 @@
     "serve": "vite preview",
     "build": "vite build",
     "test:unit": "vitest --environment jsdom",
-    "dev": "vite --host",
+    "start": "vite --host",
     "preview": "vite preview --port 4173"
   },
   "dependencies": {

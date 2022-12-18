@@ -4,7 +4,6 @@ export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
     activeTab: 'chats',
-    dialogPrompt: false,
     snackbar: {
       status: false,
       message: '',
@@ -18,9 +17,6 @@ export const useAppStore = defineStore({
     },
     newMessageDialogHandler(payload){
       this.newMessageDialog = payload
-    },
-    setDialogPrompt(payload){
-      this.dialogPrompt = payload
     },
     setSnackBar(payload){
       this.snackbar.status = true

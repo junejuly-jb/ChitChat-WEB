@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { useAppStore } from './app'
 import { useChatStore } from './chat'
 import { useErrorStore } from './error'
+import { useDialogStore } from './dialog'
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -33,6 +34,7 @@ export const useUserStore = defineStore({
       const chatStore = useChatStore()
       const appStore = useAppStore()
       const errorStore = useErrorStore()
+      const dialogStore = useDialogStore()
       this.users = []
       this.user = {}
       this.unauthenticated = false
@@ -45,7 +47,7 @@ export const useUserStore = defineStore({
       appStore.dialogPrompt = false
       errorStore.hasError = false
       errorStore.errorMessage = ''
-      errorStore.unauthenticated = false
+      dialogStore.unauthenticated = false
     },
   },
 
