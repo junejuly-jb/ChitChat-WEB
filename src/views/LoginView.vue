@@ -200,7 +200,7 @@ import { useAppStore } from '../stores/app';
         try {
             const result = await ChitChatServices.login({email: login_email.value, password: login_password.value})
             setToken(result.data.token, result.data.expiration)
-            setUser({ _id: result.data.user._id, name: result.data.user.name })
+            setUser({ _id: result.data.user._id, name: result.data.user.name, initials: result.data.user.initials })
             router.push({ path: '/home', replace: true })
         } catch (error) {
             let message = ''
