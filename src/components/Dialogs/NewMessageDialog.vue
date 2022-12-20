@@ -11,8 +11,9 @@
 
     const step = ref(1);
 
-    const handleUserClick = async (id) => {
-        const found = chatStore.rooms.find(el => el.user._id === id)
+    const handleUserClick = async (user) => {
+        const found = chatStore.rooms.find(el => el.user._id === user._id)
+        console.log(found)
         if(found){
             chatStore.chooseChat(found._id)
             dialogStore.dialogHandler({ state: 'newMessageDialog', value: false })
@@ -39,6 +40,7 @@
             }
         }
         else{
+            chatStore.composeMessage({ _id: user._id, name: user.name, initials: user.initials})
             step.value++
         }
     }
@@ -67,7 +69,7 @@
                         <div 
                             v-for="user in userStore.users" 
                             class="d-flex align-center py-3 px-2 user__list" 
-                            @click="handleUserClick(user._id)">
+                            @click="handleUserClick(user)">
                                 <v-avatar color="grey" size="large">{{user.initials}}</v-avatar>
                             <div class="mx-2">{{user.name}}</div>
                         </div>
@@ -79,9 +81,13 @@
                             </v-btn>
                             <div>Back</div>
                         </div>
-                        <input type="text"/>
+                        <div class="d-flex align-center">
+                            <v-avatar color="grey" size="large">{{ chatStore.compose.initials }}</v-avatar>
+                            <div class="mx-2"></div>
+                            <b>{{ chatStore.compose.name }}</b>
+                        </div>
                         <div class="my-4"></div>
-                        <textarea name="" id="" cols="30" rows="5"></textarea>
+                        <textarea name="" id="" cols="30" rows="5" v-model="chatStore.compose.input"></textarea>
                     </v-window-item>
                 </v-window>
             </v-card-text>
