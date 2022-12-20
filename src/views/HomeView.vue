@@ -151,6 +151,7 @@
         errorStore.setError({message: error.response.data.message, hasError: true})
       }
       if(error.response.data.status === 401){
+        console.log('first')
         dialogStore.dialogHandler({ state: 'unauthenticatedDialog', value: true})
       }
     }

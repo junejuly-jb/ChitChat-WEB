@@ -8,7 +8,7 @@
 
 <template>
     <v-dialog
-      v-model="dialogStore.unauthenticated"
+      v-model="dialogStore.unauthenticatedDialog"
       persistent width="500px" height="200px"
     >
       <v-card>
