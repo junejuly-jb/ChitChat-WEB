@@ -13,7 +13,7 @@
                     size="small"
                     v-bind="props"
                     class="user__avatar"
-                  >JB</v-avatar>
+                  >{{ userStore.user.initials }}</v-avatar>
                 </template>
                 <v-list>
                   <v-list-item>
@@ -202,6 +202,7 @@
 
   const getUserInfo = async () => {
     const user = await getUser()
+    console.log('userinfooo')
     userStore.setUserInfo(user)
   }
 
