@@ -43,7 +43,6 @@
     import { useErrorStore } from "@/stores/error";
     import { useAppStore } from '@/stores/app';
     import { useDialogStore } from '@/stores/dialog';
-import DeleteDialog from './Dialogs/DeleteDialog.vue';
     defineProps(['chat'])
 
     const chatStore = useChatStore()

@@ -6,8 +6,7 @@ const getToken = function () {
 }
 
 const apiClient = axios.create({
-    // baseURL: 'https://chitchatapi.vercel.app/api/v1',
-    baseURL: 'http://localhost:5050/api/v1'
+    baseURL: import.meta.env.VITE_API_ENDPOINT
 })
 
 export default {
@@ -18,7 +17,7 @@ export default {
         return apiClient.post('/register', payload)
     },
     logout(payload){
-        return apiClient.post('/logout/'+payload, {}, { headers: { 'Authorization': 'Bearers ' + getToken() }})
+        return apiClient.post('/logout/'+payload, {}, { headers: { 'Authorization': 'Bearer ' + getToken() }})
     },
     getChatRooms(){
         return apiClient.get('/chatrooms', {
