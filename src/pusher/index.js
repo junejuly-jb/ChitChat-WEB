@@ -9,7 +9,7 @@ const getToken = function () {
 
 
 // const endPoint = 'https://chitchatapi.vercel.app/api/v1/pusher/user-auth';
-const endPoint = 'http://localhost:5050/api/v1/pusher/user-auth';
+const endPoint = import.meta.env.VITE_PUSHER_AUTH_ENDPOINT;
 const pusherInstance = (token) => {
     const pusher = new Pusher('d592de80e72c6fe09431', {
         cluster: 'ap1',

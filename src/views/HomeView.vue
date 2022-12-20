@@ -88,7 +88,6 @@
   const router = useRouter()
   const pusher = pusherInstance(getToken())
   const isFetchingChat = ref(false);
-  const isFetchingUser = ref(false);
 
   const ChatListVue = defineAsyncComponent(() => import('../components/ChatList.vue'));
   const MessageHeader = defineAsyncComponent(() => import('../components/MessageHeader.vue'));
@@ -142,7 +141,6 @@
 
   const getUsers = async () => {
     try {
-      isFetchingUser.value = true
       const result = await ChitChatServices.getUsers()
       userStore.setUsers(result.data)
     } catch (error) {
@@ -155,8 +153,6 @@
       if(error.response.data.status === 401){
         dialogStore.dialogHandler({ state: 'unauthenticatedDialog', value: true})
       }
-    } finally{
-      isFetchingUser.value = false
     }
   }
 
@@ -235,18 +231,10 @@
   }
 
   const handleRefresh = async () => {
-    const state = appState.activeTab
     chats.clearActiveChat()
-    if(state == 'chats'){
-      isFetchingChat.value = true
-      await getChatRooms();
-      isFetchingChat.value = false
-    }
-    else{
-      isFetchingUser.value = true
-      await getUsers();
-      isFetchingUser.value = false
-    }
+    isFetchingChat.value = true
+    await getChatRooms();
+    isFetchingChat.value = false
   }
 
   onMounted( async () => {
@@ -254,6 +242,7 @@
     await getUserInfo()
     channelEventListener()
     await getChatRooms()
+    await getUsers()
     isFetchingChat.value = false
   })
 </script>

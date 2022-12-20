@@ -1,10 +1,47 @@
 <script setup>
     import { useDialogStore } from '@/stores/dialog';
+    import { useUserStore } from '@/stores/user';
+    import { useChatStore } from '@/stores/chat';
+    import ChitChatServices from '@/services/ChitChatServices';
     import { ref } from 'vue';
 
     const dialogStore = useDialogStore();
+    const userStore = useUserStore();
+    const chatStore = useChatStore();
 
     const step = ref(1);
+
+    const handleUserClick = async (id) => {
+        const found = chatStore.rooms.find(el => el.user._id === id)
+        if(found){
+            chatStore.chooseChat(found._id)
+            dialogStore.dialogHandler({ state: 'newMessageDialog', value: false })
+            if(!found.hasOwnProperty('messages') || found.messages.length === 0){
+                try {
+                    chatStore.setChatState(true)
+                    const getMessagePromise = ChitChatServices.getMessages(found._id)
+                    const getUnreadPromise = ChitChatServices.readMessage(found._id)
+                    const [ result, unread ] = await Promise.all([ getMessagePromise, getUnreadPromise ])
+                    chatStore.setMessages({ id: found._id, messages: result.data.data})
+                    chatStore.setChatState(false)
+                    chatStore.removeUnreadMessages(found._id)
+                } catch (error) {
+                    if(!error.response.data){
+                        errorStore.setError({message: 'Could not connect to server. Please try again later.', hasError: true})
+                    }
+                    else{
+                        errorStore.setError({message: error.response.data.message, hasError: true})
+                    }
+                    if(error.response.data.status === 401){
+                        dialogStore.dialogHandler({ state: 'unauthenticatedDialog', value: true})
+                    }
+                }
+            }
+        }
+        else{
+            step.value++
+        }
+    }
 </script>
 <template>
     <v-dialog
@@ -27,9 +64,12 @@
             <v-card-text>
                 <v-window v-model="step">
                     <v-window-item :value="1">
-                        <div v-for="item in 20" class="d-flex align-center py-3 px-2 user__list" @click="step++">
-                            <v-avatar color="grey" size="large">JB</v-avatar>
-                            <div class="mx-2">June Amante</div>
+                        <div 
+                            v-for="user in userStore.users" 
+                            class="d-flex align-center py-3 px-2 user__list" 
+                            @click="handleUserClick(user._id)">
+                                <v-avatar color="grey" size="large">{{user.initials}}</v-avatar>
+                            <div class="mx-2">{{user.name}}</div>
                         </div>
                     </v-window-item>
                     <v-window-item :value="2" class="my-2">
