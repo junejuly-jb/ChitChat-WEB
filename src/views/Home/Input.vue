@@ -1,8 +1,8 @@
 <script setup>
-    import ChitChatServices from '../services/ChitChatServices';
-    import { useAppStore } from '../stores/app';
-    import { useChatStore } from '../stores/chat';
-    import { useUserStore } from '../stores/user';
+    import ChitChatServices from '@/services/ChitChatServices';
+    import { useAppStore } from '@/stores/app';
+    import { useChatStore } from '@/stores/chat';
+    import { useUserStore } from '@/stores/user';
     import { ObjectID } from 'bson';
 
     const chatStore = useChatStore()

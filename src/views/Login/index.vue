@@ -176,14 +176,19 @@
     <Snackbar/>
 </template>
 <script setup>
-import { defineAsyncComponent, ref } from 'vue';
-import ChitChatServices from '../services/ChitChatServices';
-import { setToken, setUser} from '../authentication/auth';
-import { useRouter } from 'vue-router';
-import { useAppStore } from '../stores/app';
+    import { defineAsyncComponent, ref } from 'vue';
+    import ChitChatServices from '@/services/ChitChatServices';
+    import { setToken, setUser} from '@/authentication/auth';
+    import { useRouter } from 'vue-router';
+    import { useAppStore } from '@/stores/app';
 
-    const Snackbar = defineAsyncComponent( () => import('../components/SnackBar.vue'))
+    //shared components
+    const Snackbar = defineAsyncComponent( () => import('@/components/SnackBar.vue'))
+    
+    //pinia store
     const appStore = useAppStore();
+
+    //component state
     const step = ref(1)
     const login_email = ref('')
     const login_password = ref('')
