@@ -23,9 +23,6 @@ export const useChatStore = defineStore({
     addRooms(payload){
       this.rooms = payload
     },
-    addRoom(payload){
-      this.rooms.push(payload)
-    },
     setSelectedChat(payload){
       this.selectedChat = {}
       this.selectedChat = payload
