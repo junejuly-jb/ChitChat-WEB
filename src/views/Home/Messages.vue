@@ -1,11 +1,11 @@
 <script setup>
-    import { useChatStore } from '../stores/chat';
-    import { useUserStore } from '../stores/user';
+    import { useChatStore } from '@/stores/chat';
+    import { useUserStore } from '@/stores/user';
     import { isEmoji } from '@/utils/emoji';
     import { shouldShowAvatar } from '@/utils/showavatar'
     import { shouldShowTimestamp } from '@/utils/timestamp'
     import { convertTime } from '@/utils/timeconverter'
-    import HoverItems from '../components/HoverItems.vue'
+    import HoverItems from './HoverItems.vue'
 
     //pinia store
     const chatStore = useChatStore();

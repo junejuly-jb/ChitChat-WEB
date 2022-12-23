@@ -37,7 +37,7 @@
     </div>
 </template>
 <script setup>
-    import ChitChatServices from '../services/ChitChatServices';
+    import ChitChatServices from '@/services/ChitChatServices';
     import { useChatStore } from '@/stores/chat';
     import { useUserStore } from '@/stores/user';
     import { useErrorStore } from "@/stores/error";

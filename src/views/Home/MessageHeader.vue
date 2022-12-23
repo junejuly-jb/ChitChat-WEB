@@ -1,6 +1,6 @@
 <script setup>  
-    import ChitChatServices from '../services/ChitChatServices';
-    import { useChatStore } from '../stores/chat';
+    import ChitChatServices from '@/services/ChitChatServices';
+    import { useChatStore } from '@/stores/chat';
     import { useDialogStore } from '@/stores/dialog'
 
     const chatStore = useChatStore()

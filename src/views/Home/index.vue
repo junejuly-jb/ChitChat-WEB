@@ -1,5 +1,4 @@
 <template>
-  
   <div class="wrapper">
     <div class="outer__content">
       <div class="content d-flex">
@@ -64,19 +63,17 @@
 
 <script setup>
   import { defineAsyncComponent, onMounted, ref } from 'vue';
-  import ChitChatServices from '../services/ChitChatServices';
+  import ChitChatServices from '@/services/ChitChatServices';
   import { useAppStore } from '@/stores/app';
   import { useChatStore } from '@/stores/chat';
   import { useUserStore } from '@/stores/user';
   import { useErrorStore } from '@/stores/error';
   import { useDialogStore } from '@/stores/dialog'
-  import pusherInstance from '../pusher';
+  import pusherInstance from '@/pusher';
   import { getUser, getToken, removeUser, destroyToken } from '@/authentication/auth';
   import { useRouter } from 'vue-router';
-  import SkeletonLoader from '../components/SkeletonLoader.vue';
-  import ActionButton from '../components/ActionButton.vue';
-  import SettingsDialog from '../components/Dialogs/SettingsDialog.vue';
-  import NewMessageDialog from '../components/Dialogs/NewMessageDialog.vue';
+  import SkeletonLoader from './SkeletonLoader.vue';
+  import ActionButton from './ActionButton.vue';
 
   // pinia store
   const chats = useChatStore()
@@ -89,14 +86,17 @@
   const pusher = pusherInstance(getToken())
   const isFetchingChat = ref(false);
 
-  const ChatListVue = defineAsyncComponent(() => import('../components/ChatList.vue'));
-  const MessageHeader = defineAsyncComponent(() => import('../components/MessageHeader.vue'));
-  const Messages = defineAsyncComponent(() => import('../components/Messages.vue'));
-  const Input = defineAsyncComponent(() => import('../components/Input.vue'));
-  const Dialog = defineAsyncComponent(() => import('../components/Dialogs/Dialog.vue'));
-  const DeleteDialog = defineAsyncComponent(() => import('../components/Dialogs/DeleteDialog.vue'))
-  const Snackbar = defineAsyncComponent(() => import('../components/SnackBar.vue'))
-  const NoData = defineAsyncComponent(() => import('../components/NoData.vue'))
+  //lazy load async components
+  const ChatListVue = defineAsyncComponent(() => import('./ChatList.vue'));
+  const MessageHeader = defineAsyncComponent(() => import('./MessageHeader.vue'));
+  const Messages = defineAsyncComponent(() => import('./Messages.vue'));
+  const Input = defineAsyncComponent(() => import('./Input.vue'));
+  const Dialog = defineAsyncComponent(() => import('@/components/Dialogs/Dialog.vue'));
+  const DeleteDialog = defineAsyncComponent(() => import('@/components/Dialogs/DeleteDialog.vue'))
+  const Snackbar = defineAsyncComponent(() => import('@/components/SnackBar.vue'))
+  const NoData = defineAsyncComponent(() => import('./NoData.vue'))
+  const NewMessageDialog = defineAsyncComponent(() => import('@/components/Dialogs/NewMessageDialog.vue'))
+  const SettingsDialog = defineAsyncComponent(() => import('@/components/Dialogs/SettingsDialog.vue'))
 
   const presenceChannel = pusher.subscribe('presence-online')
   const typingChannel = pusher.subscribe('private-typing')
