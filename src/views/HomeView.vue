@@ -55,7 +55,7 @@
       </div>
     </div>
     <Dialog @signout="signout"/>
-    <SettingsDialog/>
+    <SettingsDialog @signout="signout"/>
     <DeleteDialog/>
     <NewMessageDialog/>
     <Snackbar/>

@@ -1,9 +1,14 @@
 <script setup>
     import { useDialogStore } from '@/stores/dialog';
-import { ref } from 'vue';
+    import { ref } from 'vue';
 
+    //component props
+    const emit = defineEmits(['signout'])
+
+    //pinia store
     const dialogStore = useDialogStore();
     
+    //component state
     const toggler = ref(false)
     const step = ref(1)
     const selectedMenu = ref('')
@@ -65,7 +70,7 @@ import { ref } from 'vue';
             </v-card-text>
             <v-card-actions v-if="selectedMenu === 'logout'">
                 <v-spacer></v-spacer>
-                <v-btn color="error" @click="">Logout</v-btn>
+                <v-btn color="error" @click="emit('signout')">Logout</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
