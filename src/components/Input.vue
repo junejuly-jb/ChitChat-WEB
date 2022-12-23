@@ -42,7 +42,6 @@
             chatStore.sortRoom()
             emit('handleStopTyping')
         }
-        
 
         // let result;
         // if(chatStore.selectedChat._id == '1'){

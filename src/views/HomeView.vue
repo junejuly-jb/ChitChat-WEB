@@ -202,7 +202,6 @@
 
   const getUserInfo = async () => {
     const user = await getUser()
-    console.log('userinfooo')
     userStore.setUserInfo(user)
   }
 

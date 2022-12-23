@@ -8,12 +8,16 @@
     import { useErrorStore } from '@/stores/error';
     import { useAppStore } from '@/stores/app';
 
+    //pinia store
     const dialogStore = useDialogStore();
     const userStore = useUserStore();
     const chatStore = useChatStore();
     const errorStore = useErrorStore()
     const appStore = useAppStore();
+
+    //component state
     const step = ref(1);
+    const loading = ref(false)
 
     const handleUserClick = async (user) => {
         const found = chatStore.rooms.find(el => el.user._id === user._id)
@@ -66,15 +70,12 @@
         }
 
         try {
+            loading.value = true
             const result = await ChitChatServices.sendMessage(data)
-            console.log(result)
-            if(!result.data.success){
-                throw new Error(result.data.message)
-            }
-            // TODO: FIX HERE
-            chatStore.sendMessage(result.data.data)
+            if(!result.data.success) throw new Error(result.data.message)
+            chatStore.setNewRoom(result.data.chatroom)
+            dialogStore.dialogHandler({ state: 'newMessageDialog', value: false })
         } catch (error) {
-            console.log(error)
             if(!error.response.data){
                 appStore.setSnackBar({ status: true, message: "Could not connect to server. Please try again later.", type: 'error'})
             }
@@ -84,9 +85,10 @@
             if(error.response.data.status === 401){
                 dialogStore.dialogHandler({ state: 'unauthenticatedDialog', value: true})
             }
+        } finally{
+            loading.value = false
         }
     }
-
 </script>
 <template>
     <v-dialog
@@ -136,7 +138,15 @@
             </v-card-text>
             <v-card-actions v-if="step === 2">
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="btnSend">Send</v-btn>
+                <v-btn color="primary" @click="btnSend">
+                    <v-progress-circular
+                    indeterminate
+                    color="primary"
+                    v-if="loading"
+                    ></v-progress-circular>
+                    <div v-else>Send</div>
+                </v-btn>
+                
             </v-card-actions>
         </v-card>
     </v-dialog>

@@ -17,9 +17,8 @@ import { ref } from 'vue';
         isLoading.value = true
         try {
             let result = await ChitChatServices.deleteMessage(chatStore.forDeletion.id)
-            if(!result.data.data){
-                throw new Error(result.data.message);
-            }
+            console.log(result)
+            if(!result.data.success) throw new Error(result.data.message);
             dialogStore.dialogHandler({ state: 'deleteDialog', value: false})
             appStore.setSnackBar({ message: result.data.message, type: 'success'})
             chatStore.deleteRoom(chatStore.forDeletion.id)
