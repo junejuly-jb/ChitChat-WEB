@@ -74,10 +74,11 @@
   import { useRouter } from 'vue-router';
   import SkeletonLoader from './SkeletonLoader.vue';
   import ActionButton from './ActionButton.vue';
+  import { setTheme, getTheme } from '@/utils/theme.js'
 
   // pinia store
   const chats = useChatStore()
-  const appState = useAppStore()
+  const appStore = useAppStore()
   const userStore = useUserStore()
   const errorStore = useErrorStore();
   const dialogStore = useDialogStore();
@@ -137,7 +138,6 @@
     await router.push({path: '/', replace: true})
     userStore.onLogOut()
   }    
-
 
   const getUsers = async () => {
     try {
@@ -238,6 +238,13 @@
     isFetchingChat.value = false
   }
 
+  const themeCheck = () => {
+    const theme = getTheme()
+    if(!theme){
+      setTheme(false)
+    }
+  }
+
   onMounted( async () => {
     isFetchingChat.value = true
     await getUserInfo()
@@ -245,6 +252,7 @@
     await getChatRooms()
     await getUsers()
     isFetchingChat.value = false
+    themeCheck()
   })
 </script>
 
