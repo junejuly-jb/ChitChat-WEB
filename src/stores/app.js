@@ -4,6 +4,7 @@ export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
     activeTab: 'chats',
+    theme: '',
     snackbar: {
       status: false,
       message: '',
@@ -12,6 +13,9 @@ export const useAppStore = defineStore({
   }),
 
   actions:{
+    setTheme(payload){
+      this.theme = payload
+    },
     changeAppState(payload){
         this.activeTab = payload
     },

@@ -176,11 +176,12 @@
     <Snackbar/>
 </template>
 <script setup>
-    import { defineAsyncComponent, ref } from 'vue';
+    import { defineAsyncComponent, onMounted, ref } from 'vue';
     import ChitChatServices from '@/services/ChitChatServices';
     import { setToken, setUser} from '@/authentication/auth';
     import { useRouter } from 'vue-router';
     import { useAppStore } from '@/stores/app';
+    import { getTheme, setTheme } from '@/utils/theme.js'
 
     //shared components
     const Snackbar = defineAsyncComponent( () => import('@/components/SnackBar.vue'))
@@ -199,6 +200,11 @@
     const reg_conpassword = ref('')
     const isLoading = ref(false)
     const router = useRouter()
+
+    onMounted(() => {
+        const theme = getTheme()
+        if(!theme) setTheme(false)
+    })
 
     const handleLogin = async () => {
         isLoading.value = true

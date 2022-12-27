@@ -1,15 +1,16 @@
 <script setup>
     import { useDialogStore } from '@/stores/dialog';
     import { ref } from 'vue';
+    import { setTheme, getTheme } from '@/utils/theme.js'
 
     //component props
     const emit = defineEmits(['signout'])
+    const toggler = ref(getTheme())
 
     //pinia store
     const dialogStore = useDialogStore();
     
     //component state
-    const toggler = ref(false)
     const step = ref(1)
     const selectedMenu = ref('')
 
@@ -20,6 +21,16 @@
         }
         else{
             step.value++        
+        }
+    }
+
+    const handleChange = () => {
+        let theme = getTheme()
+        if(!theme){
+            setTheme(true)
+        }
+        else{
+            setTheme(false)
         }
     }
     
@@ -50,7 +61,7 @@
                             <span>Dark mode</span>
                             <v-spacer></v-spacer>
                             <div>
-                                <v-switch color="blue" v-model="toggler" inset hide-details></v-switch>
+                                <v-switch @change="handleChange" color="blue" v-model="toggler" inset hide-details></v-switch>
                             </div>
                         </div>
                         <div @click="onClickMenuHandler('logout')" class="d-flex align-center my-2 pointer">
