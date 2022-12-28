@@ -1,7 +1,7 @@
 <template>
-  <div class="wrapper">
+  <div :class="['wrapper', (isDark && 'dark')]">
     <div class="outer__content">
-      <div class="content d-flex">
+      <div :class="['content d-flex', (isDark ? 'dark__secondary' : 'light')]">
         <div id="list">
           <div class="active_user_head">
               <h2>Chats</h2>
@@ -78,7 +78,6 @@
 
   // pinia store
   const chats = useChatStore()
-  const appStore = useAppStore()
   const userStore = useUserStore()
   const errorStore = useErrorStore();
   const dialogStore = useDialogStore();
@@ -86,6 +85,7 @@
   const router = useRouter()
   const pusher = pusherInstance(getToken())
   const isFetchingChat = ref(false);
+  const isDark = ref(getTheme())
 
   //lazy load async components
   const ChatListVue = defineAsyncComponent(() => import('./ChatList.vue'));
@@ -288,7 +288,6 @@
     height: 100%;
     width: 100%;
     border-radius: 30px;
-    background-color: white;
   }
   .outer__content{
     width: 80%;
@@ -403,5 +402,17 @@
     width: 100%;
     height: 40px;
     padding: 0px 20px;
+  }
+
+  .dark{
+    background-color: rgb(18, 18, 18);
+    color: rgb(170, 170, 170);
+  }
+  .dark__secondary{
+    background-color: rgb(30, 30, 30);
+    color: rgb(170, 170, 170);
+  }
+  .light{
+    background-color: white;
   }
 </style>

@@ -1,179 +1,181 @@
 <template>
-    <v-container>
-        <v-row align="center" justify="center" >
-            <v-col cols="12" sm="10">
-                <v-card class="elevation-6 mt-10"  >
-                    <v-window v-model="step">
-                        <v-window-item :value="1">
-                        <v-row>
-                            <v-col cols="12" md="6">
-                                <v-card-text class="mt-12">
-                                    <h4 class="text-center">Login in to Your Account</h4>
-                                    <h6 class="text-center  grey--text ">
-                                        Log in to your account so you can continue builiding <br>connections to others.
-                                    </h6>
-                                    <v-row align="center" justify="center">
-                                        <v-col cols="12" sm="8">
-                                            
-                                            <v-text-field
-                                                label="Email"
-                                                dense
-                                                color="blue"
-                                                autocomplete="false"
-                                                class="mt-16"
-                                                v-model="login_email"
-                                                @keyup.enter="handleLogin"
-                                            />
-                                            <v-text-field
-                                                label="Password"
-                                                outlined
-                                                dense
-                                                color="blue"
-                                                autocomplete="false"
-                                                type="password"
-                                                v-model="login_password"
-                                                @keyup.enter="handleLogin"
-                                            />
-                                            <div>
-                                                <div class="py-5">
-                                                    <span class="red">Forgot password</span>
+    <div :class="['main', (isDark && 'dark')]">
+        <v-container>
+            <v-row align="center" justify="center" >
+                <v-col cols="12" sm="10">
+                    <v-card class="elevation-6 mt-10"  >
+                        <v-window v-model="step">
+                            <v-window-item :value="1">
+                            <v-row :class="isDark && 'dark__secondary'">
+                                <v-col cols="12" md="6">
+                                    <v-card-text class="mt-12">
+                                        <h4 class="text-center">Login in to Your Account</h4>
+                                        <h6 class="text-center  grey--text ">
+                                            Log in to your account so you can continue builiding <br>connections to others.
+                                        </h6>
+                                        <v-row align="center" justify="center">
+                                            <v-col cols="12" sm="8">
+                                                
+                                                <v-text-field
+                                                    label="Email"
+                                                    dense
+                                                    color="blue"
+                                                    autocomplete="false"
+                                                    class="mt-16"
+                                                    v-model="login_email"
+                                                    @keyup.enter="handleLogin"
+                                                />
+                                                <v-text-field
+                                                    label="Password"
+                                                    outlined
+                                                    dense
+                                                    color="blue"
+                                                    autocomplete="false"
+                                                    type="password"
+                                                    v-model="login_password"
+                                                    @keyup.enter="handleLogin"
+                                                />
+                                                <div>
+                                                    <div class="py-5">
+                                                        <span class="red">Forgot password</span>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <v-btn @click="handleLogin" color="blue" dark block tile>
-                                                <div v-if="!isLoading">LOGIN</div>
-                                                <div v-else>
-                                                    <v-progress-circular
-                                                    :size="20"
-                                                    :width="3"
-                                                    color="white"
-                                                    indeterminate
-                                                    ></v-progress-circular>
-                                                </div>
-                                            </v-btn>
+                                                <v-btn @click="handleLogin" color="blue" dark block tile>
+                                                    <div v-if="!isLoading">LOGIN</div>
+                                                    <div v-else>
+                                                        <v-progress-circular
+                                                        :size="20"
+                                                        :width="3"
+                                                        color="white"
+                                                        indeterminate
+                                                        ></v-progress-circular>
+                                                    </div>
+                                                </v-btn>
+                                            </v-col>
+                                        </v-row>  
+                                    </v-card-text>
+                                </v-col>
+                                <v-col cols="12" md="6" class="bg-blue rounded-bl-xl" >
+                                    <div style="  text-align: center; padding: 180px 0;">
+                                        <v-card-text class="white--text" >
+                                            <h3 class="text-center ">Don't Have an Account Yet?</h3>
+                                            <h6
+                                            class="text-center"
+                                            >Let's get you all set up so you can start creating your your first<br>  onboarding experience</h6>
+                                        </v-card-text>
+                                        <div class="text-center">
+                                            <v-btn @click="step++" :disabled="isLoading"><div class="text_blue">SIGN UP</div></v-btn>
+                                        </div>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                            </v-window-item>
+                            <v-window-item :value="2">
+                            <v-row :class="isDark && 'dark__secondary'">
+                                <v-col cols="12" md="6" class="bg-blue rounded-br-xl">
+                                <div style="  text-align: center; padding: 180px 0;">
+                                <v-card-text class="white--text" >
+                                    <h3 class="text-center ">Already Signed up?</h3>
+                                    <h6
+                                    class="text-center"
+                                    >Log in to your account so you can continue connecting and<br>  communicating with your colleagues and friends</h6>
+                                </v-card-text>
+                                <div class="text-center">
+                                    <v-btn @click="step--" :disabled="isLoading"><div class="text_blue">Log in</div></v-btn>
+                                </div>
+                                </div>
+                                </v-col>
+
+                                <v-col cols="12" md="6">
+                                <v-card-text class="mt-12">
+                                    <h4
+                                    class="text-center"
+                                    >Sign Up for an Account</h4>
+                                    <h6
+                                    class="text-center  grey--text "
+                                    >Let's get you all set up so you can start creating your <br>
+                                    first onboarding experience</h6>
+                                    <v-row align="center" justify="center">
+                                    <v-col cols="12" sm="8">
+                                        <v-row>
+                                        <v-col cols="12" sm="6">
+                                        <v-text-field
+                                        label="First Name"
+                                        outlined
+                                        dense
+                                        color="blue"
+                                        autocomplete="false"
+                                        class="mt-4"
+                                        v-model="reg_fname"
+                                        @keyup.enter="handleSignUp"
+                                    />
                                         </v-col>
+                                        <v-col cols="12" sm="6">
+                                        <v-text-field
+                                        label="Last Name"
+                                        outlined
+                                        dense
+                                        color="blue"
+                                        autocomplete="false"
+                                        class="mt-4"
+                                        v-model="reg_lname"
+                                        @keyup.enter="handleSignUp"
+                                    />
+                                        </v-col>
+                                        </v-row>
+                                    <v-text-field
+                                        label="Email"
+                                        outlined
+                                        dense
+                                        color="blue"
+                                        autocomplete="false"
+                                        v-model="reg_email"
+                                        @keyup.enter="handleSignUp"
+                                    />
+                                    <v-text-field
+                                        label="Password"
+                                        outlined
+                                        dense
+                                        color="blue"
+                                        autocomplete="false"
+                                        type="password"
+                                        v-model="reg_password"
+                                        @keyup.enter="handleSignUp"
+                                    />
+                                    <v-text-field
+                                        label="Confirm Password"
+                                        outlined
+                                        dense
+                                        color="blue"
+                                        autocomplete="false"
+                                        type="password"
+                                        v-model="reg_conpassword"
+                                        @keyup.enter="handleSignUp"
+                                    />
+                                    <div class="py-5"></div>
+                                    <v-btn @click="handleSignUp" color="blue" dark block tile>
+                                        <div  v-if="isLoading">
+                                            Signing up... 
+                                            <v-progress-circular indeterminate color="white"></v-progress-circular>
+                                        </div>
+                                        <div v-else>
+                                            Sign Up
+                                        </div>
+                                    </v-btn>
+                                    </v-col>
                                     </v-row>  
                                 </v-card-text>
-                            </v-col>
-                            <v-col cols="12" md="6" class="bg-blue rounded-bl-xl" >
-                                <div style="  text-align: center; padding: 180px 0;">
-                                    <v-card-text class="white--text" >
-                                        <h3 class="text-center ">Don't Have an Account Yet?</h3>
-                                        <h6
-                                        class="text-center"
-                                        >Let's get you all set up so you can start creating your your first<br>  onboarding experience</h6>
-                                    </v-card-text>
-                                    <div class="text-center">
-                                        <v-btn @click="step++" :disabled="isLoading"><div class="text_blue">SIGN UP</div></v-btn>
-                                    </div>
-                                </div>
-                            </v-col>
-                        </v-row>
-                        </v-window-item>
-                        <v-window-item :value="2">
-                        <v-row >
-                            <v-col cols="12" md="6" class="bg-blue rounded-br-xl">
-                            <div style="  text-align: center; padding: 180px 0;">
-                            <v-card-text class="white--text" >
-                                <h3 class="text-center ">Already Signed up?</h3>
-                                <h6
-                                class="text-center"
-                                >Log in to your account so you can continue connecting and<br>  communicating with your colleagues and friends</h6>
-                            </v-card-text>
-                            <div class="text-center">
-                                <v-btn @click="step--" :disabled="isLoading"><div class="text_blue">Log in</div></v-btn>
-                            </div>
-                            </div>
-                            </v-col>
-
-                            <v-col cols="12" md="6">
-                            <v-card-text class="mt-12">
-                                <h4
-                                class="text-center"
-                                >Sign Up for an Account</h4>
-                                <h6
-                                class="text-center  grey--text "
-                                >Let's get you all set up so you can start creating your <br>
-                                first onboarding experience</h6>
-                                <v-row align="center" justify="center">
-                                <v-col cols="12" sm="8">
-                                    <v-row>
-                                    <v-col cols="12" sm="6">
-                                    <v-text-field
-                                    label="First Name"
-                                    outlined
-                                    dense
-                                    color="blue"
-                                    autocomplete="false"
-                                    class="mt-4"
-                                    v-model="reg_fname"
-                                    @keyup.enter="handleSignUp"
-                                />
-                                    </v-col>
-                                    <v-col cols="12" sm="6">
-                                    <v-text-field
-                                    label="Last Name"
-                                    outlined
-                                    dense
-                                    color="blue"
-                                    autocomplete="false"
-                                    class="mt-4"
-                                    v-model="reg_lname"
-                                    @keyup.enter="handleSignUp"
-                                />
-                                    </v-col>
-                                    </v-row>
-                                <v-text-field
-                                    label="Email"
-                                    outlined
-                                    dense
-                                    color="blue"
-                                    autocomplete="false"
-                                    v-model="reg_email"
-                                    @keyup.enter="handleSignUp"
-                                />
-                                <v-text-field
-                                    label="Password"
-                                    outlined
-                                    dense
-                                    color="blue"
-                                    autocomplete="false"
-                                    type="password"
-                                    v-model="reg_password"
-                                    @keyup.enter="handleSignUp"
-                                />
-                                <v-text-field
-                                    label="Confirm Password"
-                                    outlined
-                                    dense
-                                    color="blue"
-                                    autocomplete="false"
-                                    type="password"
-                                    v-model="reg_conpassword"
-                                    @keyup.enter="handleSignUp"
-                                />
-                                <div class="py-5"></div>
-                                <v-btn @click="handleSignUp" color="blue" dark block tile>
-                                    <div  v-if="isLoading">
-                                        Signing up... 
-                                        <v-progress-circular indeterminate color="white"></v-progress-circular>
-                                    </div>
-                                    <div v-else>
-                                        Sign Up
-                                    </div>
-                                </v-btn>
                                 </v-col>
-                                </v-row>  
-                            </v-card-text>
-                            </v-col>
-                        </v-row>
-                        </v-window-item>
-                    </v-window>
-                </v-card>
-            </v-col>
-        </v-row>
-    </v-container>
-    <Snackbar/>
+                            </v-row>
+                            </v-window-item>
+                        </v-window>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+        <Snackbar/>
+    </div>
 </template>
 <script setup>
     import { defineAsyncComponent, onMounted, ref } from 'vue';
@@ -200,6 +202,7 @@
     const reg_conpassword = ref('')
     const isLoading = ref(false)
     const router = useRouter()
+    const isDark = ref(getTheme())
 
     onMounted(() => {
         const theme = getTheme()
@@ -262,6 +265,17 @@
 </script>
 
 <style scoped>
+    .main{
+        height: 100vh;
+    }
+    .dark{
+        background-color: rgb(18, 18, 18);
+        color: rgb(170, 170, 170);
+    }
+    .dark__secondary{
+        background-color: rgb(30, 30, 30);
+        color: rgb(170, 170, 170);
+    }
     .v-application .rounded-bl-xl {
         border-bottom-left-radius: 300px !important;
     }

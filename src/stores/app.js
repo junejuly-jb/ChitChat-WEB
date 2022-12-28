@@ -4,6 +4,7 @@ export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
     activeTab: 'chats',
+    //TODO: FIX
     theme: '',
     snackbar: {
       status: false,
